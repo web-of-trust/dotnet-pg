@@ -87,7 +87,7 @@ public static class Helper
 
     public static IString2Key String2Key(S2kType type = S2kType.Iterated)
     {
-        if (type == S2kType.Simple) throw new ArgumentException("Simple type not supported");
+        if (type == S2kType.Simple) throw new ArgumentException("Simple type not supported.");
         var random = new SecureRandom();
         return type switch
         {
@@ -120,7 +120,7 @@ public static class Helper
                 SymmetricAlgorithm.Camellia192 or
                 SymmetricAlgorithm.Camellia256 => new CamelliaEngine(),
             SymmetricAlgorithm.Twofish => new TwofishEngine(),
-            _ => throw new ArgumentException("Unsupported symmetric algorithm encountered")
+            _ => throw new ArgumentException("Unsupported symmetric algorithm encountered.")
         };
     }
 
@@ -142,7 +142,7 @@ public static class Helper
             HashAlgorithm.Sha224 => new Sha224Digest(),
             HashAlgorithm.Sha3_256 => new Sha3Digest(),
             HashAlgorithm.Sha3_512 => new Sha3Digest(512),
-            _ => throw new ArgumentException("Unsupported hash algorithm encountered")
+            _ => throw new ArgumentException("Unsupported hash algorithm encountered.")
         };
     }
 
@@ -251,7 +251,7 @@ public static class Helper
             case KeyAlgorithm.DiffieHellman:
             case KeyAlgorithm.AeDh:
             case KeyAlgorithm.AeDsa:
-                throw new ArgumentException("Key algorithm is unsupported");
+                throw new ArgumentException("Key algorithm is unsupported.");
         }
     }
 

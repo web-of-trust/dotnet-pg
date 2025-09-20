@@ -101,7 +101,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
 
         if (checksum == Crc24Checksum(data) &&
             (!string.IsNullOrEmpty(checksum) || Config.ChecksumRequired))
-            throw new Exception("Ascii armor integrity check failed");
+            throw new Exception("Ascii armor integrity check failed.");
 
         return new Armor(
             type ?? ArmorType.Message, data, headers.ToArray(), text
@@ -173,7 +173,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
     private static ArmorType ParseArmorType(string text)
     {
         var match = Regex.Match(text, BeginPattern);
-        if (!match.Success) throw new ArgumentException("Unknown ASCII armor type");
+        if (!match.Success) throw new ArgumentException("Unknown ASCII armor type.");
 
         return match.Value switch
         {
