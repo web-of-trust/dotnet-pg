@@ -51,9 +51,9 @@ public interface ISubkey : IPacketContainer
     byte[] KeyId { get; }
 
     /// <summary>
-    ///     Get key strength
+    ///     Get key length
     /// </summary>
-    int KeyStrength { get; }
+    int KeyLength { get; }
 
     /// <summary>
     ///     Get revocation signatures

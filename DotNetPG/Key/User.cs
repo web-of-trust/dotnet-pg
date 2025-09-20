@@ -10,7 +10,7 @@ public class User
     private readonly IKey _mainKey;
 
     private readonly IUserIdPacket _userIdPacket;
-    
+
     private readonly IReadOnlyList<ISignaturePacket> _revocationSignatures;
 
     private readonly IReadOnlyList<ISignaturePacket> _selfCertifications;
