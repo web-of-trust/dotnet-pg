@@ -1,5 +1,5 @@
 
-namespace Test.Common;
+namespace DotNetPG.Test.Common;
 
 using Org.BouncyCastle.Utilities.Encoders;
 using DotNetPG.Common;

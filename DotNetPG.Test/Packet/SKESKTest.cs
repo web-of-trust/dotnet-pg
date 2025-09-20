@@ -4,7 +4,7 @@ using DotNetPG.Packet;
 using DotNetPG.Packet.Key;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace Test.Packet;
+namespace DotNetPG.Test.Packet;
 
 public class SKESKTest
 {

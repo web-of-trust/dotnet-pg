@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetPG", "DotNetPG\DotNetPG.csproj", "{266DF6C2-4821-4250-82D9-5CEC56E8529C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{43EE3D49-7AF4-42B2-918A-D62F04DC79D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetPG.Test", "DotNetPG.Test\DotNetPG.Test.csproj", "{43EE3D49-7AF4-42B2-918A-D62F04DC79D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

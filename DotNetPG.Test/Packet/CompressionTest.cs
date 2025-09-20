@@ -3,7 +3,7 @@ using DotNetPG.Enum;
 using DotNetPG.Packet;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace Test.Packet;
+namespace DotNetPG.Test.Packet;
 
 public class CompressionTest
 {

@@ -2,7 +2,7 @@ using DotNetPG.Key;
 using DotNetPG.Packet;
 using Org.BouncyCastle.Security;
 
-namespace Test.Packet;
+namespace DotNetPG.Test.Packet;
 
 public class UserIDTest
 {

@@ -1,5 +1,5 @@
 
-namespace Test.Common;
+namespace DotNetPG.Test.Common;
 
 using System.Text.RegularExpressions;
 using DotNetPG.Common;

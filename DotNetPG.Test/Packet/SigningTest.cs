@@ -5,7 +5,7 @@ using DotNetPG.Packet.SubPacket;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace Test.Packet;
+namespace DotNetPG.Test.Packet;
 
 public class SigningTest
 {

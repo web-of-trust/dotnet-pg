@@ -6,7 +6,7 @@ using DotNetPG.Packet.Key;
 using DotNetPG.Type;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace Test.Packet;
+namespace DotNetPG.Test.Packet;
 
 public class AeadTest
 {
