@@ -17,11 +17,11 @@ public class User : IUser
 
     private readonly IUserIdPacket _userIdPacket;
 
-    private readonly IReadOnlyList<ISignaturePacket> _revocationSignatures;
+    private readonly IList<ISignaturePacket> _revocationSignatures;
 
-    private readonly IReadOnlyList<ISignaturePacket> _selfSignatures;
+    private readonly IList<ISignaturePacket> _selfSignatures;
 
-    private readonly IReadOnlyList<ISignaturePacket> _otherSignatures;
+    private readonly IList<ISignaturePacket> _otherSignatures;
 
     public User(
         IKey mainKey,
@@ -33,20 +33,20 @@ public class User : IUser
     {
         _mainKey = mainKey;
         _userIdPacket = userIdPacket;
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToList().AsReadOnly();
-        _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToList().AsReadOnly();
-        _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToList().AsReadOnly();
+        _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToList();
+        _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToList();
+        _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToList();
     }
 
     public IKey MainKey => _mainKey;
 
     public IUserIdPacket UserIdPacket => _userIdPacket;
 
-    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures;
+    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures.AsReadOnly();
 
-    public IReadOnlyList<ISignaturePacket> SelfSignatures => _selfSignatures;
+    public IReadOnlyList<ISignaturePacket> SelfSignatures => _selfSignatures.AsReadOnly();
 
-    public IReadOnlyList<ISignaturePacket> OtherSignatures => _otherSignatures;
+    public IReadOnlyList<ISignaturePacket> OtherSignatures => _otherSignatures.AsReadOnly();
 
     public bool IsPrimary
     {

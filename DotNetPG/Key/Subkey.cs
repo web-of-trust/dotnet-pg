@@ -17,9 +17,9 @@ public class Subkey : ISubkey
 
     private readonly ISubkeyPacket _keyPacket;
 
-    private readonly IReadOnlyList<ISignaturePacket> _revocationSignatures;
+    private readonly IList<ISignaturePacket> _revocationSignatures;
 
-    private readonly IReadOnlyList<ISignaturePacket> _bindingSignatures;
+    private readonly IList<ISignaturePacket> _bindingSignatures;
 
     public Subkey(
         IKey mainKey,
@@ -30,21 +30,21 @@ public class Subkey : ISubkey
     {
         _mainKey = mainKey;
         _keyPacket = keyPacket;
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToList().AsReadOnly();
-        _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToList().AsReadOnly();
+        _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToList();
+        _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToList();
     }
 
     public IKey  MainKey => _mainKey;
 
     public ISubkeyPacket KeyPacket => _keyPacket;
 
-    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures;
+    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures.AsReadOnly();
 
-    public IReadOnlyList<ISignaturePacket> BindingSignatures => _bindingSignatures;
+    public IReadOnlyList<ISignaturePacket> BindingSignatures => _bindingSignatures.AsReadOnly();
 
     public int Version => _keyPacket.Version;
 
-    public DateTime? ExpirationTime { get; }
+    public DateTime? ExpirationTime => BaseKey.KeyExpiration(_bindingSignatures);
 
     public DateTime? CreationTime => _keyPacket.CreationTime;
 
