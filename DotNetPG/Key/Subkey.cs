@@ -1,7 +1,12 @@
-using DotNetPG.Enum;
-using DotNetPG.Type;
+// Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
+// Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
+
+using Org.BouncyCastle.Utilities;
 
 namespace DotNetPG.Key;
+
+using Enum;
+using Type;
 
 /// <summary>
 /// OpenPGP sub key class.
@@ -28,7 +33,7 @@ public class Subkey : ISubkey
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToList().AsReadOnly();
         _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToList().AsReadOnly();
     }
-    
+
     public IKey  MainKey => _mainKey;
 
     public ISubkeyPacket KeyPacket => _keyPacket;
@@ -55,9 +60,34 @@ public class Subkey : ISubkey
 
     public bool IsEncryptionKey => _keyPacket.IsEncryptionKey;
 
-    public bool IsRevoked(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    public IPacketList PacketList => new Packet.PacketList([
+        _keyPacket,
+        .._revocationSignatures,
+        .._bindingSignatures
+    ]);
+
+    public bool IsRevoked(
+        IKey? verifyKey = null,
+        ISignaturePacket? certificate = null,
+        DateTime? time = null
+    )
     {
-        throw new NotImplementedException();
+        if (_revocationSignatures.Count > 0)
+        {
+            var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+            var keyId = certificate?.IssuerKeyId;
+            foreach (var signature in _revocationSignatures)
+            {
+                if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
+                {
+                    if (signature.Verify(keyPacket, [.._mainKey.KeyPacket.SignBytes(), ..keyPacket.SignBytes()], time))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public bool Verify(DateTime? time = null)
@@ -70,8 +100,4 @@ public class Subkey : ISubkey
     {
         throw new NotImplementedException();
     }
-
-    public IPacketList PacketList { get; }
-
-    public IList<IPacket> Packets { get; }
 }

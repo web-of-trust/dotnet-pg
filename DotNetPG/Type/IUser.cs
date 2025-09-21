@@ -24,17 +24,17 @@ public interface IUser : IPacketContainer
     /// <summary>
     ///     Get revocation signatures
     /// </summary>
-    IReadOnlyList<ISignaturePacket> RevocationCertifications { get; }
+    IReadOnlyList<ISignaturePacket> RevocationSignatures { get; }
 
     /// <summary>
     ///     Get self signatures
     /// </summary>
-    IReadOnlyList<ISignaturePacket> SelfCertifications { get; }
+    IReadOnlyList<ISignaturePacket> SelfSignatures { get; }
 
     /// <summary>
     ///     Get other signatures
     /// </summary>
-    IReadOnlyList<ISignaturePacket> OtherCertifications { get; }
+    IReadOnlyList<ISignaturePacket> OtherSignatures { get; }
 
     /// <summary>
     ///     Get user ID

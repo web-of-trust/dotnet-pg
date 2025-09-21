@@ -12,9 +12,4 @@ public interface IPacketContainer
     ///     Get packet list.
     /// </summary>
     IPacketList PacketList { get; }
-
-    /// <summary>
-    ///     Get contained packets.
-    /// </summary>
-    IList<IPacket> Packets { get; }
 }
