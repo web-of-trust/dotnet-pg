@@ -92,7 +92,7 @@ public interface ISubkey : IPacketContainer
     /// <summary>
     ///     Revoke the subkey
     /// </summary>
-    IUser RevokeBy(
+    ISubkey RevokeBy(
         IPrivateKey signKey,
         string revocationReason = "",
         RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,

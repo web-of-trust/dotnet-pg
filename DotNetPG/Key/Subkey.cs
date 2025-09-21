@@ -72,18 +72,19 @@ public class Subkey : ISubkey
         DateTime? time = null
     )
     {
-        if (_revocationSignatures.Count > 0)
+        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyId = certificate?.IssuerKeyId;
+        foreach (var signature in _revocationSignatures)
         {
-            var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
-            var keyId = certificate?.IssuerKeyId;
-            foreach (var signature in _revocationSignatures)
+            if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
             {
-                if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
+                if (signature.Verify(
+                    keyPacket,
+                    [.._mainKey.KeyPacket.SignBytes(), ..keyPacket.SignBytes()],
+                    time
+                ))
                 {
-                    if (signature.Verify(keyPacket, [.._mainKey.KeyPacket.SignBytes(), ..keyPacket.SignBytes()], time))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
@@ -92,11 +93,26 @@ public class Subkey : ISubkey
 
     public bool Verify(DateTime? time = null)
     {
-        throw new NotImplementedException();
+        foreach (var signature in _bindingSignatures)
+        {
+            if (signature.Verify(
+                _mainKey.KeyPacket,
+                [.._mainKey.KeyPacket.SignBytes(), .._keyPacket.SignBytes()],
+                time
+            ))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public IUser RevokeBy(IPrivateKey signKey, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public ISubkey RevokeBy(
+        IPrivateKey signKey,
+        string revocationReason = "",
+        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }

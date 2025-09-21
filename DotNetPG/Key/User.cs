@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using Org.BouncyCastle.Utilities;
+
 namespace DotNetPG.Key;
 
 using Enum;
@@ -70,19 +72,70 @@ public class User : IUser
         .._otherSignatures
     ]);
 
-    public bool IsRevoked(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    public bool IsRevoked(
+        IKey? verifyKey = null,
+        ISignaturePacket? certificate = null,
+        DateTime? time = null
+    )
     {
-        throw new NotImplementedException();
+        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyId = certificate?.IssuerKeyId;
+        foreach (var signature in _revocationSignatures)
+        {
+            if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
+            {
+                if (signature.Verify(
+                    keyPacket,
+                    [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
+                    time
+                ))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public bool IsCertified(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    public bool IsCertified(
+        IKey? verifyKey = null,
+        ISignaturePacket? certificate = null,
+        DateTime? time = null
+    )
     {
-        throw new NotImplementedException();
+        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyId = certificate?.IssuerKeyId;
+        foreach (var signature in _otherSignatures)
+        {
+            if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
+            {
+                if (signature.Verify(
+                        keyPacket,
+                        [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
+                        time
+                    ))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public bool Verify(DateTime? time = null)
     {
-        throw new NotImplementedException();
+        foreach (var signature in _selfSignatures)
+        {
+            if (signature.Verify(
+                _mainKey.KeyPacket,
+                [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
+                time
+            ))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public IUser CertifyBy(IPrivateKey signKey, DateTime? time = null)
@@ -90,8 +143,12 @@ public class User : IUser
         throw new NotImplementedException();
     }
 
-    public IUser RevokeBy(IPrivateKey signKey, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public IUser RevokeBy(
+        IPrivateKey signKey,
+        string revocationReason = "",
+        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
