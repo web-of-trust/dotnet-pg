@@ -24,8 +24,8 @@ public class Subkey : ISubkey
     public Subkey(
         IKey mainKey,
         ISubkeyPacket keyPacket,
-        IList<ISignaturePacket> revocationSignatures,
-        IList<ISignaturePacket> bindingSignatures
+        ISignaturePacket[] revocationSignatures,
+        ISignaturePacket[] bindingSignatures
     )
     {
         _mainKey = mainKey;
