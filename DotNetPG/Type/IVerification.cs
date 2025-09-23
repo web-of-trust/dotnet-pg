@@ -31,5 +31,5 @@ public interface IVerification
     /// <summary>
     ///     Get verification user IDs
     /// </summary>
-    IList<string> UserIDs { get; }
+    string[] UserIDs { get; }
 }

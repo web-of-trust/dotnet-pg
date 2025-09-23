@@ -188,8 +188,8 @@ public class PublicKey : BasePacket, IPublicKeyPacket
         return keyAlgorithm switch
         {
             KeyAlgorithm.RsaEncrypt or
-                KeyAlgorithm.RsaGeneral or
-                KeyAlgorithm.RsaSign => RsaPublicKeyMaterial.FromBytes(bytes),
+            KeyAlgorithm.RsaGeneral or
+            KeyAlgorithm.RsaSign => RsaPublicKeyMaterial.FromBytes(bytes),
             KeyAlgorithm.EcDh => EcDhPublicKeyMaterial.FromBytes(bytes),
             KeyAlgorithm.EcDsa => EcDsaPublicKeyMaterial.FromBytes(bytes),
             KeyAlgorithm.EdDsaLegacy => EdDsaLegacyPublicKeyMaterial.FromBytes(bytes),

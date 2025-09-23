@@ -17,9 +17,9 @@ public class Subkey : ISubkey
 
     private readonly ISubkeyPacket _keyPacket;
 
-    private readonly IList<ISignaturePacket> _revocationSignatures;
+    private readonly ISignaturePacket[] _revocationSignatures;
 
-    private readonly IList<ISignaturePacket> _bindingSignatures;
+    private readonly ISignaturePacket[] _bindingSignatures;
 
     public Subkey(
         IKey mainKey,
@@ -30,17 +30,17 @@ public class Subkey : ISubkey
     {
         _mainKey = mainKey;
         _keyPacket = keyPacket;
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToList();
-        _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToList();
+        _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
+        _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
     }
 
     public IKey  MainKey => _mainKey;
 
     public ISubkeyPacket KeyPacket => _keyPacket;
 
-    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures.AsReadOnly();
+    public ISignaturePacket[] RevocationSignatures => _revocationSignatures;
 
-    public IReadOnlyList<ISignaturePacket> BindingSignatures => _bindingSignatures.AsReadOnly();
+    public ISignaturePacket[] BindingSignatures => _bindingSignatures;
 
     public int Version => _keyPacket.Version;
 

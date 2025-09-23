@@ -58,22 +58,22 @@ public interface IKey : IArmorable, IPacketContainer
     /// <summary>
     ///     Get revocation signatures
     /// </summary>
-    IList<ISignaturePacket> RevocationSignatures { get; }
+    ISignaturePacket[] RevocationSignatures { get; }
 
     /// <summary>
     ///     Get direct signatures
     /// </summary>
-    IList<ISignaturePacket> DirectSignatures { get; }
+    ISignaturePacket[] DirectSignatures { get; }
 
     /// <summary>
     ///     Get users
     /// </summary>
-    IList<IUser> Users { get; }
+    IUser[] Users { get; }
 
     /// <summary>
     ///     Get subkeys
     /// </summary>
-    IList<ISubkey> Subkeys { get; }
+    ISubkey[] Subkeys { get; }
 
     /// <summary>
     ///     Get primary user
@@ -88,7 +88,7 @@ public interface IKey : IArmorable, IPacketContainer
     /// <summary>
     ///     Return preferred symmetrics
     /// </summary>
-    IList<SymmetricAlgorithm> PreferredSymmetrics { get; }
+    SymmetricAlgorithm[] PreferredSymmetrics { get; }
 
     /// <summary>
     ///     Return AEAD is supported
@@ -98,7 +98,7 @@ public interface IKey : IArmorable, IPacketContainer
     /// <summary>
     ///     Return preferred aeads by given symmetric
     /// </summary>
-    IList<AeadAlgorithm> PreferredAeads(SymmetricAlgorithm symmetric);
+    AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric);
 
     /// <summary>
     ///     The key is revoked.

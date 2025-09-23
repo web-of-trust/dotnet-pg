@@ -11,7 +11,7 @@ public interface IPacketList
     /// <summary>
     ///     Get packets
     /// </summary>
-    IReadOnlyList<IPacket> Packets { get; }
+    IPacket[] Packets { get; }
 
     IPacket this[int index] { get; }
 

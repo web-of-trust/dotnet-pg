@@ -58,12 +58,12 @@ public interface ISubkey : IPacketContainer
     /// <summary>
     ///     Get revocation signatures
     /// </summary>
-    IReadOnlyList<ISignaturePacket> RevocationSignatures { get; }
+    ISignaturePacket[] RevocationSignatures { get; }
 
     /// <summary>
     ///     Get binding signatures
     /// </summary>
-    IReadOnlyList<ISignaturePacket> BindingSignatures { get; }
+    ISignaturePacket[] BindingSignatures { get; }
 
     /// <summary>
     ///     Return subkey is signing or verification key

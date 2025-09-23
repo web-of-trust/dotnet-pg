@@ -57,7 +57,7 @@ public sealed class SubPacketReader(int type, byte[] data, int length)
         );
     }
 
-    public static IList<ISubPacket> ReadSignatureSubPackets(byte[] bytes)
+    public static ISubPacket[] ReadSignatureSubPackets(byte[] bytes)
     {
         var subPackets = new List<ISubPacket>();
         while (bytes.Length > 0)
@@ -155,6 +155,6 @@ public sealed class SubPacketReader(int type, byte[] data, int length)
             }
         }
 
-        return subPackets;
+        return subPackets.ToArray();
     }
 }

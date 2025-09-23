@@ -9,11 +9,11 @@ using Type;
 /// <summary>
 ///     Packet list class
 /// </summary>
-public class PacketList(IReadOnlyList<IPacket> packets) : IPacketList
+public class PacketList(IPacket[] packets) : IPacketList
 {
     public IPacket this[int index] => packets[index];
 
-    public IReadOnlyList<IPacket> Packets => packets;
+    public IPacket[] Packets => packets;
 
     public byte[] Encode()
     {
@@ -57,6 +57,6 @@ public class PacketList(IReadOnlyList<IPacket> packets) : IPacketList
             if (packet != null) packets.Add(packet);
         }
 
-        return new PacketList(packets.AsReadOnly());
+        return new PacketList(packets.ToArray());
     }
 }

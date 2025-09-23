@@ -10,10 +10,10 @@ using Type;
 /// <summary>
 ///     Implementation of the User Attribute packet (Tag 17)
 /// </summary>
-public class UserAttribute(List<UserAttributeSubPacket> attributes)
+public class UserAttribute(UserAttributeSubPacket[] attributes)
     : BasePacket(PacketType.UserAttribute), IUserIdPacket
 {
-    public List<UserAttributeSubPacket> Attributes => attributes;
+    public UserAttributeSubPacket[] Attributes => attributes;
 
     public override byte[] ToBytes()
     {
@@ -39,7 +39,7 @@ public class UserAttribute(List<UserAttributeSubPacket> attributes)
         return new UserAttribute(ReadSubPackets(bytes));
     }
 
-    private static List<UserAttributeSubPacket> ReadSubPackets(byte[] bytes)
+    private static UserAttributeSubPacket[] ReadSubPackets(byte[] bytes)
     {
         var attributes = new List<UserAttributeSubPacket>();
         while (bytes.Length > 0)
@@ -54,6 +54,6 @@ public class UserAttribute(List<UserAttributeSubPacket> attributes)
                 );
         }
 
-        return attributes;
+        return attributes.ToArray();
     }
 }

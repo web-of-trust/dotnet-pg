@@ -33,12 +33,12 @@ public interface ISignaturePacket : IPacket
     /// <summary>
     ///     Get hashed sub packets
     /// </summary>
-    IList<ISubPacket> HashedSubpackets { get; }
+    ISubPacket[] HashedSubpackets { get; }
 
     /// <summary>
     ///     Get unhashed sub packets
     /// </summary>
-    IList<ISubPacket> UnhashedSubpackets { get; }
+    ISubPacket[] UnhashedSubpackets { get; }
 
     /// <summary>
     ///     Get signature data

@@ -1,4 +1,3 @@
-using DotNetPG.Key;
 using DotNetPG.Packet;
 using Org.BouncyCastle.Security;
 

@@ -1,8 +1,6 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using Org.BouncyCastle.Utilities.Encoders;
-
 namespace DotNetPG.Packet;
 
 using Common;
@@ -26,8 +24,8 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         byte[] signedHashValue,
         byte[] salt,
         byte[] signature,
-        IList<ISubPacket> hashedSubPackets,
-        IList<ISubPacket> unhashedSubPackets
+        ISubPacket[] hashedSubPackets,
+        ISubPacket[] unhashedSubPackets
     ) : base(PacketType.Signature)
     {
         Version = version;
@@ -74,9 +72,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
     public HashAlgorithm HashAlgorithm { get; }
 
-    public IList<ISubPacket> HashedSubpackets { get; }
+    public ISubPacket[] HashedSubpackets { get; }
 
-    public IList<ISubPacket> UnhashedSubpackets { get; }
+    public ISubPacket[] UnhashedSubpackets { get; }
 
     public byte[] SignatureData { get; }
 
@@ -301,7 +299,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             (byte)signatureType,
             (byte)keyAlgorithm,
             (byte)hashAlg,
-            ..SubPacketsToBytes(hashedSubpackets, isV6)
+            ..SubPacketsToBytes(hashedSubpackets.ToArray(), isV6)
         ];
         byte[] message =
         [
@@ -319,7 +317,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             signedHashValue,
             salt,
             SignMessage(signKey, hashAlg, message),
-            hashedSubpackets,
+            hashedSubpackets.ToArray(),
             []
         );
     }
@@ -339,7 +337,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     }
 
     private static byte[] SubPacketsToBytes(
-        IList<ISubPacket> subPackets,
+        ISubPacket[] subPackets,
         bool isV6 = false
     )
     {

@@ -21,7 +21,7 @@ public interface ISignature : IArmorable, IPacketContainer
     /// <summary>
     ///     Verify signature with literal data
     /// </summary>
-    IList<IVerification> Verify(
+    IVerification[] Verify(
         IList<IKey> verificationKeys,
         ILiteralData literalData,
         DateTime? time = null
@@ -30,7 +30,7 @@ public interface ISignature : IArmorable, IPacketContainer
     /// <summary>
     ///     Verify signature with cleartext
     /// </summary>
-    IList<IVerification> VerifyCleartext(
+    IVerification[] VerifyCleartext(
         IList<IKey> verificationKeys,
         ICleartextMessage cleartext,
         DateTime? time = null

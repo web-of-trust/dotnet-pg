@@ -17,36 +17,36 @@ public class User : IUser
 
     private readonly IUserIdPacket _userIdPacket;
 
-    private readonly IList<ISignaturePacket> _revocationSignatures;
+    private readonly ISignaturePacket[] _revocationSignatures;
 
-    private readonly IList<ISignaturePacket> _selfSignatures;
+    private readonly ISignaturePacket[] _selfSignatures;
 
-    private readonly IList<ISignaturePacket> _otherSignatures;
+    private readonly ISignaturePacket[] _otherSignatures;
 
     public User(
         IKey mainKey,
         IUserIdPacket userIdPacket,
-        IList<ISignaturePacket> revocationSignatures,
-        IList<ISignaturePacket> selfSignatures,
-        IList<ISignaturePacket> otherSignatures
+        ISignaturePacket[] revocationSignatures,
+        ISignaturePacket[] selfSignatures,
+        ISignaturePacket[] otherSignatures
     )
     {
         _mainKey = mainKey;
         _userIdPacket = userIdPacket;
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToList();
-        _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToList();
-        _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToList();
+        _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
+        _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
+        _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
     }
 
     public IKey MainKey => _mainKey;
 
     public IUserIdPacket UserIdPacket => _userIdPacket;
 
-    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures.AsReadOnly();
+    public ISignaturePacket[] RevocationSignatures => _revocationSignatures;
 
-    public IReadOnlyList<ISignaturePacket> SelfSignatures => _selfSignatures.AsReadOnly();
+    public ISignaturePacket[] SelfSignatures => _selfSignatures;
 
-    public IReadOnlyList<ISignaturePacket> OtherSignatures => _otherSignatures.AsReadOnly();
+    public ISignaturePacket[] OtherSignatures => _otherSignatures;
 
     public bool IsPrimary
     {

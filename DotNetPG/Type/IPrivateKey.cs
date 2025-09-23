@@ -36,7 +36,7 @@ public interface IPrivateKey : IKey
     /// </summary>
     IPrivateKey Encrypt(
         string passphrase,
-        IList<string>? subkeyPassphrases = null,
+        string[]? subkeyPassphrases = null,
         SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256
     );
 
@@ -44,7 +44,7 @@ public interface IPrivateKey : IKey
     ///     Unlock a private key with the given passphrase.
     ///     This method does not change the original key.
     /// </summary>
-    IPrivateKey Decrypt(string passphrase, IList<string>? subkeyPassphrases = null);
+    IPrivateKey Decrypt(string passphrase, string[]? subkeyPassphrases = null);
 
     /// <summary>
     ///     Add userIDs to the key.

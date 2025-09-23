@@ -16,8 +16,8 @@ public interface ISignedMessage : IArmorable
     /// <summary>
     ///     Verify signature of signed message
     /// </summary>
-    IList<IVerification> Verify(
-        IList<IKey> verificationKeys,
+    IVerification[] Verify(
+        IKey[] verificationKeys,
         DateTime? time = null
     );
 }
