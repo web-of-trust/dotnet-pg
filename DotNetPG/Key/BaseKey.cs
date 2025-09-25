@@ -1,24 +1,26 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using DotNetPG.Enum;
 using DotNetPG.Type;
+using Org.BouncyCastle.Utilities;
 
 namespace DotNetPG.Key;
 
 /// <summary>
 ///     Abstract OpenPGP key class
 /// </summary>
-public abstract class BaseKey
+public abstract class BaseKey : IKey
 {
     private readonly IKeyPacket _keyPacket;
 
-    private readonly IList<ISignaturePacket> _revocationSignatures;
+    private readonly ISignaturePacket[] _revocationSignatures;
 
-    private readonly IList<ISignaturePacket> _directSignatures;
+    private readonly ISignaturePacket[] _directSignatures;
 
-    private readonly IList<IUser> _users;
+    private readonly IUser[] _users;
 
-    private readonly IList<ISubkey> _subkey;
+    private readonly ISubkey[] _subkeys;
 
     public BaseKey(IPacketList packetList)
     {
@@ -40,7 +42,7 @@ public abstract class BaseKey
                 return signature.IsKeyRevocation;
             }
             return false;
-        }).OfType<ISignaturePacket>().ToList();
+        }).OfType<ISignaturePacket>().ToArray();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -57,7 +59,7 @@ public abstract class BaseKey
                 return signature.IsDirectKey;
             }
             return false;
-        }).OfType<ISignaturePacket>().ToList();
+        }).OfType<ISignaturePacket>().ToArray();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -67,18 +69,176 @@ public abstract class BaseKey
             }
             return false;
         }).ToList();
+
+        IUserIdPacket? userIdPacket = null;
+        var users = new List<IUser>();
+        var revocationSignatures = new List<ISignaturePacket>();
+        var selfSignatures = new List<ISignaturePacket>();
+        var otherSignatures  = new List<ISignaturePacket>();
+        var userPackets = packetList.Packets.TakeWhile(packet => packet is not ISubkeyPacket).ToList();
+        foreach (var packet in userPackets)
+        {
+            if (packet is IUserIdPacket userId)
+            {
+                if (userIdPacket != null)
+                {
+                    users.Add(new User(
+                        this,
+                        userIdPacket,
+                        revocationSignatures.ToArray(),
+                        selfSignatures.ToArray(),
+                        otherSignatures.ToArray())
+                    );
+                    revocationSignatures.Clear();
+                    selfSignatures.Clear();
+                    otherSignatures.Clear();
+                }
+                userIdPacket = userId;
+            }
+
+            if (packet is ISignaturePacket signature)
+            {
+                if (signature.IsCertRevocation)
+                {
+                    revocationSignatures.Add(signature);
+                }
+
+                if (signature.IsCertification)
+                {
+                    if (Arrays.AreEqual(signature.IssuerKeyId, _keyPacket.KeyId))
+                    {
+                        selfSignatures.Add(signature);
+                    }
+                    else
+                    {
+                        otherSignatures.Add(signature);
+                    }
+                }
+            }
+        }
+        if (userIdPacket != null)
+        {
+            users.Add(new User(
+                this,
+                userIdPacket,
+                revocationSignatures.ToArray(),
+                selfSignatures.ToArray(),
+                otherSignatures.ToArray())
+            );
+        }
+        _users = users.ToArray();
+
+        ISubkeyPacket? subkeyPacket = null;
+        var subkeys = new List<ISubkey>();
+        revocationSignatures.Clear();
+        var bindingSignatures = new List<ISignaturePacket>();
+        var subkeyPackets = packetList.Packets.SkipWhile(packet => packet is not ISubkeyPacket).ToList();
+        foreach (var packet in subkeyPackets)
+        {
+            if (packet is ISubkeyPacket subkey)
+            {
+                if (subkeyPacket != null)
+                {
+                    subkeys.Add(new Subkey(
+                        this,
+                        subkeyPacket,
+                        revocationSignatures.ToArray(),
+                        otherSignatures.ToArray()
+                    ));
+                    revocationSignatures.Clear();
+                    bindingSignatures.Clear();
+                }
+                subkeyPacket = subkey;
+            }
+            if (packet is ISignaturePacket signature)
+            {
+                if (signature.IsSubkeyRevocation)
+                {
+                    revocationSignatures.Add(signature);
+                }
+                if (signature.IsSubkeyBinding)
+                {
+                    bindingSignatures.Add(signature);
+                }
+            }
+        }
+        if (subkeyPacket != null)
+        {
+            subkeys.Add(new Subkey(
+                this,
+                subkeyPacket,
+                revocationSignatures.ToArray(),
+                otherSignatures.ToArray()
+            ));
+        }
+        _subkeys = subkeys.ToArray();
     }
 
     public IKeyPacket  KeyPacket => _keyPacket;
 
-    public IReadOnlyList<ISignaturePacket> RevocationSignatures => _revocationSignatures.AsReadOnly();
+    public IKey PublicKey { get; }
 
-    public IReadOnlyList<ISignaturePacket> DirectSignatures => _directSignatures.AsReadOnly();
+    public int Version => _keyPacket.Version;
 
-    public IReadOnlyList<IUser> Users => _users.AsReadOnly();
+    public DateTime? ExpirationTime => KeyExpiration(_directSignatures);
 
-    public IReadOnlyList<ISubkey> Subkey => _subkey.AsReadOnly();
-    
+    public DateTime CreationTime => _keyPacket.CreationTime;
+
+    public KeyAlgorithm KeyAlgorithm => _keyPacket.KeyAlgorithm;
+
+    public byte[] Fingerprint => _keyPacket.Fingerprint;
+
+    public byte[] KeyId => _keyPacket.KeyId;
+
+    public int KeyLength => _keyPacket.KeyLength;
+
+    public ISignaturePacket[] RevocationSignatures => _revocationSignatures;
+
+    public ISignaturePacket[] DirectSignatures => _directSignatures;
+
+    public IUser[] Users => _users;
+
+    public ISubkey[] Subkeys => _subkeys;
+
+    public IUser? PrimaryUser { get; }
+
+    public bool IsPrivate { get; }
+
+    public SymmetricAlgorithm[] PreferredSymmetrics { get; }
+
+    public bool AeadSupported { get; }
+
+    public AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsRevoked(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsCertified(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Verify(DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IKey RevokeBy(IPrivateKey signKey, string revocationReason = "",
+        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public static DateTime? KeyExpiration(IList<ISignaturePacket> signatures)
     {
         var list = signatures.ToList();
@@ -96,11 +256,19 @@ public abstract class BaseKey
                 var dto = creationTime.AddSeconds(signature.KeyExpirationTime);
                 return dto.DateTime;
             }
-            else if (signature.ExpirationTime != null)
+
+            if (signature.ExpirationTime != null)
             {
                 return signature.ExpirationTime;
             }
         }
         return null;
     }
+
+    public string Armor()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IPacketList PacketList { get; }
 }
