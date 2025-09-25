@@ -8,17 +8,12 @@ using Enum;
 /// <summary>
 ///     OpenPGP Key interface.
 /// </summary>
-public interface IKey : IArmorable, IPacketContainer
+public interface IKey : IPacketContainer
 {
     /// <summary>
     ///     Get key packet.
     /// </summary>
     IKeyPacket KeyPacket { get; }
-
-    /// <summary>
-    ///     Get key as public key
-    /// </summary>
-    IKey PublicKey { get; }
 
     /// <summary>
     ///     Get key version

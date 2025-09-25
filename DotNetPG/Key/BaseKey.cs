@@ -186,8 +186,6 @@ public abstract class BaseKey : IKey
 
     public IKeyPacket  KeyPacket => _keyPacket;
 
-    public abstract IKey PublicKey { get; }
-
     public int Version => _keyPacket.Version;
 
     public DateTime? ExpirationTime => KeyExpiration(_directSignatures);
@@ -275,10 +273,5 @@ public abstract class BaseKey : IKey
             }
         }
         return null;
-    }
-
-    public string Armor()
-    {
-        throw new NotImplementedException();
     }
 }

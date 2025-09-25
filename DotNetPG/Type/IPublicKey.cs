@@ -6,7 +6,7 @@ namespace DotNetPG.Type;
 /// <summary>
 ///     Public key interface.
 /// </summary>
-public interface IPublicKey : IKey
+public interface IPublicKey : IArmorable, IKey
 {
     /// <summary>
     ///     Get public key packet.

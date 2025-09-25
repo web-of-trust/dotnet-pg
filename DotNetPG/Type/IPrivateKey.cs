@@ -8,7 +8,7 @@ using Enum;
 /// <summary>
 ///     Private key interface.
 /// </summary>
-public interface IPrivateKey : IKey
+public interface IPrivateKey : IArmorable, IKey
 {
     /// <summary>
     ///     Return true if the key packet is encrypted.
@@ -29,6 +29,11 @@ public interface IPrivateKey : IKey
     ///     Get secret key packet.
     /// </summary>
     ISecretKeyPacket SecretKeyPacket { get; }
+
+    /// <summary>
+    ///     Get key as public key
+    /// </summary>
+    IPublicKey PublicKey { get; }
 
     /// <summary>
     ///     Lock a private key with the given passphrase.
