@@ -21,6 +21,8 @@ public class Subkey : ISubkey
 
     private readonly ISignaturePacket[] _bindingSignatures;
 
+    private readonly IPacketList _packetList;
+
     public Subkey(
         IKey mainKey,
         ISubkeyPacket keyPacket,
@@ -32,6 +34,11 @@ public class Subkey : ISubkey
         _keyPacket = keyPacket;
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
         _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
+        _packetList = new Packet.PacketList([
+            _keyPacket,
+            .._revocationSignatures,
+            .._bindingSignatures
+        ]);
     }
 
     public IKey  MainKey => _mainKey;
@@ -60,11 +67,7 @@ public class Subkey : ISubkey
 
     public bool IsEncryptionKey => _keyPacket.IsEncryptionKey;
 
-    public IPacketList PacketList => new Packet.PacketList([
-        _keyPacket,
-        .._revocationSignatures,
-        .._bindingSignatures
-    ]);
+    public IPacketList PacketList => _packetList;
 
     public bool IsRevoked(
         IKey? verifyKey = null,

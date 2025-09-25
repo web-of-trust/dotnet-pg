@@ -22,7 +22,9 @@ public abstract class BaseKey : IKey
 
     private readonly ISubkey[] _subkeys;
 
-    public BaseKey(IPacketList packetList)
+    private readonly IPacketList _packetList;
+
+    protected BaseKey(IPacketList packetList)
     {
         var keyPackets = packetList.Packets.TakeWhile(packet => packet is IKeyPacket).ToList();
         switch (keyPackets.Count)
@@ -143,7 +145,7 @@ public abstract class BaseKey : IKey
                         this,
                         subkeyPacket,
                         revocationSignatures.ToArray(),
-                        otherSignatures.ToArray()
+                        bindingSignatures.ToArray()
                     ));
                     revocationSignatures.Clear();
                     bindingSignatures.Clear();
@@ -168,15 +170,23 @@ public abstract class BaseKey : IKey
                 this,
                 subkeyPacket,
                 revocationSignatures.ToArray(),
-                otherSignatures.ToArray()
+                bindingSignatures.ToArray()
             ));
         }
         _subkeys = subkeys.ToArray();
+
+        _packetList = new Packet.PacketList([
+            _keyPacket,
+            .._revocationSignatures,
+            .._directSignatures,
+            .._users.SelectMany(user => user.PacketList.Packets),
+            .._subkeys.SelectMany(subkey => subkey.PacketList.Packets)
+        ]);
     }
 
     public IKeyPacket  KeyPacket => _keyPacket;
 
-    public IKey PublicKey { get; }
+    public abstract IKey PublicKey { get; }
 
     public int Version => _keyPacket.Version;
 
@@ -202,11 +212,13 @@ public abstract class BaseKey : IKey
 
     public IUser? PrimaryUser { get; }
 
-    public bool IsPrivate { get; }
+    public bool IsPrivate => _keyPacket is ISecretKeyPacket;
 
     public SymmetricAlgorithm[] PreferredSymmetrics { get; }
 
     public bool AeadSupported { get; }
+
+    public IPacketList PacketList => _packetList;
 
     public AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric)
     {
@@ -269,6 +281,4 @@ public abstract class BaseKey : IKey
     {
         throw new NotImplementedException();
     }
-
-    public IPacketList PacketList { get; }
 }

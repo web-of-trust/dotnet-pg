@@ -28,12 +28,11 @@ public class Padding : BasePacket
     /// <summary>
     ///     Create random padding.
     /// </summary>
-    /// <param name="length">The length of padding to be generated.</param>
-    public static Padding CreatePadding(int length)
+    public static Padding CreatePadding()
     {
+        var random = new SecureRandom();
         return new Padding(SecureRandom.GetNextBytes(
-            new SecureRandom(),
-            Math.Min(Math.Max(length, PaddingMin), PaddingMax)
+            random, random.Next(PaddingMin, PaddingMax)
         ));
     }
 

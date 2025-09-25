@@ -23,6 +23,8 @@ public class User : IUser
 
     private readonly ISignaturePacket[] _otherSignatures;
 
+    private readonly IPacketList _packetList;
+
     public User(
         IKey mainKey,
         IUserIdPacket userIdPacket,
@@ -36,6 +38,12 @@ public class User : IUser
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
         _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
         _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
+        _packetList = new Packet.PacketList([
+            _userIdPacket,
+            .._revocationSignatures,
+            .._selfSignatures,
+            .._otherSignatures
+        ]);
     }
 
     public IKey MainKey => _mainKey;
@@ -65,12 +73,7 @@ public class User : IUser
 
     public byte[] UserId => _userIdPacket.ToBytes();
 
-    public IPacketList PacketList => new Packet.PacketList([
-        _userIdPacket,
-        .._revocationSignatures,
-        .._selfSignatures,
-        .._otherSignatures
-    ]);
+    public IPacketList PacketList => _packetList;
 
     public bool IsRevoked(
         IKey? verifyKey = null,
