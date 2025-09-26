@@ -1,12 +1,11 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using Org.BouncyCastle.Utilities;
-
 namespace DotNetPG.Key;
 
 using Enum;
 using Type;
+using Org.BouncyCastle.Utilities;
 
 /// <summary>
 /// OpenPGP sub key class.

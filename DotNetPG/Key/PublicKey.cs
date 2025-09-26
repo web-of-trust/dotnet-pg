@@ -3,7 +3,29 @@
 
 namespace DotNetPG.Key;
 
-public class PublicKey
+using Enum;
+using Type;
+
+/// <summary>
+/// OpenPGP public key class.
+/// </summary>
+public class PublicKey : BaseKey, IPublicKey
 {
-    
+    private readonly IPublicKeyPacket _publicKeyPacket;
+
+    public PublicKey(IPacketList packetList) : base(packetList)
+    {
+        if (KeyPacket is IPublicKeyPacket keyPacket)
+        {
+            _publicKeyPacket = keyPacket;
+        }
+        else
+        {
+            throw new Exception("Key packet is not a public key.");
+        }
+    }
+
+    public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode(), []);
+
+    public IPublicKeyPacket PublicKeyPacket => _publicKeyPacket;
 }
