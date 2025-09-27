@@ -1,11 +1,10 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using DotNetPG.Packet;
-
 namespace DotNetPG.Key;
 
 using Enum;
+using Packet;
 using Type;
 using Org.BouncyCastle.Utilities;
 
@@ -47,6 +46,12 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
+        Array.Sort(_revocationSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -64,6 +69,12 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
+        Array.Sort(_directSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -188,7 +199,7 @@ public abstract class BaseKey : IKey
         {
             packets.Add(Padding.CreatePadding());
         }
-        _packetList = new Packet.PacketList(packets.ToArray());
+        _packetList = new PacketList(packets.ToArray());
     }
 
     public IKeyPacket  KeyPacket => _keyPacket;
@@ -230,12 +241,34 @@ public abstract class BaseKey : IKey
         throw new NotImplementedException();
     }
 
-    public bool IsRevoked(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    public bool IsRevoked(
+        IKey? verifyKey = null,
+        ISignaturePacket? certificate = null,
+        DateTime? time = null
+    )
     {
-        throw new NotImplementedException();
+        var keyPacket = verifyKey?.KeyPacket ?? _keyPacket;
+        var keyId = certificate?.IssuerKeyId;
+        foreach (var signature in _revocationSignatures)
+        {
+            if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
+            {
+                if (signature.Verify(
+                    keyPacket, keyPacket.SignBytes(), time
+                ))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public bool IsCertified(IKey? verifyKey = null, ISignaturePacket? certificate = null, DateTime? time = null)
+    public bool IsCertified(
+        IKey? verifyKey = null,
+        ISignaturePacket? certificate = null,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
@@ -250,8 +283,12 @@ public abstract class BaseKey : IKey
         throw new NotImplementedException();
     }
 
-    public IKey RevokeBy(IPrivateKey signKey, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public IKey RevokeBy(
+        IPrivateKey signKey,
+        string revocationReason = "",
+        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }

@@ -33,7 +33,7 @@ public interface ISubkey : IPacketContainer
     /// <summary>
     ///     Get creation time
     /// </summary>
-    DateTime? CreationTime { get; }
+    DateTime CreationTime { get; }
 
     /// <summary>
     ///     Get key algorithm

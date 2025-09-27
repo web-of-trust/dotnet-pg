@@ -35,9 +35,31 @@ public class User : IUser
     {
         _mainKey = mainKey;
         _userIdPacket = userIdPacket;
+
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
+        Array.Sort(_revocationSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+
         _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(_selfSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+
         _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(_otherSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+
         _packetList = new PacketList([
             _userIdPacket,
             .._revocationSignatures,
@@ -56,20 +78,7 @@ public class User : IUser
 
     public ISignaturePacket[] OtherSignatures => _otherSignatures;
 
-    public bool IsPrimary
-    {
-        get
-        {
-            var signatures = _selfSignatures.ToList();
-            signatures.Sort((a, b) =>
-            {
-                var aTime = a.CreationTime ?? DateTime.Now;
-                var bTime = b.CreationTime ?? DateTime.Now;
-                return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-            });
-            return signatures.Any(signature => signature.IsPrimaryUserId);
-        }
-    }
+    public bool IsPrimary => _selfSignatures.Any(signature => signature.IsPrimaryUserId);
 
     public byte[] UserId => _userIdPacket.ToBytes();
 
@@ -153,13 +162,13 @@ public class User : IUser
             _revocationSignatures,
             _selfSignatures,
             [
-                .._otherSignatures,
                 SignaturePacket.CreateCertGeneric(
                     signKey.SecretKeyPacket,
                     _mainKey.KeyPacket,
                     _userIdPacket,
                     time
-                )
+                ),
+                .._otherSignatures,
             ]
         );
     }

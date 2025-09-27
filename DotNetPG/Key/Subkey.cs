@@ -32,8 +32,23 @@ public class Subkey : ISubkey
     {
         _mainKey = mainKey;
         _keyPacket = keyPacket;
+
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
+        Array.Sort(_revocationSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+
         _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
+        Array.Sort(_bindingSignatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+
         _packetList = new PacketList([
             _keyPacket,
             .._revocationSignatures,
@@ -53,7 +68,7 @@ public class Subkey : ISubkey
 
     public DateTime? ExpirationTime => BaseKey.KeyExpiration(_bindingSignatures);
 
-    public DateTime? CreationTime => _keyPacket.CreationTime;
+    public DateTime CreationTime => _keyPacket.CreationTime;
 
     public KeyAlgorithm KeyAlgorithm => _keyPacket.KeyAlgorithm;
 
