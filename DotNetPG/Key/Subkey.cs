@@ -13,16 +13,6 @@ using Org.BouncyCastle.Utilities;
 /// </summary>
 public class Subkey : ISubkey
 {
-    private readonly IKey _mainKey;
-
-    private readonly ISubkeyPacket _keyPacket;
-
-    private readonly ISignaturePacket[] _revocationSignatures;
-
-    private readonly ISignaturePacket[] _bindingSignatures;
-
-    private readonly IPacketList _packetList;
-
     public Subkey(
         IKey mainKey,
         ISubkeyPacket keyPacket,
@@ -30,59 +20,59 @@ public class Subkey : ISubkey
         ISignaturePacket[] bindingSignatures
     )
     {
-        _mainKey = mainKey;
-        _keyPacket = keyPacket;
+        MainKey = mainKey;
+        KeyPacket = keyPacket;
 
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
-        Array.Sort(_revocationSignatures, (a, b) =>
+        RevocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
+        Array.Sort(RevocationSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
 
-        _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
-        Array.Sort(_bindingSignatures, (a, b) =>
+        BindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
+        Array.Sort(BindingSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
 
-        _packetList = new PacketList([
-            _keyPacket,
-            .._revocationSignatures,
-            .._bindingSignatures
+        PacketList = new PacketList([
+            KeyPacket,
+            ..RevocationSignatures,
+            ..BindingSignatures
         ]);
     }
 
-    public IKey  MainKey => _mainKey;
+    public IKey MainKey { get; }
 
-    public ISubkeyPacket KeyPacket => _keyPacket;
+    public ISubkeyPacket KeyPacket { get; }
 
-    public ISignaturePacket[] RevocationSignatures => _revocationSignatures;
+    public ISignaturePacket[] RevocationSignatures { get; }
 
-    public ISignaturePacket[] BindingSignatures => _bindingSignatures;
+    public ISignaturePacket[] BindingSignatures { get; }
 
-    public int Version => _keyPacket.Version;
+    public int Version => KeyPacket.Version;
 
-    public DateTime? ExpirationTime => BaseKey.KeyExpiration(_bindingSignatures);
+    public DateTime? ExpirationTime => BaseKey.KeyExpiration(BindingSignatures);
 
-    public DateTime CreationTime => _keyPacket.CreationTime;
+    public DateTime CreationTime => KeyPacket.CreationTime;
 
-    public KeyAlgorithm KeyAlgorithm => _keyPacket.KeyAlgorithm;
+    public KeyAlgorithm KeyAlgorithm => KeyPacket.KeyAlgorithm;
 
-    public byte[] Fingerprint => _keyPacket.Fingerprint;
+    public byte[] Fingerprint => KeyPacket.Fingerprint;
 
-    public byte[] KeyId => _keyPacket.KeyId;
+    public byte[] KeyId => KeyPacket.KeyId;
 
-    public int KeyLength => _keyPacket.KeyLength;
+    public int KeyLength => KeyPacket.KeyLength;
 
-    public bool IsSigningKey => _keyPacket.IsSigningKey;
+    public bool IsSigningKey => KeyPacket.IsSigningKey;
 
-    public bool IsEncryptionKey => _keyPacket.IsEncryptionKey;
+    public bool IsEncryptionKey => KeyPacket.IsEncryptionKey;
 
-    public IPacketList PacketList => _packetList;
+    public IPacketList PacketList { get; }
 
     public bool IsRevoked(
         IKey? verifyKey = null,
@@ -90,15 +80,15 @@ public class Subkey : ISubkey
         DateTime? time = null
     )
     {
-        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyPacket = verifyKey?.KeyPacket ?? MainKey.KeyPacket;
         var keyId = certificate?.IssuerKeyId;
-        foreach (var signature in _revocationSignatures)
+        foreach (var signature in RevocationSignatures)
         {
             if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
             {
                 if (signature.Verify(
                     keyPacket,
-                    [.._mainKey.KeyPacket.SignBytes(), ..keyPacket.SignBytes()],
+                    [..MainKey.KeyPacket.SignBytes(), ..keyPacket.SignBytes()],
                     time
                 ))
                 {
@@ -111,11 +101,11 @@ public class Subkey : ISubkey
 
     public bool Verify(DateTime? time = null)
     {
-        foreach (var signature in _bindingSignatures)
+        foreach (var signature in BindingSignatures)
         {
             if (signature.Verify(
-                _mainKey.KeyPacket,
-                [.._mainKey.KeyPacket.SignBytes(), .._keyPacket.SignBytes()],
+                MainKey.KeyPacket,
+                [..MainKey.KeyPacket.SignBytes(), ..KeyPacket.SignBytes()],
                 time
             ))
             {
@@ -128,25 +118,25 @@ public class Subkey : ISubkey
     public ISubkey RevokeBy(
         IPrivateKey signKey,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     )
     {
         return new Subkey(
-            _mainKey,
-            _keyPacket,
+            MainKey,
+            KeyPacket,
             [
                 SignaturePacket.CreateSubkeyRevocation(
                     signKey.SecretKeyPacket,
-                    _mainKey.KeyPacket,
-                    _keyPacket,
+                    MainKey.KeyPacket,
+                    KeyPacket,
                     revocationReason,
-                    revocationReasonTag,
+                    reasonTag,
                     time
                 ),
-                .._revocationSignatures
+                ..RevocationSignatures
             ],
-            _bindingSignatures
+            BindingSignatures
         );
     }
 }

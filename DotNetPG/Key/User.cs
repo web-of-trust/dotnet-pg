@@ -13,18 +13,6 @@ using Org.BouncyCastle.Utilities;
 /// </summary>
 public class User : IUser
 {
-    private readonly IKey _mainKey;
-
-    private readonly IUserIdPacket _userIdPacket;
-
-    private readonly ISignaturePacket[] _revocationSignatures;
-
-    private readonly ISignaturePacket[] _selfSignatures;
-
-    private readonly ISignaturePacket[] _otherSignatures;
-
-    private readonly IPacketList _packetList;
-
     public User(
         IKey mainKey,
         IUserIdPacket userIdPacket,
@@ -33,56 +21,56 @@ public class User : IUser
         ISignaturePacket[] otherSignatures
     )
     {
-        _mainKey = mainKey;
-        _userIdPacket = userIdPacket;
+        MainKey = mainKey;
+        UserIdPacket = userIdPacket;
 
-        _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
-        Array.Sort(_revocationSignatures, (a, b) =>
+        RevocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
+        Array.Sort(RevocationSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
 
-        _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(_selfSignatures, (a, b) =>
+        SelfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(SelfSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
 
-        _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(_otherSignatures, (a, b) =>
+        OtherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(OtherSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
 
-        _packetList = new PacketList([
-            _userIdPacket,
-            .._revocationSignatures,
-            .._selfSignatures,
-            .._otherSignatures
+        PacketList = new PacketList([
+            UserIdPacket,
+            ..RevocationSignatures,
+            ..SelfSignatures,
+            ..OtherSignatures
         ]);
     }
 
-    public IKey MainKey => _mainKey;
+    public IKey MainKey { get; }
 
-    public IUserIdPacket UserIdPacket => _userIdPacket;
+    public IUserIdPacket UserIdPacket { get; }
 
-    public ISignaturePacket[] RevocationSignatures => _revocationSignatures;
+    public ISignaturePacket[] RevocationSignatures { get; }
 
-    public ISignaturePacket[] SelfSignatures => _selfSignatures;
+    public ISignaturePacket[] SelfSignatures { get; }
 
-    public ISignaturePacket[] OtherSignatures => _otherSignatures;
+    public ISignaturePacket[] OtherSignatures { get; }
 
-    public bool IsPrimary => _selfSignatures.Any(signature => signature.IsPrimaryUserId);
+    public bool IsPrimary => SelfSignatures.Any(signature => signature.IsPrimaryUserId);
 
-    public byte[] UserId => _userIdPacket.ToBytes();
+    public byte[] UserId => UserIdPacket.ToBytes();
 
-    public IPacketList PacketList => _packetList;
+    public IPacketList PacketList { get; }
 
     public bool IsRevoked(
         IKey? verifyKey = null,
@@ -90,15 +78,15 @@ public class User : IUser
         DateTime? time = null
     )
     {
-        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyPacket = verifyKey?.KeyPacket ?? MainKey.KeyPacket;
         var keyId = certificate?.IssuerKeyId;
-        foreach (var signature in _revocationSignatures)
+        foreach (var signature in RevocationSignatures)
         {
             if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
             {
                 if (signature.Verify(
                     keyPacket,
-                    [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
+                    [..MainKey.KeyPacket.SignBytes(), ..UserIdPacket.SignBytes()],
                     time
                 ))
                 {
@@ -115,17 +103,17 @@ public class User : IUser
         DateTime? time = null
     )
     {
-        var keyPacket = verifyKey?.KeyPacket ?? _mainKey.KeyPacket;
+        var keyPacket = verifyKey?.KeyPacket ?? MainKey.KeyPacket;
         var keyId = certificate?.IssuerKeyId;
-        foreach (var signature in _otherSignatures)
+        foreach (var signature in OtherSignatures)
         {
             if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
             {
                 if (signature.Verify(
-                        keyPacket,
-                        [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
-                        time
-                    ))
+                    keyPacket,
+                    [..MainKey.KeyPacket.SignBytes(), ..UserIdPacket.SignBytes()],
+                    time
+                ))
                 {
                     return true;
                 }
@@ -136,11 +124,11 @@ public class User : IUser
 
     public bool Verify(DateTime? time = null)
     {
-        foreach (var signature in _selfSignatures)
+        foreach (var signature in SelfSignatures)
         {
             if (signature.Verify(
-                _mainKey.KeyPacket,
-                [.._mainKey.KeyPacket.SignBytes(), .._userIdPacket.SignBytes()],
+                MainKey.KeyPacket,
+                [..MainKey.KeyPacket.SignBytes(), ..UserIdPacket.SignBytes()],
                 time
             ))
             {
@@ -152,23 +140,23 @@ public class User : IUser
 
     public IUser CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
-        if (Arrays.AreEqual(signKey.Fingerprint, _mainKey.Fingerprint))
+        if (Arrays.AreEqual(signKey.Fingerprint, MainKey.Fingerprint))
         {
             throw new Exception("The user\\'s own key can only be used for self-certifications.");
         }
         return new User(
-            _mainKey,
-            _userIdPacket,
-            _revocationSignatures,
-            _selfSignatures,
+            MainKey,
+            UserIdPacket,
+            RevocationSignatures,
+            SelfSignatures,
             [
                 SignaturePacket.CreateCertGeneric(
                     signKey.SecretKeyPacket,
-                    _mainKey.KeyPacket,
-                    _userIdPacket,
+                    MainKey.KeyPacket,
+                    UserIdPacket,
                     time
                 ),
-                .._otherSignatures,
+                ..OtherSignatures,
             ]
         );
     }
@@ -176,26 +164,26 @@ public class User : IUser
     public IUser RevokeBy(
         IPrivateKey signKey,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     )
     {
         return new User(
-            _mainKey,
-            _userIdPacket,
+            MainKey,
+            UserIdPacket,
             [
                 SignaturePacket.CreateCertRevocation(
                     signKey.SecretKeyPacket,
-                    _mainKey.KeyPacket,
-                    _userIdPacket,
+                    MainKey.KeyPacket,
+                    UserIdPacket,
                     revocationReason,
-                    revocationReasonTag,
+                    reasonTag,
                     time
                 ),
-                .._revocationSignatures
+                ..RevocationSignatures
             ],
-            _selfSignatures,
-            _otherSignatures
+            SelfSignatures,
+            OtherSignatures
         );
     }
 }

@@ -92,7 +92,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
     public byte[] IssuerKeyId => GetSubPacket<IssuerKeyId>()?.KeyId ??
                                  IssuerFingerprint.Skip(Version == (int)KeyVersion.V6 ? 0 : 12)
-                                     .Take(PublicKey.KeyIdSize).ToArray();
+                                 .Take(PublicKey.KeyIdSize).ToArray();
 
     public byte[] IssuerFingerprint => GetSubPacket<IssuerFingerprint>()?.KeyFingerprint ??
                                        SubPacket.IssuerFingerprint.Wildcard().KeyFingerprint;
@@ -129,8 +129,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     public T? GetSubPacket<T>() where T : ISubPacket
     {
         var subPacket = HashedSubpackets.OfType<T>().FirstOrDefault();
-        if (subPacket == null) subPacket = UnhashedSubpackets.OfType<T>().FirstOrDefault();
-
+        subPacket ??= UnhashedSubpackets.OfType<T>().FirstOrDefault();
         return subPacket;
     }
 
@@ -308,13 +307,13 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             ..signatureData,
             ..CalculateTrailer(version, signatureData.Length)
         ];
-        var signedHashValue = DigestUtilities.CalculateDigest(hashAlg.ToString(), message).Take(2).ToArray();
+        var signedHash = DigestUtilities.CalculateDigest(hashAlg.ToString(), message);
         return new SignaturePacket(
             version,
             signatureType,
             keyAlgorithm,
             hashAlg,
-            signedHashValue,
+            signedHash.Take(2).ToArray(),
             salt,
             SignMessage(signKey, hashAlg, message),
             hashedSubpackets.ToArray(),
@@ -529,7 +528,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         );
     }
 
-    private static byte[] SignMessage(ISecretKeyPacket signKey, HashAlgorithm hash, byte[] message)
+    private static byte[] SignMessage(
+        ISecretKeyPacket signKey, HashAlgorithm hash, byte[] message
+    )
     {
         if (signKey.SecretKeyMaterial is ISignKeyMaterial km) return km.Sign(hash, message);
         throw new Exception("Invalid key material for signing.");
