@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using DotNetPG.Packet;
+
 namespace DotNetPG.Key;
 
 using Enum;
@@ -175,13 +177,18 @@ public abstract class BaseKey : IKey
         }
         _subkeys = subkeys.ToArray();
 
-        _packetList = new Packet.PacketList([
+        IList<IPacket> packets = [
             _keyPacket,
             .._revocationSignatures,
             .._directSignatures,
             .._users.SelectMany(user => user.PacketList.Packets),
-            .._subkeys.SelectMany(subkey => subkey.PacketList.Packets)
-        ]);
+            .._subkeys.SelectMany(subkey => subkey.PacketList.Packets),
+        ];
+        if (Version == (int) KeyVersion.V6)
+        {
+            packets.Add(Padding.CreatePadding());
+        }
+        _packetList = new Packet.PacketList(packets.ToArray());
     }
 
     public IKeyPacket  KeyPacket => _keyPacket;

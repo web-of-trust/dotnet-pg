@@ -328,6 +328,53 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         throw new Exception("Invalid key material for signing.");
     }
 
+    private static IList<ISubPacket> KeySignatureProperties(int version)
+    {
+        IList<ISubPacket> subPackets = [
+            KeyFlags.FromFlags(
+                (int)KeyFlag.CertifyKeys | (int)KeyFlag.SignData
+            ),
+            new PreferredSymmetricAlgorithms(
+                [(int)SymmetricAlgorithm.Aes256, (int)SymmetricAlgorithm.Aes128]
+            ),
+            new PreferredAeadAlgorithms(
+                [(int)AeadAlgorithm.Ocb, (int)AeadAlgorithm.Gcm, (int)AeadAlgorithm.Eax]
+            ),
+            new PreferredHashAlgorithms(
+                [
+                    (int)HashAlgorithm.Sha256,
+                    (int)HashAlgorithm.Sha3_256,
+                    (int) HashAlgorithm.Sha512,
+                    (int)HashAlgorithm.Sha3_512,
+                ]
+            ),
+            new PreferredCompressionAlgorithms(
+                [
+                    (int)CompressionAlgorithm.Uncompressed,
+                    (int)CompressionAlgorithm.Zip,
+                    (int)CompressionAlgorithm.Zlib,
+                    (int)CompressionAlgorithm.BZip2,
+                ]
+            ),
+            Features.FromFeatures(
+                (int)SupportFeature.Version1Seipd | (int)SupportFeature.Version2Seipd
+            ),
+        ];
+        if (version == (int)KeyVersion.V6)
+        {
+            subPackets.Add(new PreferredAeadCiphers(
+                [
+                    (int)SymmetricAlgorithm.Aes256, (int)AeadAlgorithm.Ocb,
+                    (int)SymmetricAlgorithm.Aes256, (int)AeadAlgorithm.Gcm,
+                    (int)SymmetricAlgorithm.Aes128, (int)AeadAlgorithm.Ocb,
+                    (int)SymmetricAlgorithm.Aes128, (int)AeadAlgorithm.Gcm,
+                    (int)SymmetricAlgorithm.Aes128, (int)AeadAlgorithm.Eax,
+                ]
+            ));
+        }
+        return subPackets;
+    }
+    
     private static byte[] CalculateTrailer(int version, int dataLength)
     {
         return
