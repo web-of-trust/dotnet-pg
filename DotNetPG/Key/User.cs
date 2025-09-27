@@ -4,6 +4,7 @@
 namespace DotNetPG.Key;
 
 using Enum;
+using Packet;
 using Type;
 using Org.BouncyCastle.Utilities;
 
@@ -37,7 +38,7 @@ public class User : IUser
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
         _selfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
         _otherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
-        _packetList = new Packet.PacketList([
+        _packetList = new PacketList([
             _userIdPacket,
             .._revocationSignatures,
             .._selfSignatures,
@@ -142,7 +143,25 @@ public class User : IUser
 
     public IUser CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
-        throw new NotImplementedException();
+        if (Arrays.AreEqual(signKey.Fingerprint, _mainKey.Fingerprint))
+        {
+            throw new Exception("The user\\'s own key can only be used for self-certifications.");
+        }
+        return new User(
+            _mainKey,
+            _userIdPacket,
+            _revocationSignatures,
+            _selfSignatures,
+            [
+                .._otherSignatures,
+                SignaturePacket.CreateCertGeneric(
+                    signKey.SecretKeyPacket,
+                    _mainKey.KeyPacket,
+                    _userIdPacket,
+                    time
+                )
+            ]
+        );
     }
 
     public IUser RevokeBy(
@@ -152,6 +171,22 @@ public class User : IUser
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        return new User(
+            _mainKey,
+            _userIdPacket,
+            [
+                SignaturePacket.CreateCertRevocation(
+                    signKey.SecretKeyPacket,
+                    _mainKey.KeyPacket,
+                    _userIdPacket,
+                    revocationReason,
+                    revocationReasonTag,
+                    time
+                ),
+                .._revocationSignatures
+            ],
+            _selfSignatures,
+            _otherSignatures
+        );
     }
 }

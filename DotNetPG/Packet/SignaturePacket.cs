@@ -322,13 +322,220 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         );
     }
 
+    public static SignaturePacket CreateDirectKeySignature(
+        ISecretKeyPacket signKey, int keyExpiry = 0, DateTime? time = null
+    )
+    {
+        var subPackets = KeySubPackets(signKey.IsV6Key);
+        if (keyExpiry > 0)
+        {
+            subPackets.Add(SubPacket.KeyExpirationTime.FromTime(keyExpiry));
+        }
+
+        return CreateSignature(
+            signKey,
+            SignatureType.DirectKey,
+            signKey.SignBytes(),
+            Config.PreferredHash,
+            subPackets.ToArray(),
+            time
+        );
+    }
+
+    public static SignaturePacket CreateKeyRevocation(
+        ISecretKeyPacket signKey,
+        IKeyPacket keyPacket,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
+    {
+        return CreateSignature(
+            signKey,
+            SignatureType.KeyRevocation,
+            keyPacket.SignBytes(),
+            Config.PreferredHash,
+            [RevocationReason.FromRevocation(reasonTag, revocationReason)],
+            time
+        );
+    }
+
+    public static SignaturePacket CreateSelfCertificate(
+        ISecretKeyPacket signKey,
+        IUserIdPacket userId,
+        bool isPrimaryUser = false,
+        int keyExpiry = 0,
+        DateTime? time = null
+    )
+    {
+        var subPackets = signKey.IsV6Key ? [] : KeySubPackets(signKey.IsV6Key);
+        if (isPrimaryUser)
+        {
+            subPackets.Add(new PrimaryUserId([1]));
+        }
+        if (keyExpiry > 0)
+        {
+            subPackets.Add(SubPacket.KeyExpirationTime.FromTime(keyExpiry));
+        }
+        return CreateSignature(
+            signKey,
+            SignatureType.CertGeneric,
+            [..signKey.SignBytes(), ..userId.SignBytes()],
+            Config.PreferredHash,
+            subPackets.ToArray(),
+            time
+        );
+    }
+
+    public static SignaturePacket CreateCertGeneric(
+        ISecretKeyPacket signKey,
+        IKeyPacket userKey,
+        IUserIdPacket userId,
+        DateTime? time = null
+    )
+    {
+        return CreateSignature(
+            signKey,
+            SignatureType.CertGeneric,
+            [..userKey.SignBytes(), ..userId.SignBytes()],
+            Config.PreferredHash,
+            [KeyFlags.FromFlags((int)KeyFlag.CertifyKeys | (int)KeyFlag.SignData)],
+            time
+        );
+    }
+
+    public static SignaturePacket CreateCertRevocation(
+        ISecretKeyPacket signKey,
+        IKeyPacket userKey,
+        IUserIdPacket userId,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
+    {
+        return CreateSignature(
+            signKey,
+            SignatureType.CertRevocation,
+            [..userKey.SignBytes(), ..userId.SignBytes()],
+            Config.PreferredHash,
+            [RevocationReason.FromRevocation(reasonTag, revocationReason)],
+            time
+        );
+    }
+
+    public static SignaturePacket CreateSubkeyBinding(
+        ISecretKeyPacket signKey,
+        ISubkeyPacket subkey,
+        int keyExpiry = 0,
+        bool forSigning = false,
+        DateTime? time = null
+    )
+    {
+        IList<ISubPacket> subPackets = [];
+        if (keyExpiry > 0)
+        {
+            subPackets.Add(SubPacket.KeyExpirationTime.FromTime(keyExpiry));
+        }
+        if (forSigning)
+        {
+            subPackets.Add(KeyFlags.FromFlags((int)KeyFlag.SignData));
+            if (subkey is ISecretKeyPacket secretKey)
+            {
+                subPackets.Add(EmbeddedSignature.FromSignature(
+                    CreateSignature(
+                        secretKey,
+                        SignatureType.SubkeyBinding, 
+                        [..signKey.SignBytes(), ..subkey.SignBytes()],
+                        Config.PreferredHash,
+                        [],
+                        time
+                    )
+                ));
+            }
+        }
+        else
+        {
+            subPackets.Add(KeyFlags.FromFlags(
+                (int)KeyFlag.EncryptCommunication | (int)KeyFlag.EncryptStorage
+            ));
+        }
+        return CreateSignature(
+            signKey,
+            SignatureType.SubkeyBinding,
+            [..signKey.SignBytes(), ..subkey.SignBytes()],
+            Config.PreferredHash,
+            subPackets.ToArray(),
+            time
+        );
+    }
+
+    public static SignaturePacket CreateSubkeyRevocation(
+        ISecretKeyPacket signKey,
+        IKeyPacket primaryKey,
+        ISubkeyPacket subkey,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
+    {
+        return CreateSignature(
+            signKey,
+            SignatureType.SubkeyRevocation,
+            [..primaryKey.SignBytes(), ..subkey.SignBytes()],
+            Config.PreferredHash,
+            [RevocationReason.FromRevocation(reasonTag, revocationReason)],
+            time
+        );
+    }
+
+    public static SignaturePacket CreateLiteralData(
+        ISecretKeyPacket signKey,
+        ILiteralData literalData,
+        IKeyPacket[] recipients,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        var signatureType = literalData.Format switch
+        {
+            LiteralFormat.Text or LiteralFormat.Utf8 => SignatureType.Text,
+            _ => SignatureType.Binary
+        };
+        IList<ISubPacket> subPackets = [];
+        if (signKey.IsV6Key)
+        {
+            foreach (var recipient in recipients)
+            {
+                subPackets.Add(
+                    IntendedRecipientFingerprint.FromKeyPacket(recipient)
+                );
+            }
+        }
+        if (notationData != null)
+        {
+            subPackets.Add(NotationData.FromNotation(
+                notationData.NotationName,
+                notationData.NotationValue,
+                notationData.IsHumanReadable
+            ));
+        }
+        return CreateSignature(
+            signKey,
+            signatureType,
+            literalData.SignBytes(),
+            Config.PreferredHash,
+            subPackets.ToArray(),
+            time
+        );
+    }
+
     private static byte[] SignMessage(ISecretKeyPacket signKey, HashAlgorithm hash, byte[] message)
     {
         if (signKey.SecretKeyMaterial is ISignKeyMaterial km) return km.Sign(hash, message);
         throw new Exception("Invalid key material for signing.");
     }
 
-    private static IList<ISubPacket> KeySignatureProperties(int version)
+    private static IList<ISubPacket> KeySubPackets(bool isV6)
     {
         IList<ISubPacket> subPackets = [
             KeyFlags.FromFlags(
@@ -360,7 +567,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
                 (int)SupportFeature.Version1Seipd | (int)SupportFeature.Version2Seipd
             ),
         ];
-        if (version == (int)KeyVersion.V6)
+        if (isV6)
         {
             subPackets.Add(new PreferredAeadCiphers(
                 [

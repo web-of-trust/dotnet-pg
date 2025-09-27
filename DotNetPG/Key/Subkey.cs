@@ -4,6 +4,7 @@
 namespace DotNetPG.Key;
 
 using Enum;
+using Packet;
 using Type;
 using Org.BouncyCastle.Utilities;
 
@@ -33,7 +34,7 @@ public class Subkey : ISubkey
         _keyPacket = keyPacket;
         _revocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
         _bindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
-        _packetList = new Packet.PacketList([
+        _packetList = new PacketList([
             _keyPacket,
             .._revocationSignatures,
             .._bindingSignatures
@@ -116,6 +117,21 @@ public class Subkey : ISubkey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        return new Subkey(
+            _mainKey,
+            _keyPacket,
+            [
+                SignaturePacket.CreateSubkeyRevocation(
+                    signKey.SecretKeyPacket,
+                    _mainKey.KeyPacket,
+                    _keyPacket,
+                    revocationReason,
+                    revocationReasonTag,
+                    time
+                ),
+                .._revocationSignatures
+            ],
+            _bindingSignatures
+        );
     }
 }
