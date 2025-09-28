@@ -8,6 +8,7 @@ using Crypto;
 using Enum;
 using Type;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities;
 
 /// <summary>
 ///     Implementation of the Symmetrically Encrypted Authenticated Encryption with
@@ -195,7 +196,7 @@ public class AeadEncryptedData(
         var processed = dataLength - tagLength * (int)Math.Ceiling((double)dataLength / chunkSize);
         var crypted = new byte[processed + (forEncryption ? AeadTagLength : 0)];
         var cipher = new AeadCipher(key, aead, symmetric);
-        var chunkData = (byte[])data.Clone();
+        var chunkData = Arrays.Clone(data);
         for (var index = 0; index == 0 || chunkData.Length > 0;)
         {
             // We take a chunk of data, en/decrypt it,

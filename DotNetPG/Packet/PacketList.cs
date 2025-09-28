@@ -5,6 +5,7 @@ namespace DotNetPG.Packet;
 
 using Enum;
 using Type;
+using Org.BouncyCastle.Utilities;
 
 /// <summary>
 ///     Packet list class
@@ -26,7 +27,7 @@ public class PacketList(IPacket[] packets) : IPacketList
     public static PacketList Decode(byte[] bytes)
     {
         var packets = new List<IPacket>();
-        var data = (byte[])bytes.Clone();
+        var data = Arrays.Clone(bytes);
         while (data.Length > 0)
         {
             var reader = PacketReader.Read(data);

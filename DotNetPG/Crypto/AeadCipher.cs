@@ -8,6 +8,7 @@ using Enum;
 using IAeadCipher = Type.IAeadCipher;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Utilities;
 
 /// <summary>
 ///     Aead cipher class.
@@ -29,7 +30,7 @@ public class AeadCipher(byte[] key, AeadAlgorithm aead, SymmetricAlgorithm symme
 
     public byte[] GetNonce(byte[] iv, byte[] chunkIndex)
     {
-        var nonce = (byte[])iv.Clone();
+        var nonce = Arrays.Clone(iv);
         switch (aead)
         {
             case AeadAlgorithm.Eax:

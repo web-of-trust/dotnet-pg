@@ -288,7 +288,7 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
         var processed = dataLength - tagLength * (int)Math.Ceiling((double)dataLength / chunkSize);
         var crypted = new byte[processed + (forEncryption ? AeadTagLength : 0)];
         var cipher = new AeadCipher(kek, aead, symmetric);
-        var chunkData = (byte[])data.Clone();
+        var chunkData = Arrays.Clone(data);
         for (var index = 0; index == 0 || chunkData.Length > 0;)
         {
             // Take a chunk of `data`, en/decrypt it,

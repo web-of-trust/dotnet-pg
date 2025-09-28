@@ -6,6 +6,7 @@ namespace DotNetPG.Packet;
 using Enum;
 using SubPacket;
 using Type;
+using Org.BouncyCastle.Utilities;
 using System.Buffers.Binary;
 
 /// <summary>
@@ -59,11 +60,12 @@ public sealed class SubPacketReader(int type, byte[] data, int length)
 
     public static ISubPacket[] ReadSignatureSubPackets(byte[] bytes)
     {
+        var data = Arrays.Clone(bytes);
         var subPackets = new List<ISubPacket>();
-        while (bytes.Length > 0)
+        while (data.Length > 0)
         {
-            var reader = Read(bytes);
-            bytes = bytes.Skip(reader.Length).ToArray();
+            var reader = Read(data);
+            data = data.Skip(reader.Length).ToArray();
             var critical = (reader.Type & 0x80) != 0;
             var type = (SignatureSubPacketType)(reader.Type & 0x7f);
             switch (type)

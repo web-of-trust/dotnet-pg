@@ -6,6 +6,7 @@ namespace DotNetPG.Packet;
 using Common;
 using Enum;
 using Type;
+using Org.BouncyCastle.Utilities;
 
 /// <summary>
 ///     Implementation of the User Attribute packet (Tag 17)
@@ -43,11 +44,12 @@ public class UserAttribute(UserAttributeSubPacket[] attributes)
 
     private static UserAttributeSubPacket[] ReadSubPackets(byte[] bytes)
     {
+        var data = Arrays.Clone(bytes);
         var attributes = new List<UserAttributeSubPacket>();
-        while (bytes.Length > 0)
+        while (data.Length > 0)
         {
-            var reader = SubPacketReader.Read(bytes);
-            bytes = bytes.Skip(reader.Length).ToArray();
+            var reader = SubPacketReader.Read(data);
+            data = data.Skip(reader.Length).ToArray();
             if (reader.Type == ImageUserAttribute.Jpeg)
                 attributes.Add(new ImageUserAttribute(reader.Data));
             else
