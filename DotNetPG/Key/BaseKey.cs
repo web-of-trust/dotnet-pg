@@ -295,20 +295,14 @@ public abstract class BaseKey : IKey
         return _users.Where(user => userId.Length == 0 || userId == user.UserId).Any(user => user.Verify(time));
     }
 
-    public IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract IKey CertifyBy(IPrivateKey signKey, DateTime? time = null);
 
-    public IKey RevokeBy(
+    public abstract IKey RevokeBy(
         IPrivateKey signKey,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
-    )
-    {
-        throw new NotImplementedException();
-    }
+    );
 
     public static DateTime? KeyExpiration(ISignaturePacket[] signatures)
     {

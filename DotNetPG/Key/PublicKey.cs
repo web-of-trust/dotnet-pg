@@ -28,4 +28,19 @@ public class PublicKey : BaseKey, IPublicKey
     public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode(), []);
 
     public IPublicKeyPacket PublicKeyPacket => _publicKeyPacket;
+
+    public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override IKey RevokeBy(
+        IPrivateKey signKey,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -129,7 +129,7 @@ public interface IKey : IPacketContainer
     IKey RevokeBy(
         IPrivateKey signKey,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     );
 }

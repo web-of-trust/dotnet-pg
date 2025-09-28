@@ -102,7 +102,7 @@ public interface IPrivateKey : IArmorable, IKey
     ///     Revoke subkey & return a clone of the key object with the new revoked subkey.
     /// </summary>
     IKey RevokeSubkey(
-        string userId,
+        byte[] keyId,
         string revocationReason = "",
         RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
