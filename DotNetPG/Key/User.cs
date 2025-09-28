@@ -68,7 +68,7 @@ public class User : IUser
 
     public bool IsPrimary => SelfSignatures.Any(signature => signature.IsPrimaryUserId);
 
-    public byte[] UserId => UserIdPacket.ToBytes();
+    public string UserId => UserIdPacket.Id;
 
     public IPacketList PacketList { get; }
 

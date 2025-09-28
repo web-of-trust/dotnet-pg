@@ -20,6 +20,8 @@ public class UserAttribute(UserAttributeSubPacket[] attributes)
         return attributes.SelectMany(attr => attr.ToBytes()).ToArray();
     }
 
+    public string Id => "";
+
     public byte[] SignBytes()
     {
         var data = ToBytes();

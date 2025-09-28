@@ -8,4 +8,5 @@ namespace DotNetPG.Type;
 /// </summary>
 public interface IUserIdPacket : IPacket, ISigning
 {
+    string Id { get; }
 }

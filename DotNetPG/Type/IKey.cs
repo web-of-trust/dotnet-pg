@@ -116,7 +116,7 @@ public interface IKey : IPacketContainer
     /// <summary>
     ///     Verify key.
     /// </summary>
-    bool Verify(DateTime? time = null);
+    bool Verify(string userId = "", DateTime? time = null);
 
     /// <summary>
     ///     Certify by private key.

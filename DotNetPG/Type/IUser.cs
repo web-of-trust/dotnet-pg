@@ -39,7 +39,7 @@ public interface IUser : IPacketContainer
     /// <summary>
     ///     Get user ID
     /// </summary>
-    byte[] UserId { get; }
+    string UserId { get; }
 
     /// <summary>
     ///     Return user is primary

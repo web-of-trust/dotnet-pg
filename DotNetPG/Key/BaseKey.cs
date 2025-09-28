@@ -23,6 +23,8 @@ public abstract class BaseKey : IKey
 
     private readonly ISubkey[] _subkeys;
 
+    private readonly IUser? _primaryUser;
+    
     private readonly IPacketList _packetList;
 
     protected BaseKey(IPacketList packetList)
@@ -142,6 +144,13 @@ public abstract class BaseKey : IKey
             );
         }
         _users = users.ToArray();
+        Array.Sort(_users, (a, b) =>
+        {
+            var aTime = a.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
+            var bTime = b.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+        _primaryUser = users.Find(user => user.IsPrimary);
 
         ISubkeyPacket? subkeyPacket = null;
         var subkeys = new List<ISubkey>();
@@ -187,6 +196,7 @@ public abstract class BaseKey : IKey
             ));
         }
         _subkeys = subkeys.ToArray();
+        Array.Sort(_subkeys, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
 
         IList<IPacket> packets = [
             _keyPacket,
@@ -202,7 +212,7 @@ public abstract class BaseKey : IKey
         _packetList = new PacketList(packets.ToArray());
     }
 
-    public IKeyPacket  KeyPacket => _keyPacket;
+    public IKeyPacket KeyPacket => _keyPacket;
 
     public int Version => _keyPacket.Version;
 
@@ -226,7 +236,7 @@ public abstract class BaseKey : IKey
 
     public ISubkey[] Subkeys => _subkeys;
 
-    public IUser? PrimaryUser { get; }
+    public IUser? PrimaryUser => _primaryUser;
 
     public bool IsPrivate => _keyPacket is ISecretKeyPacket;
 
@@ -270,12 +280,19 @@ public abstract class BaseKey : IKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        return _users.Any(user => user.IsPrimary && user.IsCertified(verifyKey, certificate, time));
     }
 
-    public bool Verify(DateTime? time = null)
+    public bool Verify(string userId = "", DateTime? time = null)
     {
-        throw new NotImplementedException();
+        if (_directSignatures.Any(
+            signature => signature.Verify(_keyPacket, _keyPacket.SignBytes(), time)
+        ))
+        {
+            return true;
+        }
+
+        return _users.Where(user => userId.Length == 0 || userId == user.UserId).Any(user => user.Verify(time));
     }
 
     public IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
@@ -293,16 +310,9 @@ public abstract class BaseKey : IKey
         throw new NotImplementedException();
     }
 
-    public static DateTime? KeyExpiration(IList<ISignaturePacket> signatures)
+    public static DateTime? KeyExpiration(ISignaturePacket[] signatures)
     {
-        var list = signatures.ToList();
-        list.Sort((a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        foreach (var signature in list)
+        foreach (var signature in signatures)
         {
             if (signature.KeyExpirationTime > 0)
             {
