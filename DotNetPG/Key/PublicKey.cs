@@ -4,6 +4,7 @@
 namespace DotNetPG.Key;
 
 using Enum;
+using Packet;
 using Type;
 
 /// <summary>
@@ -25,13 +26,44 @@ public class PublicKey : BaseKey, IPublicKey
         }
     }
 
+    public PublicKey(
+        IPublicKeyPacket keyPacket,
+        ISignaturePacket[] revocationSignatures,
+        ISignaturePacket[] directSignatures,
+        IUser[] users,
+        ISubkey[] subkeys
+    ) : base(keyPacket, revocationSignatures, directSignatures, users, subkeys)
+    {
+        _publicKeyPacket = keyPacket;
+    }
+
     public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode(), []);
 
     public IPublicKeyPacket PublicKeyPacket => _publicKeyPacket;
 
     public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
-        throw new NotImplementedException();
+        var primaryUser = PrimaryUser;
+        if (primaryUser == null) return this;
+
+        var certifedUser = primaryUser.CertifyBy(signKey, time);
+        var certifedUserId = certifedUser.UserId;
+
+        IList<IUser> users = [certifedUser];
+        foreach (var user in Users)
+        {
+            if (user.UserId != certifedUserId)
+            {
+                users.Add(user);
+            }
+        }
+        return new PublicKey(
+            _publicKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            users.ToArray(),
+            Subkeys
+        );
     }
 
     public override IKey RevokeBy(
@@ -41,6 +73,21 @@ public class PublicKey : BaseKey, IPublicKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        return new PublicKey(
+            _publicKeyPacket,
+            [
+                SignaturePacket.CreateKeyRevocation(
+                    signKey.SecretKeyPacket,
+                    KeyPacket,
+                    revocationReason,
+                    reasonTag,
+                    time
+                ),
+                ..RevocationSignatures
+            ],
+            DirectSignatures,
+            Users,
+            Subkeys
+        );
     }
 }

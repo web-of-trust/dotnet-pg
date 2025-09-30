@@ -24,7 +24,7 @@ public abstract class BaseKey : IKey
     private readonly ISubkey[] _subkeys;
 
     private readonly IUser? _primaryUser;
-    
+
     private readonly IPacketList _packetList;
 
     protected BaseKey(IPacketList packetList)
@@ -197,6 +197,35 @@ public abstract class BaseKey : IKey
         }
         _subkeys = subkeys.ToArray();
         Array.Sort(_subkeys, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+
+        IList<IPacket> packets = [
+            _keyPacket,
+            .._revocationSignatures,
+            .._directSignatures,
+            .._users.SelectMany(user => user.PacketList.Packets),
+            .._subkeys.SelectMany(subkey => subkey.PacketList.Packets),
+        ];
+        if (Version == (int) KeyVersion.V6)
+        {
+            packets.Add(Padding.CreatePadding());
+        }
+        _packetList = new PacketList(packets.ToArray());
+    }
+
+    protected BaseKey(
+        IKeyPacket keyPacket,
+        ISignaturePacket[] revocationSignatures,
+        ISignaturePacket[] directSignatures,
+        IUser[] users,
+        ISubkey[] subkeys
+    )
+    {
+        _keyPacket = keyPacket;
+        _revocationSignatures = revocationSignatures;
+        _directSignatures = directSignatures;
+        _users = users;
+        _subkeys = subkeys;
+        _primaryUser = users.ToList().Find(user => user.IsPrimary);
 
         IList<IPacket> packets = [
             _keyPacket,
