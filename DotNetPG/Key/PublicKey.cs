@@ -12,13 +12,11 @@ using Type;
 /// </summary>
 public class PublicKey : BaseKey, IPublicKey
 {
-    private readonly IPublicKeyPacket _publicKeyPacket;
-
     public PublicKey(IPacketList packetList) : base(packetList)
     {
         if (KeyPacket is IPublicKeyPacket keyPacket)
         {
-            _publicKeyPacket = keyPacket;
+            PublicKeyPacket = keyPacket;
         }
         else
         {
@@ -34,12 +32,22 @@ public class PublicKey : BaseKey, IPublicKey
         ISubkey[] subkeys
     ) : base(keyPacket, revocationSignatures, directSignatures, users, subkeys)
     {
-        _publicKeyPacket = keyPacket;
+        PublicKeyPacket = keyPacket;
+    }
+
+    public static PublicKey FromArmored(string armored)
+    {
+        return FromBytes(Common.Armor.Decode(armored).Data);
+    }
+
+    public static PublicKey FromBytes(byte[] bytes)
+    {
+        return new PublicKey(Packet.PacketList.Decode(bytes));
     }
 
     public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode(), []);
 
-    public IPublicKeyPacket PublicKeyPacket => _publicKeyPacket;
+    public IPublicKeyPacket PublicKeyPacket { get; }
 
     public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
@@ -58,7 +66,7 @@ public class PublicKey : BaseKey, IPublicKey
             }
         }
         return new PublicKey(
-            _publicKeyPacket,
+            PublicKeyPacket,
             RevocationSignatures,
             DirectSignatures,
             users.ToArray(),
@@ -74,7 +82,7 @@ public class PublicKey : BaseKey, IPublicKey
     )
     {
         return new PublicKey(
-            _publicKeyPacket,
+            PublicKeyPacket,
             [
                 SignaturePacket.CreateKeyRevocation(
                     signKey.SecretKeyPacket,
