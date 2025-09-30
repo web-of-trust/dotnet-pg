@@ -222,12 +222,11 @@ pY4NBzv/oGYJYimi25fsO1XCMHUw2DiQtgYhZ2DAeatNvekX/YvAEQA=";
     public void TestFeatures()
     {
         var features = Features.FromFeatures(
-            (int)SupportFeature.Version1Seipd | (int)SupportFeature.AeadEncrypted | (int)SupportFeature.Version2Seipd
+            (int)SupportFeature.Version1Seipd | (int)SupportFeature.Version2Seipd
         );
         Assert.Multiple(() =>
         {
             Assert.That(features.SupportV1Seipd, Is.True);
-            Assert.That(features.SupportAead, Is.True);
             Assert.That(features.SupportV2Seipd, Is.True);
         });
     }

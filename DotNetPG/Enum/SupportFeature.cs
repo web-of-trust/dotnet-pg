@@ -9,6 +9,5 @@ namespace DotNetPG.Enum;
 public enum SupportFeature
 {
     Version1Seipd = 1,
-    AeadEncrypted = 2,
     Version2Seipd = 8
 }

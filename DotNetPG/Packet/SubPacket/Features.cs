@@ -13,8 +13,6 @@ public class Features(byte[] data, bool critical = false)
 {
     public bool SupportV1Seipd => (Data[0] & (int)SupportFeature.Version1Seipd) == (int)SupportFeature.Version1Seipd;
 
-    public bool SupportAead => (Data[0] & (int)SupportFeature.AeadEncrypted) == (int)SupportFeature.AeadEncrypted;
-
     public bool SupportV2Seipd => (Data[0] & (int)SupportFeature.Version2Seipd) == (int)SupportFeature.Version2Seipd;
 
     public static Features FromFeatures(int features, bool critical = false)
