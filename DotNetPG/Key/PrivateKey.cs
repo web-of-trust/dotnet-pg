@@ -1,22 +1,19 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using DotNetPG.Packet;
-
 namespace DotNetPG.Key;
 
 using Enum;
+using Packet;
 using Type;
 
 public class PrivateKey : BaseKey, IPrivateKey
 {
-    private readonly ISecretKeyPacket _secretKeyPacket;
-
     public PrivateKey(IPacketList packetList) : base(packetList)
     {
         if (KeyPacket is ISecretKeyPacket keyPacket)
         {
-            _secretKeyPacket = keyPacket;
+            SecretKeyPacket = keyPacket;
         }
         else
         {
@@ -32,18 +29,37 @@ public class PrivateKey : BaseKey, IPrivateKey
         ISubkey[] subkeys
     ) : base(keyPacket, revocationSignatures, directSignatures, users, subkeys)
     {
-        _secretKeyPacket = keyPacket;
+        SecretKeyPacket = keyPacket;
     }
 
-    public bool IsEncrypted => _secretKeyPacket.IsEncrypted;
+    public bool IsEncrypted => SecretKeyPacket.IsEncrypted;
 
-    public bool IsDecrypted => _secretKeyPacket.IsDecrypted;
+    public bool IsDecrypted => SecretKeyPacket.IsDecrypted;
 
-    public bool AeadProtected => _secretKeyPacket.Aead != null;
+    public bool AeadProtected => SecretKeyPacket.Aead != null;
 
-    public ISecretKeyPacket SecretKeyPacket => _secretKeyPacket;
+    public ISecretKeyPacket SecretKeyPacket { get; }
 
-    public IPublicKey PublicKey { get; }
+    public IPublicKey PublicKey
+    {
+        get
+        {
+            IList<IPacket> packets = [];
+            foreach (var packet in PacketList.Packets)
+            {
+                if (packet is ISecretKeyPacket keyPacket)
+                {
+                    packets.Add(keyPacket.PublicKey);
+                }
+                else
+                {
+                    packets.Add(packet);
+                }
+            }
+
+            return new PublicKey(new PacketList(packets.ToArray()));
+        }
+    }
 
     public string Armor() => Common.Armor.Encode(ArmorType.PrivateKey, PacketList.Encode(), []);
 
@@ -64,7 +80,7 @@ public class PrivateKey : BaseKey, IPrivateKey
             }
         }
         return new PrivateKey(
-            _secretKeyPacket,
+            SecretKeyPacket,
             RevocationSignatures,
             DirectSignatures,
             users.ToArray(),
@@ -80,7 +96,7 @@ public class PrivateKey : BaseKey, IPrivateKey
     )
     {
         return new PrivateKey(
-            _secretKeyPacket,
+            SecretKeyPacket,
             [
                 SignaturePacket.CreateKeyRevocation(
                     signKey.SecretKeyPacket,
@@ -95,7 +111,6 @@ public class PrivateKey : BaseKey, IPrivateKey
             Users,
             Subkeys
         );
-        throw new NotImplementedException();
     }
 
     public IPrivateKey Encrypt(string passphrase, string[]? subkeyPassphrases = null,
