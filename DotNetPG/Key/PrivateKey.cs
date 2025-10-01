@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using DotNetPG.Packet;
+
 namespace DotNetPG.Key;
 
 using Enum;
@@ -47,7 +49,27 @@ public class PrivateKey : BaseKey, IPrivateKey
 
     public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
-        throw new NotImplementedException();
+        var primaryUser = PrimaryUser;
+        if (primaryUser == null) return this;
+
+        var certifedUser = primaryUser.CertifyBy(signKey, time);
+        var certifedUserId = certifedUser.UserId;
+
+        IList<IUser> users = [certifedUser];
+        foreach (var user in Users)
+        {
+            if (user.UserId != certifedUserId)
+            {
+                users.Add(user);
+            }
+        }
+        return new PrivateKey(
+            _secretKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            users.ToArray(),
+            Subkeys
+        );
     }
 
     public override IKey RevokeBy(
@@ -57,6 +79,22 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
+        return new PrivateKey(
+            _secretKeyPacket,
+            [
+                SignaturePacket.CreateKeyRevocation(
+                    signKey.SecretKeyPacket,
+                    KeyPacket,
+                    revocationReason,
+                    reasonTag,
+                    time
+                ),
+                ..RevocationSignatures
+            ],
+            DirectSignatures,
+            Users,
+            Subkeys
+        );
         throw new NotImplementedException();
     }
 
