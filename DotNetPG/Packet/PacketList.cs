@@ -21,6 +21,20 @@ public class PacketList(IPacket[] packets) : IPacketList
         return packets.SelectMany(packet => packet.Encode()).ToArray();
     }
 
+    public int[] IndexOfType(PacketType[] types)
+    {
+        IList<int> indexes = [];
+        for (var i = 0; i < packets.Length; i++)
+        {
+            var packet = packets[i];
+            if (types.Contains(packet.Type))
+            {
+                indexes.Add(i);
+            }
+        }
+        return indexes.ToArray();
+    }
+    
     /// <summary>
     ///     Decode packets from bytes
     /// </summary>
