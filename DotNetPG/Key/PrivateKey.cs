@@ -113,10 +113,45 @@ public class PrivateKey : BaseKey, IPrivateKey
         );
     }
 
-    public IPrivateKey Encrypt(string passphrase, string[]? subkeyPassphrases = null,
-        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256)
+    public IPrivateKey Encrypt(
+        string passphrase,
+        string[]? subkeyPassphrases = null,
+        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256,
+        AeadAlgorithm? aead = null
+    )
     {
-        throw new NotImplementedException();
+        if (passphrase.Length == 0)
+        {
+            throw new ArgumentException("Passphrase cannot be empty.");
+        }
+        if (!IsDecrypted)
+        {
+            throw new Exception("Private key must be decrypted before encrypting.");
+        }
+
+        var subkeys = Subkeys.ToList();
+        foreach (var subkey in subkeys)
+        {
+            var index = subkeys.IndexOf(subkey);
+            var subkeyPass = subkeyPassphrases?[index] ?? passphrase;
+            if (subkeyPass != "" && subkey.KeyPacket is SecretSubkey secretKeyPacket)
+            {
+                subkeys[index] = new Subkey(
+                    this,
+                    (SecretSubkey)secretKeyPacket.Encrypt(subkeyPass, symmetric, aead),
+                    subkey.RevocationSignatures,
+                    subkey.BindingSignatures
+                );
+            }
+        }
+
+        return new PrivateKey(
+            SecretKeyPacket.Encrypt(passphrase, symmetric, aead),
+            RevocationSignatures,
+            DirectSignatures,
+            Users,
+            subkeys.ToArray()
+        );
     }
 
     public IPrivateKey Decrypt(string passphrase, string[]? subkeyPassphrases = null)

@@ -45,6 +45,12 @@ public class PublicKey : BaseKey, IPublicKey
         return new PublicKey(Packet.PacketList.Decode(bytes));
     }
 
+    public static string ArmorPublicKeys(IPublicKey[] keys) => Common.Armor.Encode(
+        ArmorType.PublicKey,
+        keys.SelectMany(key => key.PacketList.Encode()).ToArray(),
+        []
+    );
+
     public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode(), []);
 
     public IPublicKeyPacket PublicKeyPacket { get; }

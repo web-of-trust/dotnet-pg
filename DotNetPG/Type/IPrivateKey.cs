@@ -42,7 +42,8 @@ public interface IPrivateKey : IArmorable, IKey
     IPrivateKey Encrypt(
         string passphrase,
         string[]? subkeyPassphrases = null,
-        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256
+        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256,
+        AeadAlgorithm? aead = null
     );
 
     /// <summary>

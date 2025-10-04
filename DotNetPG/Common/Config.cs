@@ -13,15 +13,12 @@ public static class Config
     public const string Version = "DotNet Privacy Guard v1";
     public const string Comment = "The DotNet OpenPGP library";
 
-    public const HashAlgorithm HkdfAlgo = HashAlgorithm.Sha256;
-
-    public const bool AeadSupported = true;
     private const int AeadChunkSizeMin = 10;
     private const int AeadChunkSizeMax = 16;
 
     private static int _aeadChunkSize = 12;
 
-    public static HashAlgorithm PreferredHash { get; set; } = HashAlgorithm.Sha1;
+    public static HashAlgorithm PreferredHash { get; set; } = HashAlgorithm.Sha256;
 
     public static SymmetricAlgorithm PreferredSymmetric { get; set; } = SymmetricAlgorithm.Aes256;
 
