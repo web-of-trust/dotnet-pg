@@ -85,7 +85,7 @@ public interface IPrivateKey : IArmorable, IKey
     IKey RevokeKey(
         IKey key,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     );
 
@@ -95,7 +95,7 @@ public interface IPrivateKey : IArmorable, IKey
     IKey RevokeUser(
         string userId,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     );
 
@@ -105,7 +105,7 @@ public interface IPrivateKey : IArmorable, IKey
     IKey RevokeSubkey(
         byte[] keyId,
         string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason,
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     );
 }

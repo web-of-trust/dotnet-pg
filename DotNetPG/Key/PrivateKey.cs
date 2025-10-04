@@ -122,7 +122,7 @@ public class PrivateKey : BaseKey, IPrivateKey
     {
         if (passphrase.Length == 0)
         {
-            throw new ArgumentException("Passphrase cannot be empty.");
+            throw new ArgumentException("Passphrase are required for key encryption.");
         }
         if (!IsDecrypted)
         {
@@ -156,7 +156,32 @@ public class PrivateKey : BaseKey, IPrivateKey
 
     public IPrivateKey Decrypt(string passphrase, string[]? subkeyPassphrases = null)
     {
-        throw new NotImplementedException();
+        if (passphrase.Length == 0)
+        {
+            throw new ArgumentException("Passphrase are required for key decryption.");
+        }
+        var subkeys = Subkeys.ToList();
+        foreach (var subkey in subkeys)
+        {
+            var index = subkeys.IndexOf(subkey);
+            var subkeyPass = subkeyPassphrases?[index] ?? passphrase;
+            if (subkeyPass != "" && subkey.KeyPacket is SecretSubkey secretKeyPacket)
+            {
+                subkeys[index] = new Subkey(
+                    this,
+                    (SecretSubkey)secretKeyPacket.Decrypt(subkeyPass),
+                    subkey.RevocationSignatures,
+                    subkey.BindingSignatures
+                );
+            }
+        }
+        return new PrivateKey(
+            SecretKeyPacket.Decrypt(passphrase),
+            RevocationSignatures,
+            DirectSignatures,
+            Users,
+            subkeys.ToArray()
+        );
     }
 
     public IPrivateKey AddUsers(string[] userIds)
@@ -164,9 +189,15 @@ public class PrivateKey : BaseKey, IPrivateKey
         throw new NotImplementedException();
     }
 
-    public IPrivateKey AddSubkey(string passphrase, KeyAlgorithm keyAlgorithm = KeyAlgorithm.RsaGeneral,
-        RsaKeySize rsaKeySize = RsaKeySize.Normal, EcCurve ecCurve = EcCurve.Secp521R1, int keyExpiry = 0,
-        bool forSigning = false, DateTime? time = null)
+    public IPrivateKey AddSubkey(
+        string passphrase,
+        KeyAlgorithm keyAlgorithm = KeyAlgorithm.RsaGeneral,
+        RsaKeySize rsaKeySize = RsaKeySize.Normal,
+        EcCurve ecCurve = EcCurve.Secp521R1,
+        int keyExpiry = 0,
+        bool forSigning = false,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
@@ -176,20 +207,32 @@ public class PrivateKey : BaseKey, IPrivateKey
         throw new NotImplementedException();
     }
 
-    public IKey RevokeKey(IKey key, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public IKey RevokeKey(
+        IKey key,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
 
-    public IKey RevokeUser(string userId, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public IKey RevokeUser(
+        string userId,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
 
-    public IKey RevokeSubkey(byte[] keyId, string revocationReason = "",
-        RevocationReasonTag revocationReasonTag = RevocationReasonTag.NoReason, DateTime? time = null)
+    public IKey RevokeSubkey(
+        byte[] keyId,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
+        DateTime? time = null
+    )
     {
         throw new NotImplementedException();
     }
