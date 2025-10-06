@@ -1,6 +1,9 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using DotNetPG.Common;
+using Org.BouncyCastle.Utilities;
+
 namespace DotNetPG.Key;
 
 using Enum;
@@ -32,6 +35,92 @@ public class PrivateKey : BaseKey, IPrivateKey
         SecretKeyPacket = keyPacket;
     }
 
+    public static IPrivateKey FromArmored(string armored)
+    {
+        return FromBytes(Common.Armor.Decode(armored).Data);
+    }
+
+    public static IPrivateKey FromBytes(byte[] bytes)
+    {
+        return new PrivateKey(Packet.PacketList.Decode(bytes));
+    }
+
+    public static IPrivateKey Generate(
+        string[] userIds,
+        string passphrase,
+        KeyType keyType = KeyType.Rsa,
+        RsaKeySize keySize = RsaKeySize.Normal,
+        EcCurve curve = EcCurve.Secp521R1,
+        int keyExpiry = 0,
+        bool signOnly = false,
+        DateTime? time = null
+    )
+    {
+        if (Arrays.IsNullOrEmpty(userIds) || passphrase.Length == 0)
+        {
+            throw new ArgumentException(
+                "UserIDs and passphrase are required for key generation."
+            );
+        }
+
+        var keyAlgorithm = keyType switch
+        {
+            KeyType.Ecc => curve == EcCurve.Ed25519 ? KeyAlgorithm.EdDsaLegacy : KeyAlgorithm.EcDsa,
+            KeyType.Curve25519 => KeyAlgorithm.Ed25519,
+            KeyType.Curve448 => KeyAlgorithm.Ed448,
+            _ => KeyAlgorithm.RsaGeneral
+        };
+
+        var secretKey = SecretKey.Generate(keyAlgorithm, keySize, curve, time);
+        AeadAlgorithm? aead = secretKey.IsV6Key && Config.AeadProtect ? Config.PreferredAead : null;
+
+        IList<IPacket> packets = [secretKey.Encrypt(passphrase, Config.PreferredSymmetric, aead)];
+        if (secretKey.IsV6Key)
+        {
+            // Wrap secret key with direct key signature
+            packets.Add(SignaturePacket.CreateDirectKeySignature(secretKey, keyExpiry, time));
+        }
+
+        // Wrap user id with certificate signature
+        var index = 0;
+        foreach (var userId in userIds)
+        {
+            var userPacket = new UserId(userId);
+            packets.Add(userPacket);
+            packets.Add(SignaturePacket.CreateSelfCertificate(
+                secretKey,
+                userPacket,
+                index == 0,
+                keyExpiry,
+                time
+            ));
+            index++;
+        }
+
+        if (!signOnly)
+        {
+            // Generate & Wrap secret subkey with binding signature
+            var subkeyAlgorithm = keyType switch
+            {
+                KeyType.Ecc => KeyAlgorithm.EcDh,
+                KeyType.Curve25519 => KeyAlgorithm.X25519,
+                KeyType.Curve448 => KeyAlgorithm.X448,
+                _ => KeyAlgorithm.RsaGeneral
+            };
+            var subkeyCurve = keyAlgorithm == KeyAlgorithm.EdDsaLegacy ? EcCurve.Curve25519 : curve;
+            var secretSubkey = SecretSubkey.Generate(subkeyAlgorithm, keySize, subkeyCurve, time);
+            packets.Add(secretSubkey.Encrypt(passphrase, Config.PreferredSymmetric, aead));
+            packets.Add(SignaturePacket.CreateSubkeyBinding(
+                secretKey,
+                secretSubkey,
+                keyExpiry,
+                false,
+                time
+            ));
+        }
+        return new PrivateKey(new PacketList(packets.ToArray()));
+    }
+    
     public bool IsEncrypted => SecretKeyPacket.IsEncrypted;
 
     public bool IsDecrypted => SecretKeyPacket.IsDecrypted;
