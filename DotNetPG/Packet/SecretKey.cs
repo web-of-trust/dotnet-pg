@@ -193,9 +193,9 @@ public class SecretKey : BasePacket, ISecretKeyPacket
         var version = algorithm switch
         {
             KeyAlgorithm.X25519 or
-                KeyAlgorithm.X448 or
-                KeyAlgorithm.Ed25519 or
-                KeyAlgorithm.Ed448 => KeyVersion.V6,
+            KeyAlgorithm.X448 or
+            KeyAlgorithm.Ed25519 or
+            KeyAlgorithm.Ed448 => KeyVersion.V6,
             _ => Config.PresetRfc == PresetRfc.Rfc9580 ? KeyVersion.V6 : KeyVersion.V4
         };
         var keyMaterial = GenerateKeyMaterial(
@@ -344,8 +344,8 @@ public class SecretKey : BasePacket, ISecretKeyPacket
         return algorithm switch
         {
             KeyAlgorithm.RsaGeneral or
-                KeyAlgorithm.RsaEncrypt or
-                KeyAlgorithm.RsaSign => RsaSecretKeyMaterial.Generate(rsaKeySize),
+            KeyAlgorithm.RsaEncrypt or
+            KeyAlgorithm.RsaSign => RsaSecretKeyMaterial.Generate(rsaKeySize),
             KeyAlgorithm.EcDh => EcDhSecretKeyMaterial.Generate(curve),
             KeyAlgorithm.EcDsa => EcDsaSecretKeyMaterial.Generate(curve),
             KeyAlgorithm.EdDsaLegacy => EdDsaLegacySecretKeyMaterial.Generate(),
