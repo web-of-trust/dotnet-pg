@@ -275,7 +275,30 @@ public class PrivateKey : BaseKey, IPrivateKey
 
     public IPrivateKey AddUsers(string[] userIds)
     {
-        throw new NotImplementedException();
+        if (Arrays.IsNullOrEmpty(userIds))
+        {
+            throw new ArgumentException("UserIds are required.");
+        }
+
+        var users = Users.ToList();
+        foreach (var userId in userIds)
+        {
+            var packet = new UserId(userId);
+            users.Add(new User(
+                this,
+                packet,
+                [],
+                [SignaturePacket.CreateSelfCertificate(SecretKeyPacket, packet)],
+                []
+            ));
+        }
+        return new PrivateKey(
+            SecretKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            users.ToArray(),
+            Subkeys
+        );
     }
 
     public IPrivateKey AddSubkey(

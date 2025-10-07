@@ -40,7 +40,7 @@ public class PacketList(IPacket[] packets) : IPacketList
     /// </summary>
     public static PacketList Decode(byte[] bytes)
     {
-        var packets = new List<IPacket>();
+        IList<IPacket> packets = [];
         var data = Arrays.Clone(bytes);
         while (data.Length > 0)
         {
