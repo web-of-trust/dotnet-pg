@@ -311,7 +311,37 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        if (passphrase.Length == 0)
+        {
+            throw new ArgumentException("Passphrase is required for key generation.");
+        }
+        AeadAlgorithm? aead = null;
+        if (SecretKeyPacket.IsV6Key && Config.AeadProtect)
+        {
+            aead = Config.PreferredAead;
+        }
+
+        var secretSubkey = (SecretSubkey)SecretSubkey.Generate(keyAlgorithm, rsaKeySize, ecCurve, time)
+            .Encrypt(passphrase, Config.PreferredSymmetric, aead);
+        var subkey = new Subkey(
+            this, 
+            secretSubkey, 
+            [], 
+            [SignaturePacket.CreateSubkeyBinding(
+                SecretKeyPacket,
+                secretSubkey,
+                keyExpiry,
+                forSigning,
+                time
+            )]
+        );
+        return new PrivateKey(
+            SecretKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            Users,
+            [subkey, ..Subkeys]
+        );
     }
 
     public IKey CertifyKey(IKey key, DateTime? time = null)
