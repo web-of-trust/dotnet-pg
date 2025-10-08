@@ -1,14 +1,13 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using DotNetPG.Common;
-using Org.BouncyCastle.Utilities;
-
 namespace DotNetPG.Key;
 
+using Common;
 using Enum;
 using Packet;
 using Type;
+using Org.BouncyCastle.Utilities;
 
 public class PrivateKey : BaseKey, IPrivateKey
 {
@@ -366,7 +365,22 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        var users = Users.ToList();
+        foreach (var user in users)
+        {
+            if (user.UserId == userId)
+            {
+                var index = users.IndexOf(user);
+                users[index] = user.RevokeBy(this, revocationReason, reasonTag, time);
+            }
+        }
+        return new PrivateKey(
+            SecretKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            users.ToArray(),
+            Subkeys
+        );
     }
 
     public IKey RevokeSubkey(
@@ -376,6 +390,21 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        var subkeys = Subkeys.ToList();
+        foreach (var subkey in subkeys)
+        {
+            if (Arrays.AreEqual(subkey.KeyId, keyId))
+            {
+                var index = subkeys.IndexOf(subkey);
+                subkeys[index] = subkey.RevokeBy(this, revocationReason, reasonTag, time);
+            }
+        }
+        return new PrivateKey(
+            SecretKeyPacket,
+            RevocationSignatures,
+            DirectSignatures,
+            Users,
+            subkeys.ToArray()
+        );
     }
 }
