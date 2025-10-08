@@ -346,7 +346,7 @@ public class PrivateKey : BaseKey, IPrivateKey
 
     public IKey CertifyKey(IKey key, DateTime? time = null)
     {
-        throw new NotImplementedException();
+        return key.CertifyBy(this, time);
     }
 
     public IKey RevokeKey(
@@ -356,7 +356,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
-        throw new NotImplementedException();
+        return key.RevokeBy(this, revocationReason, reasonTag, time);
     }
 
     public IKey RevokeUser(
