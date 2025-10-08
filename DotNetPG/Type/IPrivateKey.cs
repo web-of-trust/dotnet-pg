@@ -92,7 +92,7 @@ public interface IPrivateKey : IArmorable, IKey
     /// <summary>
     ///     Revoke user & return a clone of the key object with the new revoked user.
     /// </summary>
-    IKey RevokeUser(
+    IPrivateKey RevokeUser(
         string userId,
         string revocationReason = "",
         RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
@@ -102,7 +102,7 @@ public interface IPrivateKey : IArmorable, IKey
     /// <summary>
     ///     Revoke subkey & return a clone of the key object with the new revoked subkey.
     /// </summary>
-    IKey RevokeSubkey(
+    IPrivateKey RevokeSubkey(
         byte[] keyId,
         string revocationReason = "",
         RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,

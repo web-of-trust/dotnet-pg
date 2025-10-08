@@ -358,7 +358,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         return key.RevokeBy(this, revocationReason, reasonTag, time);
     }
 
-    public IKey RevokeUser(
+    public IPrivateKey RevokeUser(
         string userId,
         string revocationReason = "",
         RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
@@ -383,7 +383,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         );
     }
 
-    public IKey RevokeSubkey(
+    public IPrivateKey RevokeSubkey(
         byte[] keyId,
         string revocationReason = "",
         RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
