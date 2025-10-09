@@ -30,7 +30,16 @@ public sealed class OpenPGP
         DateTime? time = null
     )
     {
-        return PrivateKey.Generate(userIds, passphrase, keyType, keySize, curve, keyExpiry, signOnly, time);
+        return PrivateKey.Generate(
+            userIds,
+            passphrase,
+            keyType,
+            keySize,
+            curve,
+            keyExpiry,
+            signOnly,
+            time
+        );
     }
 
     /// <summary>
