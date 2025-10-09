@@ -192,7 +192,7 @@ public abstract class BaseKey : IKey
             ..Users.SelectMany(user => user.PacketList.Packets),
             ..Subkeys.SelectMany(subkey => subkey.PacketList.Packets),
         ];
-        if (Version == (int) KeyVersion.V6)
+        if (KeyPacket.IsV6Key)
         {
             packets.Add(Padding.CreatePadding());
         }
@@ -221,7 +221,7 @@ public abstract class BaseKey : IKey
             ..Users.SelectMany(user => user.PacketList.Packets),
             ..Subkeys.SelectMany(subkey => subkey.PacketList.Packets),
         ];
-        if (Version == (int) KeyVersion.V6)
+        if (keyPacket.IsV6Key)
         {
             packets.Add(Padding.CreatePadding());
         }

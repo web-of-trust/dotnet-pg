@@ -119,7 +119,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
         return new PrivateKey(new PacketList(packets.ToArray()));
     }
-    
+
     public bool IsEncrypted => SecretKeyPacket.IsEncrypted;
 
     public bool IsDecrypted => SecretKeyPacket.IsDecrypted;

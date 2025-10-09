@@ -62,7 +62,7 @@ public class PublicKey : BaseKey, IPublicKey
         }
         return publicKeys.ToArray();
     }
-    
+
     public static IPublicKey FromArmored(string armored)
     {
         return FromBytes(Common.Armor.Decode(armored).Data);
