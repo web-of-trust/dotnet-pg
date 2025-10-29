@@ -19,7 +19,7 @@ public class CompressedData(
 {
     public byte[] Compressed => compressed;
 
-    public IPacketList PacketList { get; } = packetList;
+    public IPacketList PacketList => packetList;
 
     public CompressionAlgorithm Algorithm => algorithm;
 
