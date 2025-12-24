@@ -53,22 +53,22 @@ public interface IKey : IPacketContainer
     /// <summary>
     ///     Get revocation signatures
     /// </summary>
-    ISignaturePacket[] RevocationSignatures { get; }
+    IList<ISignaturePacket> RevocationSignatures { get; }
 
     /// <summary>
     ///     Get direct signatures
     /// </summary>
-    ISignaturePacket[] DirectSignatures { get; }
+    IList<ISignaturePacket> DirectSignatures { get; }
 
     /// <summary>
     ///     Get users
     /// </summary>
-    IUser[] Users { get; }
+    IList<IUser> Users { get; }
 
     /// <summary>
     ///     Get subkeys
     /// </summary>
-    ISubkey[] Subkeys { get; }
+    IList<ISubkey> Subkeys { get; }
 
     /// <summary>
     ///     Get primary user

@@ -27,7 +27,7 @@ public abstract class BaseKey : IKey
         KeyPacket = keyPackets.OfType<IKeyPacket>().First();
 
         var remainPackets = packetList.Packets.SkipWhile(packet => packet is IKeyPacket).ToList();
-        RevocationSignatures = remainPackets.TakeWhile(packet =>
+        var revocations = remainPackets.TakeWhile(packet =>
         {
             if (packet is ISignaturePacket signature)
             {
@@ -35,12 +35,13 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
-        Array.Sort(RevocationSignatures, (a, b) =>
+        Array.Sort(revocations, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        RevocationSignatures = revocations.AsReadOnly();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -50,7 +51,7 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).ToList();
-        DirectSignatures = remainPackets.TakeWhile(packet =>
+        var directSignatures = remainPackets.TakeWhile(packet =>
         {
             if (packet is ISignaturePacket signature)
             {
@@ -58,12 +59,13 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
-        Array.Sort(DirectSignatures, (a, b) =>
+        Array.Sort(directSignatures, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        DirectSignatures = directSignatures.AsReadOnly();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -130,13 +132,14 @@ public abstract class BaseKey : IKey
                 otherSignatures.ToArray())
             );
         }
-        Users = users.ToArray();
-        Array.Sort(Users, (a, b) =>
+        var userArray = users.ToArray();
+        Array.Sort(userArray, (a, b) =>
         {
             var aTime = a.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
             var bTime = b.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        Users = userArray.AsReadOnly();
         PrimaryUser = users.Find(user => user.IsPrimary);
 
         ISubkeyPacket? subkeyPacket = null;
@@ -182,8 +185,9 @@ public abstract class BaseKey : IKey
                 bindingSignatures.ToArray()
             ));
         }
-        Subkeys = subkeys.ToArray();
-        Array.Sort(Subkeys, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+        var subkeyArray = subkeys.ToArray();
+        Array.Sort(subkeyArray, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+        Subkeys = subkeyArray.AsReadOnly();
 
         IList<IPacket> packets = [
             KeyPacket,
@@ -196,23 +200,50 @@ public abstract class BaseKey : IKey
         {
             packets.Add(Padding.CreatePadding());
         }
-        PacketList = new PacketList(packets.ToArray());
+        PacketList = new PacketList(packets);
     }
 
     protected BaseKey(
         IKeyPacket keyPacket,
-        ISignaturePacket[] revocationSignatures,
-        ISignaturePacket[] directSignatures,
-        IUser[] users,
-        ISubkey[] subkeys
+        IList<ISignaturePacket> revocationSignatures,
+        IList<ISignaturePacket> directSignatures,
+        IList<IUser> users,
+        IList<ISubkey> subkeys
     )
     {
         KeyPacket = keyPacket;
-        RevocationSignatures = revocationSignatures;
-        DirectSignatures = directSignatures;
-        Users = users;
-        Subkeys = subkeys;
+
+        var revocations = revocationSignatures.Where(signature => signature.IsKeyRevocation).ToArray();
+        Array.Sort(revocations, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+        RevocationSignatures = revocations.AsReadOnly();
+
+        var directs = directSignatures.Where(signature => signature.IsDirectKey).ToArray();
+        Array.Sort(directs, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+        DirectSignatures = directs.AsReadOnly();
+
+        var userArray = users.ToArray();
+        Array.Sort(userArray, (a, b) =>
+        {
+            var aTime = a.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
+            var bTime = b.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+        Users = userArray.AsReadOnly();
         PrimaryUser = users.ToList().Find(user => user.IsPrimary);
+
+        var subkeyArray = subkeys.ToArray();
+        Array.Sort(subkeyArray, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+        Subkeys = subkeyArray.AsReadOnly();
 
         IList<IPacket> packets = [
             KeyPacket,
@@ -225,7 +256,7 @@ public abstract class BaseKey : IKey
         {
             packets.Add(Padding.CreatePadding());
         }
-        PacketList = new PacketList(packets.ToArray());
+        PacketList = new PacketList(packets);
     }
 
     public IKeyPacket KeyPacket { get; }
@@ -244,13 +275,13 @@ public abstract class BaseKey : IKey
 
     public int KeyLength => KeyPacket.KeyLength;
 
-    public ISignaturePacket[] RevocationSignatures { get; }
+    public IList<ISignaturePacket> RevocationSignatures { get; }
 
-    public ISignaturePacket[] DirectSignatures { get; }
+    public IList<ISignaturePacket> DirectSignatures { get; }
 
-    public IUser[] Users { get; }
+    public IList<IUser> Users { get; }
 
-    public ISubkey[] Subkeys { get; }
+    public IList<ISubkey> Subkeys { get; }
 
     public IUser? PrimaryUser { get; }
 
@@ -337,7 +368,7 @@ public abstract class BaseKey : IKey
         DateTime? time = null
     );
 
-    public static DateTime? KeyExpiration(ISignaturePacket[] signatures)
+    public static DateTime? KeyExpiration(IList<ISignaturePacket> signatures)
     {
         foreach (var signature in signatures)
         {

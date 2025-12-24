@@ -24,12 +24,12 @@ public class PublicKey : BaseKey, IPublicKey
         }
     }
 
-    public PublicKey(
+    private PublicKey(
         IPublicKeyPacket keyPacket,
-        ISignaturePacket[] revocationSignatures,
-        ISignaturePacket[] directSignatures,
-        IUser[] users,
-        ISubkey[] subkeys
+        IList<ISignaturePacket> revocationSignatures,
+        IList<ISignaturePacket> directSignatures,
+        IList<IUser> users,
+        IList<ISubkey>  subkeys
     ) : base(keyPacket, revocationSignatures, directSignatures, users, subkeys)
     {
         PublicKeyPacket = keyPacket;
@@ -50,13 +50,13 @@ public class PublicKey : BaseKey, IPublicKey
             if ((i + 1) < indexes.Length)
             {
                 publicKeys.Add(new PublicKey(
-                    new PacketList(packetList.Packets.Skip(indexes[i]).Take(indexes[i + 1]).ToArray())
+                    new PacketList(packetList.Packets.Skip(indexes[i]).Take(indexes[i + 1]).ToList())
                 ));
             }
             else
             {
                 publicKeys.Add(new PublicKey(
-                    new PacketList(packetList.Packets.Skip(indexes[i]).ToArray())
+                    new PacketList(packetList.Packets.Skip(indexes[i]).ToList())
                 ));
             }
         }

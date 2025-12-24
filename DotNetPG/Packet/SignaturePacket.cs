@@ -24,8 +24,8 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         byte[] signedHashValue,
         byte[] salt,
         byte[] signature,
-        ISubPacket[] hashedSubPackets,
-        ISubPacket[] unhashedSubPackets
+        IList<ISubPacket> hashedSubPackets,
+        IList<ISubPacket> unhashedSubPackets
     ) : base(PacketType.Signature)
     {
         Version = version;
@@ -35,8 +35,8 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         SignedHashValue = signedHashValue;
         Salt = salt;
         Signature = signature;
-        HashedSubpackets = hashedSubPackets;
-        UnhashedSubpackets = unhashedSubPackets;
+        HashedSubpackets = hashedSubPackets.AsReadOnly();
+        UnhashedSubpackets = unhashedSubPackets.AsReadOnly();
 
         if (version != (int)KeyVersion.V4 && version != (int)KeyVersion.V6)
             throw new ArgumentException("Version of the signature packet is unsupported.");
@@ -72,9 +72,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
     public HashAlgorithm HashAlgorithm { get; }
 
-    public ISubPacket[] HashedSubpackets { get; }
+    public IList<ISubPacket> HashedSubpackets { get; }
 
-    public ISubPacket[] UnhashedSubpackets { get; }
+    public IList<ISubPacket> UnhashedSubpackets { get; }
 
     public byte[] SignatureData { get; }
 
@@ -592,7 +592,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     }
 
     private static byte[] SubPacketsToBytes(
-        ISubPacket[] subPackets,
+        IList<ISubPacket> subPackets,
         bool isV6 = false
     )
     {

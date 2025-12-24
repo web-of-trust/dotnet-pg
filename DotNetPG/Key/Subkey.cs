@@ -16,28 +16,30 @@ public class Subkey : ISubkey
     public Subkey(
         IKey mainKey,
         ISubkeyPacket keyPacket,
-        ISignaturePacket[] revocationSignatures,
-        ISignaturePacket[] bindingSignatures
+        IList<ISignaturePacket> revocationSignatures,
+        IList<ISignaturePacket> bindingSignatures
     )
     {
         MainKey = mainKey;
         KeyPacket = keyPacket;
 
-        RevocationSignatures = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
-        Array.Sort(RevocationSignatures, (a, b) =>
+        var revocations = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
+        Array.Sort(revocations, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        RevocationSignatures = revocations.AsReadOnly();
 
-        BindingSignatures = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
-        Array.Sort(BindingSignatures, (a, b) =>
+        var bindings = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
+        Array.Sort(bindings, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        BindingSignatures = bindings.AsReadOnly();
 
         PacketList = new PacketList([
             KeyPacket,
@@ -50,9 +52,9 @@ public class Subkey : ISubkey
 
     public ISubkeyPacket KeyPacket { get; }
 
-    public ISignaturePacket[] RevocationSignatures { get; }
+    public IList<ISignaturePacket> RevocationSignatures { get; }
 
-    public ISignaturePacket[] BindingSignatures { get; }
+    public IList<ISignaturePacket> BindingSignatures { get; }
 
     public int Version => KeyPacket.Version;
 

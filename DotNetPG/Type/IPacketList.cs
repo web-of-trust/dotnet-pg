@@ -11,7 +11,7 @@ public interface IPacketList
     /// <summary>
     ///     Get packets
     /// </summary>
-    IPacket[] Packets { get; }
+    IList<IPacket> Packets { get; }
 
     IPacket this[int index] { get; }
 

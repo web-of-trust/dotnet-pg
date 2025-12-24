@@ -16,37 +16,40 @@ public class User : IUser
     public User(
         IKey mainKey,
         IUserIdPacket userIdPacket,
-        ISignaturePacket[] revocationSignatures,
-        ISignaturePacket[] selfSignatures,
-        ISignaturePacket[] otherSignatures
+        IList<ISignaturePacket> revocationSignatures,
+        IList<ISignaturePacket> selfSignatures,
+        IList<ISignaturePacket> otherSignatures
     )
     {
         MainKey = mainKey;
         UserIdPacket = userIdPacket;
 
-        RevocationSignatures = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
-        Array.Sort(RevocationSignatures, (a, b) =>
+        var revocations = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
+        Array.Sort(revocations, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        RevocationSignatures = revocations.AsReadOnly();
 
-        SelfSignatures = selfSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(SelfSignatures, (a, b) =>
+        var selfSigs = selfSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(selfSigs, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        SelfSignatures = selfSigs.AsReadOnly();
 
-        OtherSignatures = otherSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(OtherSignatures, (a, b) =>
+        var others = otherSignatures.Where(signature => signature.IsCertification).ToArray();
+        Array.Sort(others, (a, b) =>
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
+        OtherSignatures = others.AsReadOnly();
 
         PacketList = new PacketList([
             UserIdPacket,
@@ -60,11 +63,11 @@ public class User : IUser
 
     public IUserIdPacket UserIdPacket { get; }
 
-    public ISignaturePacket[] RevocationSignatures { get; }
+    public IList<ISignaturePacket> RevocationSignatures { get; }
 
-    public ISignaturePacket[] SelfSignatures { get; }
+    public IList<ISignaturePacket> SelfSignatures { get; }
 
-    public ISignaturePacket[] OtherSignatures { get; }
+    public IList<ISignaturePacket> OtherSignatures { get; }
 
     public bool IsPrimary => SelfSignatures.Any(signature => signature.IsPrimaryUserId);
 

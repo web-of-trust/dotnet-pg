@@ -10,11 +10,11 @@ using Org.BouncyCastle.Utilities;
 /// <summary>
 ///     Packet list class
 /// </summary>
-public class PacketList(IPacket[] packets) : IPacketList
+public class PacketList(IList<IPacket> packets) : IPacketList
 {
     public IPacket this[int index] => packets[index];
 
-    public IPacket[] Packets => packets;
+    public IList<IPacket> Packets => packets.AsReadOnly();
 
     public byte[] Encode()
     {
@@ -24,7 +24,7 @@ public class PacketList(IPacket[] packets) : IPacketList
     public int[] IndexOfType(PacketType[] types)
     {
         IList<int> indexes = [];
-        for (var i = 0; i < packets.Length; i++)
+        for (var i = 0; i < packets.Count; i++)
         {
             var packet = packets[i];
             if (types.Contains(packet.Type))

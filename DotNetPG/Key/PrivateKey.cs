@@ -23,12 +23,12 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
     }
 
-    public PrivateKey(
+    private PrivateKey(
         ISecretKeyPacket keyPacket,
-        ISignaturePacket[] revocationSignatures,
-        ISignaturePacket[] directSignatures,
-        IUser[] users,
-        ISubkey[] subkeys
+        IList<ISignaturePacket> revocationSignatures,
+        IList<ISignaturePacket> directSignatures,
+        IList<IUser> users,
+        IList<ISubkey> subkeys
     ) : base(keyPacket, revocationSignatures, directSignatures, users, subkeys)
     {
         SecretKeyPacket = keyPacket;
@@ -117,7 +117,7 @@ public class PrivateKey : BaseKey, IPrivateKey
                 time
             ));
         }
-        return new PrivateKey(new PacketList(packets.ToArray()));
+        return new PrivateKey(new PacketList(packets));
     }
 
     public bool IsEncrypted => SecretKeyPacket.IsEncrypted;
@@ -145,7 +145,7 @@ public class PrivateKey : BaseKey, IPrivateKey
                 }
             }
 
-            return new PublicKey(new PacketList(packets.ToArray()));
+            return new PublicKey(new PacketList(packets));
         }
     }
 
