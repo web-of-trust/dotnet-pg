@@ -24,22 +24,10 @@ public class Subkey : ISubkey
         KeyPacket = keyPacket;
 
         var revocations = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
-        Array.Sort(revocations, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        RevocationSignatures = revocations.AsReadOnly();
+        RevocationSignatures = BaseKey.SortSignatures(revocations).AsReadOnly();
 
         var bindings = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
-        Array.Sort(bindings, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        BindingSignatures = bindings.AsReadOnly();
+        BindingSignatures = BaseKey.SortSignatures(bindings).AsReadOnly();
 
         PacketList = new PacketList([
             KeyPacket,

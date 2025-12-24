@@ -88,13 +88,13 @@ public class PublicKey : BaseKey, IPublicKey
         var primaryUser = PrimaryUser;
         if (primaryUser == null) return this;
 
-        var certifedUser = primaryUser.CertifyBy(signKey, time);
-        var certifedUserId = certifedUser.UserId;
+        var certifiedUser = primaryUser.CertifyBy(signKey, time);
+        var certifiedUserId = certifiedUser.UserId;
 
-        IList<IUser> users = [certifedUser];
+        IList<IUser> users = [certifiedUser];
         foreach (var user in Users)
         {
-            if (user.UserId != certifedUserId)
+            if (user.UserId != certifiedUserId)
             {
                 users.Add(user);
             }

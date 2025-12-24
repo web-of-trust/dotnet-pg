@@ -25,31 +25,13 @@ public class User : IUser
         UserIdPacket = userIdPacket;
 
         var revocations = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
-        Array.Sort(revocations, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        RevocationSignatures = revocations.AsReadOnly();
+        RevocationSignatures = BaseKey.SortSignatures(revocations).AsReadOnly();
 
         var selfSigs = selfSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(selfSigs, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        SelfSignatures = selfSigs.AsReadOnly();
+        SelfSignatures = BaseKey.SortSignatures(selfSigs).AsReadOnly();
 
         var others = otherSignatures.Where(signature => signature.IsCertification).ToArray();
-        Array.Sort(others, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        OtherSignatures = others.AsReadOnly();
+        OtherSignatures = BaseKey.SortSignatures(others).AsReadOnly();
 
         PacketList = new PacketList([
             UserIdPacket,

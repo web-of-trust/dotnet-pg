@@ -35,13 +35,7 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
-        Array.Sort(revocations, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        RevocationSignatures = revocations.AsReadOnly();
+        RevocationSignatures = SortSignatures(revocations).AsReadOnly();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -59,13 +53,7 @@ public abstract class BaseKey : IKey
             }
             return false;
         }).OfType<ISignaturePacket>().ToArray();
-        Array.Sort(directSignatures, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        DirectSignatures = directSignatures.AsReadOnly();
+        DirectSignatures = SortSignatures(directSignatures).AsReadOnly();
 
         remainPackets = remainPackets.SkipWhile(packet =>
         {
@@ -214,22 +202,10 @@ public abstract class BaseKey : IKey
         KeyPacket = keyPacket;
 
         var revocations = revocationSignatures.Where(signature => signature.IsKeyRevocation).ToArray();
-        Array.Sort(revocations, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        RevocationSignatures = revocations.AsReadOnly();
+        RevocationSignatures = SortSignatures(revocations).AsReadOnly();
 
         var directs = directSignatures.Where(signature => signature.IsDirectKey).ToArray();
-        Array.Sort(directs, (a, b) =>
-        {
-            var aTime = a.CreationTime ?? DateTime.Now;
-            var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
-        });
-        DirectSignatures = directs.AsReadOnly();
+        DirectSignatures = SortSignatures(directs).AsReadOnly();
 
         var userArray = users.ToArray();
         Array.Sort(userArray, (a, b) =>
@@ -385,5 +361,16 @@ public abstract class BaseKey : IKey
             }
         }
         return null;
+    }
+
+    public static ISignaturePacket[] SortSignatures(ISignaturePacket[] signatures)
+    {
+        Array.Sort(signatures, (a, b) =>
+        {
+            var aTime = a.CreationTime ?? DateTime.Now;
+            var bTime = b.CreationTime ?? DateTime.Now;
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+        });
+        return signatures;
     }
 }
