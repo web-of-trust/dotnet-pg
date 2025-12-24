@@ -6,6 +6,8 @@ namespace DotNetPG.Test.Key;
 [TestFixture]
 public class PublicKeyTest
 {
+    private const string UserId = "Nguyen Van Nguyen <nguyennv1981@gmail.com>";
+
     private const string RsaPublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQGNBGlKP0MBDADA8nF1IvkpAaUY7+AKQoVOGs4rDMUhZYiVTmuYeR8RlhcYxqpF
@@ -124,7 +126,7 @@ Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
-            Assert.That(user.UserId, Is.EqualTo("Nguyen Van Nguyen <nguyennv1981@gmail.com>"));
+            Assert.That(user.UserId, Is.EqualTo(UserId));
             Assert.That(user.Verify(), Is.EqualTo(true));
         });
     }
@@ -157,7 +159,7 @@ Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
-            Assert.That(user.UserId, Is.EqualTo("Nguyen Van Nguyen <nguyennv1981@gmail.com>"));
+            Assert.That(user.UserId, Is.EqualTo(UserId));
             Assert.That(user.Verify(), Is.EqualTo(true));
         });
     }
@@ -190,7 +192,7 @@ Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
-            Assert.That(user.UserId, Is.EqualTo("Nguyen Van Nguyen <nguyennv1981@gmail.com>"));
+            Assert.That(user.UserId, Is.EqualTo(UserId));
             Assert.That(user.Verify(), Is.EqualTo(true));
         });
     }
@@ -223,7 +225,7 @@ Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
-            Assert.That(user.UserId, Is.EqualTo("Nguyen Van Nguyen <nguyennv1981@gmail.com>"));
+            Assert.That(user.UserId, Is.EqualTo(UserId));
             Assert.That(user.Verify(), Is.EqualTo(true));
         });
     }
