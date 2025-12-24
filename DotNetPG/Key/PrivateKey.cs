@@ -23,7 +23,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
     }
 
-    private PrivateKey(
+    public PrivateKey(
         ISecretKeyPacket keyPacket,
         IList<ISignaturePacket> revocationSignatures,
         IList<ISignaturePacket> directSignatures,
