@@ -465,4 +465,64 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
     }
+
+    [Test]
+    public void TestCertifyKey()
+    {
+        const string keyData = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mFMEaUpAEhMJKyQDAwIIAQEHAgMEPlJmtGx5mICYEgRGRRucDd7eLdG4FrwENQMX
++igXpWYxb18u8DYsQK2egCGILBW1zYt6pWHeQsQgC71CrO4ZlLQqTmd1eWVuIFZh
+biBOZ3V5ZW4gPG5ndXllbm52MTk4MUBnbWFpbC5jb20+iJMEExMIADsWIQQj+/yC
+hjxYt3/Bf9BupjDO9MV76AUCaUpAEgIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIe
+BwIXgAAKCRBupjDO9MV76B8sAP4o9uuM/G4FSnxEDmWkBH/QJ0lWE0AIOcz0XTnv
+KLoN6wEApAeFHBTMYlrvzwytKQX0cyhv/7CJnFw9OnqQILw/PQO4VwRpSkASEgkr
+JAMDAggBAQcCAwQsjJFyB4qzLjry0A4uueRFORHwND2IM8NVYrXm2M5SSxPXloOz
+ND6HdeTSbqEC+3buOP56V9saT2hIWzt9skWpAwEIB4h4BBgTCAAgFiEEI/v8goY8
+WLd/wX/QbqYwzvTFe+gFAmlKQBICGwwACgkQbqYwzvTFe+jRjwEAi3eytUfyMOmh
+Szh++MCWjgQB5spnrA/xYcniUiKW6UQA/18zZ5b6xLwcISSqlxzLwiZzRpurj6+h
+WMyKKzptzgIJ
+=2/C1
+-----END PGP PUBLIC KEY BLOCK-----";
+
+        var publicKey = OpenPGP.ReadPublicKey(keyData);
+        var privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        var certifiedKey = OpenPGP.CertifyKey(privateKey, publicKey);
+        Assert.Multiple(() =>
+        {
+            Assert.That(certifiedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));
+            Assert.That(publicKey.IsCertified(privateKey), Is.EqualTo(false));
+            Assert.That(certifiedKey.IsCertified(privateKey), Is.EqualTo(true));
+        });
+    }
+
+    [Test]
+    public void TestRevokeKey()
+    {
+        const string keyData = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mFMEaUpAEhMJKyQDAwIIAQEHAgMEPlJmtGx5mICYEgRGRRucDd7eLdG4FrwENQMX
++igXpWYxb18u8DYsQK2egCGILBW1zYt6pWHeQsQgC71CrO4ZlLQqTmd1eWVuIFZh
+biBOZ3V5ZW4gPG5ndXllbm52MTk4MUBnbWFpbC5jb20+iJMEExMIADsWIQQj+/yC
+hjxYt3/Bf9BupjDO9MV76AUCaUpAEgIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIe
+BwIXgAAKCRBupjDO9MV76B8sAP4o9uuM/G4FSnxEDmWkBH/QJ0lWE0AIOcz0XTnv
+KLoN6wEApAeFHBTMYlrvzwytKQX0cyhv/7CJnFw9OnqQILw/PQO4VwRpSkASEgkr
+JAMDAggBAQcCAwQsjJFyB4qzLjry0A4uueRFORHwND2IM8NVYrXm2M5SSxPXloOz
+ND6HdeTSbqEC+3buOP56V9saT2hIWzt9skWpAwEIB4h4BBgTCAAgFiEEI/v8goY8
+WLd/wX/QbqYwzvTFe+gFAmlKQBICGwwACgkQbqYwzvTFe+jRjwEAi3eytUfyMOmh
+Szh++MCWjgQB5spnrA/xYcniUiKW6UQA/18zZ5b6xLwcISSqlxzLwiZzRpurj6+h
+WMyKKzptzgIJ
+=2/C1
+-----END PGP PUBLIC KEY BLOCK-----";
+
+        var publicKey = OpenPGP.ReadPublicKey(keyData);
+        var privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        var revokedKey = OpenPGP.RevokeKey(privateKey, publicKey);
+        Assert.Multiple(() =>
+        {
+            Assert.That(revokedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));
+            Assert.That(publicKey.IsRevoked(privateKey), Is.EqualTo(false));
+            Assert.That(revokedKey.IsRevoked(privateKey), Is.EqualTo(true));
+        });
+    }
 }

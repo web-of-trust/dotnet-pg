@@ -162,8 +162,8 @@ public sealed class OpenPGP
     public static IKey RevokeKey(
         IPrivateKey privateKey,
         IKey key,
-        string revocationReason,
-        RevocationReasonTag reasonTag,
+        string revocationReason = "",
+        RevocationReasonTag reasonTag = RevocationReasonTag.NoReason,
         DateTime? time = null
     )
     {
