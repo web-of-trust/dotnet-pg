@@ -404,7 +404,7 @@ k0mXubZvyl4GBg==
     }
 
     [Test]
-    public void Test1()
+    public void TestLockedVersion6Curve25519SecretKey()
     {
         const string keyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
 
