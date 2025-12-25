@@ -77,7 +77,7 @@ public sealed class OpenPGP
     /// <summary>
     /// Read OpenPGP public key list from armored string.
     /// </summary>
-    public static IPublicKey[] ReadPublicKeys(string armored)
+    public static IList<IPublicKey> ReadPublicKeys(string armored)
     {
         return PublicKey.ReadPublicKeys(armored);
     }
@@ -85,7 +85,7 @@ public sealed class OpenPGP
     /// <summary>
     /// Read OpenPGP public key list from binary key data.
     /// </summary>
-    public static IPublicKey[] ReadPublicKeys(byte[] keyData)
+    public static IList<IPublicKey> ReadPublicKeys(byte[] keyData)
     {
         return PublicKey.ReadPublicKeys(keyData);
     }
@@ -93,7 +93,7 @@ public sealed class OpenPGP
     /// <summary>
     /// Armor multiple public key.
     /// </summary>
-    public static string ArmorPublicKeys(IPublicKey[] keys)
+    public static string ArmorPublicKeys(IList<IPublicKey> keys)
     {
         return PublicKey.ArmorPublicKeys(keys);
     }

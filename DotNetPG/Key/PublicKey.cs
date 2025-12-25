@@ -35,12 +35,12 @@ public class PublicKey : BaseKey, IPublicKey
         PublicKeyPacket = keyPacket;
     }
 
-    public static IPublicKey[] ReadPublicKeys(string armored)
+    public static IList<IPublicKey> ReadPublicKeys(string armored)
     {
         return ReadPublicKeys(Common.Armor.Decode(armored).Data);
     }
 
-    public static IPublicKey[] ReadPublicKeys(byte[] bytes)
+    public static IList<IPublicKey> ReadPublicKeys(byte[] bytes)
     {
         IList<IPublicKey> publicKeys = [];
         var packetList = Packet.PacketList.Decode(bytes);
@@ -60,7 +60,7 @@ public class PublicKey : BaseKey, IPublicKey
                 ));
             }
         }
-        return publicKeys.ToArray();
+        return publicKeys;
     }
 
     public static IPublicKey FromArmored(string armored)
@@ -73,7 +73,7 @@ public class PublicKey : BaseKey, IPublicKey
         return new PublicKey(Packet.PacketList.Decode(bytes));
     }
 
-    public static string ArmorPublicKeys(IPublicKey[] keys) => Common.Armor.Encode(
+    public static string ArmorPublicKeys(IList<IPublicKey> keys) => Common.Armor.Encode(
         ArmorType.PublicKey,
         keys.SelectMany(key => key.PacketList.Encode()).ToArray(),
         []
