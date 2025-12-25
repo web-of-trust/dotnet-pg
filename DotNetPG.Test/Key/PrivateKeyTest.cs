@@ -346,4 +346,123 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
     }
+
+    [Test]
+    public void TestVersion6Curve25519SecretKey()
+    {
+        const string keyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xUsGY4d/4xsAAAAg+U2nu0jWCmHlZ3BqZYfQMxmZu52JGggkLq2EVD34laMAGXKB
+exK+cH6NX1hs5hNhIB00TrJmosgv3mg1ditlsLfCsQYfGwoAAABCBYJjh3/jAwsJ
+BwUVCg4IDAIWAAKbAwIeCSIhBssYbE8GCaaX5NUt+mxyKwwfHifBilZwj2Ul7Ce6
+2azJBScJAgcCAAAAAK0oIBA+LX0ifsDm185Ecds2v8lwgyU2kCcUmKfvBXbAf6rh
+RYWzuQOwEn7E/aLwIwRaLsdry0+VcallHhSu4RN6HWaEQsiPlR4zxP/TP7mhfVEe
+7XWPxtnMUMtf15OyA51YBMdLBmOHf+MZAAAAIIaTJINn+eUBXbki+PSAld2nhJh/
+LVmFsS+60WyvXkQ1AE1gCk95TUR3XFeibg/u/tVY6a//1q0NWC1X+yui3O24wpsG
+GBsKAAAALAWCY4d/4wKbDCIhBssYbE8GCaaX5NUt+mxyKwwfHifBilZwj2Ul7Ce6
+2azJAAAAAAQBIKbpGG2dWTX8j+VjFM21J0hqWlEg+bdiojWnKfA5AQpWUWtnNwDE
+M0g12vYxoWM8Y81W+bHBw805I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUr
+k0mXubZvyl4GBg==
+-----END PGP PRIVATE KEY BLOCK-----";
+
+        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        Assert.Multiple(() =>
+        {
+            Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
+            Assert.That(privateKey.KeyLength, Is.EqualTo(255));
+            Assert.That(privateKey.Version, Is.EqualTo(6));
+            Assert.That(privateKey.IsEncrypted, Is.EqualTo(false));
+        });
+
+        var directSig = privateKey.DirectSignatures[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(directSig.IssuerFingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(directSig.Version, Is.EqualTo(6));
+        });
+
+        var subkey = privateKey.Subkeys[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.Fingerprint, Is.EqualTo(Hex.Decode("12c83f1e706f6308fe151a417743a1f033790e93e9978488d1db378da9930885")));
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.X25519));
+            Assert.That(subkey.Version, Is.EqualTo(6));
+        });
+
+        var bindingSig = subkey.BindingSignatures[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(bindingSig.IssuerFingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(bindingSig.Version, Is.EqualTo(6));
+        });
+        
+        var passphrase = Helper.GeneratePassword();
+        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+    }
+
+    [Test]
+    public void Test1()
+    {
+        const string keyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xYIGY4d/4xsAAAAg+U2nu0jWCmHlZ3BqZYfQMxmZu52JGggkLq2EVD34laP9JgkC
+FARdb9ccngltHraRe25uHuyuAQQVtKipJ0+r5jL4dacGWSAheCWPpITYiyfyIOPS
+3gIDyg8f7strd1OB4+LZsUhcIjOMpVHgmiY/IutJkulneoBYwrEGHxsKAAAAQgWC
+Y4d/4wMLCQcFFQoOCAwCFgACmwMCHgkiIQbLGGxPBgmml+TVLfpscisMHx4nwYpW
+cI9lJewnutmsyQUnCQIHAgAAAACtKCAQPi19In7A5tfORHHbNr/JcIMlNpAnFJin
+7wV2wH+q4UWFs7kDsBJ+xP2i8CMEWi7Ha8tPlXGpZR4UruETeh1mhELIj5UeM8T/
+0z+5oX1RHu11j8bZzFDLX9eTsgOdWATHggZjh3/jGQAAACCGkySDZ/nlAV25Ivj0
+gJXdp4SYfy1ZhbEvutFsr15ENf0mCQIUBA5hhGgp2oaavg6mFUXcFMwBBBUuE8qf
+9Ock+xwusd+GAglBr5LVyr/lup3xxQvHXFSjjA2haXfoN6xUGRdDEHI6+uevKjVR
+v5oAxgu7eJpaXNjCmwYYGwoAAAAsBYJjh3/jApsMIiEGyxhsTwYJppfk1S36bHIr
+DB8eJ8GKVnCPZSXsJ7rZrMkAAAAABAEgpukYbZ1ZNfyP5WMUzbUnSGpaUSD5t2Ki
+Nacp8DkBClZRa2c3AMQzSDXa9jGhYzxjzVb5scHDzTkjyRZWRdTq8U6L4da+/+Kt
+ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
+-----END PGP PRIVATE KEY BLOCK-----";
+
+        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        Assert.Multiple(() =>
+        {
+            Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
+            Assert.That(privateKey.KeyLength, Is.EqualTo(255));
+            Assert.That(privateKey.Version, Is.EqualTo(6));
+            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
+            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
+            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+        });
+
+        var directSig = privateKey.DirectSignatures[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(directSig.IssuerFingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(directSig.Version, Is.EqualTo(6));
+        });
+
+        var subkey = privateKey.Subkeys[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.Fingerprint, Is.EqualTo(Hex.Decode("12c83f1e706f6308fe151a417743a1f033790e93e9978488d1db378da9930885")));
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.X25519));
+            Assert.That(subkey.Version, Is.EqualTo(6));
+        });
+
+        var bindingSig = subkey.BindingSignatures[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(bindingSig.IssuerFingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+            Assert.That(bindingSig.Version, Is.EqualTo(6));
+        });
+
+        privateKey = privateKey.Decrypt("correct horse battery staple");
+        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+
+        var passphrase = Helper.GeneratePassword();
+        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+    }
 }
