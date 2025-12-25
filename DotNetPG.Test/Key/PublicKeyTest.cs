@@ -86,16 +86,23 @@ WMyKKzptzgIJ
 
     private const string EccCurve25519PublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-mDMEaUpAYRYJKwYBBAHaRw8BAQdAxNFrk1BAfIODwbzj7j+cQn+35C0ID1hj60Cy
-U86oPb60Kk5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5udjE5ODFAZ21haWwuY29t
-PoiTBBMWCgA7FiEEOnWJ8FmUp1A6KK31YlL1ZKU7SV4FAmlKQGECGwMFCwkIBwIC
-IgIGFQoJCAsCBBYCAwECHgcCF4AACgkQYlL1ZKU7SV7gSwEAjwP3FXI74sLGvHww
-mPFluOsVvGRXgp+vYjeYDGE4skUA/1tM8NZnhpcvVJ3aH0GWOtL8ZuZJbDyggurf
-uImamdMFuDgEaUpAYRIKKwYBBAGXVQEFAQEHQHMAp6JFhWQnBsLvtDAoe7wY3h2u
-XIHNauNdw4Crj0ROAwEIB4h4BBgWCgAgFiEEOnWJ8FmUp1A6KK31YlL1ZKU7SV4F
-AmlKQGECGwwACgkQYlL1ZKU7SV7TcwD6A9Q/NfQuo7464+bCK5gQmJtSd4p17edT
-Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
-=avk+
+mDMEZFhdBRYJKwYBBAHaRw8BAQdAu9HRWiJVK3f7HPFJJCtHv/KszNAbw5e54yEi
+RBvRQ8y0KWN1cnZlIDI1NTE5IHBocCBwZyBrZXkgPHBocC1wZ0BkdW1teS5jb20+
+iJMEExYKADsWIQQcQRbrK1jPoZbFfdu9/xNRYMVqCwUCZFhdBQIbAwULCQgHAgIi
+AgYVCgkICwIEFgIDAQIeBwIXgAAKCRC9/xNRYMVqC/i9AP9r3z0aFMwMq6jDAA88
+wj0gsm8QjuC1eMebqYvPzDnj6AEAy1O9BM3ZB9tpFmNeHCNehfiWtguZ+in50oyc
+U+KVZQmJATMEEAEIAB0WIQT8UATflHMncQfqpgUYTQ3E9cUysgUCZHsGjgAKCRAY
+TQ3E9cUysoY5CACLdETNDlxxULFfOz9W16t49SAcbpgtFy5OYMAdEjxStwBfAfok
+VX8vzsVUECkfaJEllmuTD5CpFrYaDLiNqmunTJnMdkuZhlyOPOrOvifWPWfT07yq
+dkGwgROEwo1pt/xHpRl9+Eb/Cd1EHi6jlj9KSrRldzYRjGdQku0uTyB+X4QOZqII
+mKTGFvWVVYSZ+QTAEVe+mlsRcUvHVzpeKdpRbSmBzDeWA6jCrWlyG0LPr+yX+SIe
+4/EId95VuQv6AGYxmIv2WwYUd8FRXWoncMDNsGTl3UZ6ynHD4kP8m4TuohBNCVU5
+/pmztpTDuyxh2wZnpBGkXgbjUbBgG7sXYqkGuDgEZFhdBRIKKwYBBAGXVQEFAQEH
+QEJtQU2oVkqkUsEHff1xmunu52i+iG9UyIbuo/36KPoBAwEIB4h4BBgWCgAgFiEE
+HEEW6ytYz6GWxX3bvf8TUWDFagsFAmRYXQUCGwwACgkQvf8TUWDFagssBQD9GJsJ
+F8t5mOWmy5X/MCixnm/6TjhlSMDiEdaorWHIEocA/1j6/Em0Z5cLpyqx6PX6IoGa
+T3ryNIYca7l/BO+m8zgP
+=N4j9
 -----END PGP PUBLIC KEY BLOCK-----";
 
     [Test]
@@ -205,7 +212,7 @@ Y0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
             Assert.That(publicKey.KeyId, Is.EqualTo(Hex.Decode("6252f564a53b495e")));
-            Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
+            Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(publicKey.KeyLength, Is.EqualTo(255));
             Assert.That(publicKey.Version, Is.EqualTo(4));
             Assert.That(publicKey.IsPrivate, Is.EqualTo(false));
@@ -243,6 +250,7 @@ Q+47JAY=
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("c959bdbafa32a2f89a153b678cfde12197965a9a")));
+            Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(publicKey.Version, Is.EqualTo(4));
         });
     }
@@ -297,29 +305,8 @@ I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUrk0mXubZvyl4GBg==
     [Test]
     public void TestKeyIsCertified()
     {
-        const string keyData = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-mDMEZFhdBRYJKwYBBAHaRw8BAQdAu9HRWiJVK3f7HPFJJCtHv/KszNAbw5e54yEi
-RBvRQ8y0KWN1cnZlIDI1NTE5IHBocCBwZyBrZXkgPHBocC1wZ0BkdW1teS5jb20+
-iJMEExYKADsWIQQcQRbrK1jPoZbFfdu9/xNRYMVqCwUCZFhdBQIbAwULCQgHAgIi
-AgYVCgkICwIEFgIDAQIeBwIXgAAKCRC9/xNRYMVqC/i9AP9r3z0aFMwMq6jDAA88
-wj0gsm8QjuC1eMebqYvPzDnj6AEAy1O9BM3ZB9tpFmNeHCNehfiWtguZ+in50oyc
-U+KVZQmJATMEEAEIAB0WIQT8UATflHMncQfqpgUYTQ3E9cUysgUCZHsGjgAKCRAY
-TQ3E9cUysoY5CACLdETNDlxxULFfOz9W16t49SAcbpgtFy5OYMAdEjxStwBfAfok
-VX8vzsVUECkfaJEllmuTD5CpFrYaDLiNqmunTJnMdkuZhlyOPOrOvifWPWfT07yq
-dkGwgROEwo1pt/xHpRl9+Eb/Cd1EHi6jlj9KSrRldzYRjGdQku0uTyB+X4QOZqII
-mKTGFvWVVYSZ+QTAEVe+mlsRcUvHVzpeKdpRbSmBzDeWA6jCrWlyG0LPr+yX+SIe
-4/EId95VuQv6AGYxmIv2WwYUd8FRXWoncMDNsGTl3UZ6ynHD4kP8m4TuohBNCVU5
-/pmztpTDuyxh2wZnpBGkXgbjUbBgG7sXYqkGuDgEZFhdBRIKKwYBBAGXVQEFAQEH
-QEJtQU2oVkqkUsEHff1xmunu52i+iG9UyIbuo/36KPoBAwEIB4h4BBgWCgAgFiEE
-HEEW6ytYz6GWxX3bvf8TUWDFagsFAmRYXQUCGwwACgkQvf8TUWDFagssBQD9GJsJ
-F8t5mOWmy5X/MCixnm/6TjhlSMDiEdaorWHIEocA/1j6/Em0Z5cLpyqx6PX6IoGa
-T3ryNIYca7l/BO+m8zgP
-=N4j9
------END PGP PUBLIC KEY BLOCK-----";
-        
-        var publicKey = OpenPGP.ReadPublicKey(RsaPublicKey);
-        var certifiedKey = OpenPGP.ReadPublicKey(keyData);
-        Assert.That(certifiedKey.IsCertified(publicKey), Is.EqualTo(true));
+        var verifyKey = OpenPGP.ReadPublicKey(RsaPublicKey);
+        var certifiedKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
+        Assert.That(certifiedKey.IsCertified(verifyKey), Is.EqualTo(true));
     }
 }
