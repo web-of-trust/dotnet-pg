@@ -105,7 +105,7 @@ public sealed class OpenPGP
     public static IPrivateKey EncryptPrivateKey(
         IPrivateKey privateKey,
         string passphrase,
-        string[] subkeyPassphrases,
+        string[]? subkeyPassphrases = null,
         SymmetricAlgorithm? symmetric = null,
         AeadAlgorithm? aead = null
     )

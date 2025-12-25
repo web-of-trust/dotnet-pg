@@ -129,7 +129,7 @@ T3ryNIYca7l/BO+m8zgP
             Assert.That(subkey.Version, Is.EqualTo(4));
             Assert.That(subkey.Verify(), Is.EqualTo(true));
         });
-        
+
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
@@ -162,7 +162,7 @@ T3ryNIYca7l/BO+m8zgP
             Assert.That(subkey.Version, Is.EqualTo(4));
             Assert.That(subkey.Verify(), Is.EqualTo(true));
         });
-        
+
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
@@ -195,7 +195,7 @@ T3ryNIYca7l/BO+m8zgP
             Assert.That(subkey.Version, Is.EqualTo(4));
             Assert.That(subkey.Verify(), Is.EqualTo(true));
         });
-        
+
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
@@ -228,7 +228,7 @@ T3ryNIYca7l/BO+m8zgP
             Assert.That(subkey.Version, Is.EqualTo(4));
             Assert.That(subkey.Verify(), Is.EqualTo(true));
         });
-        
+
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
@@ -285,7 +285,7 @@ I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUrk0mXubZvyl4GBg==
             Assert.That(directSig.IssuerFingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
             Assert.That(directSig.Version, Is.EqualTo(6));
         });
-        
+
         var subkey = publicKey.Subkeys[0];
         Assert.Multiple(() =>
         {
