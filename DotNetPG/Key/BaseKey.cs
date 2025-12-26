@@ -16,7 +16,9 @@ public abstract class BaseKey : IKey
 {
     protected BaseKey(IPacketList packetList)
     {
-        var keyPackets = packetList.Packets.TakeWhile(packet => packet is IKeyPacket).ToList();
+        var keyPackets = packetList.Packets.TakeWhile(
+            packet => packet is IKeyPacket
+        ).ToList();
         switch (keyPackets.Count)
         {
             case 0:
@@ -26,7 +28,9 @@ public abstract class BaseKey : IKey
         }
         KeyPacket = keyPackets.OfType<IKeyPacket>().First();
 
-        var remainPackets = packetList.Packets.SkipWhile(packet => packet is IKeyPacket).ToList();
+        var remainPackets = packetList.Packets.SkipWhile(
+            packet => packet is IKeyPacket
+        ).ToList();
         var revocations = remainPackets.TakeWhile(packet =>
         {
             if (packet is ISignaturePacket signature)
@@ -69,7 +73,9 @@ public abstract class BaseKey : IKey
         var revocationSignatures = new List<ISignaturePacket>();
         var selfSignatures = new List<ISignaturePacket>();
         var otherSignatures  = new List<ISignaturePacket>();
-        var userPackets = remainPackets.TakeWhile(packet => packet is not ISubkeyPacket).ToList();
+        var userPackets = remainPackets.TakeWhile(
+            packet => packet is not ISubkeyPacket
+        ).ToList();
         foreach (var packet in userPackets)
         {
             if (packet is IUserIdPacket userId)
@@ -134,7 +140,9 @@ public abstract class BaseKey : IKey
         var subkeys = new List<ISubkey>();
         revocationSignatures.Clear();
         var bindingSignatures = new List<ISignaturePacket>();
-        var subkeyPackets = remainPackets.SkipWhile(packet => packet is not ISubkeyPacket).ToList();
+        var subkeyPackets = remainPackets.SkipWhile(
+            packet => packet is not ISubkeyPacket
+        ).ToList();
         foreach (var packet in subkeyPackets)
         {
             if (packet is ISubkeyPacket subkey)
@@ -174,7 +182,10 @@ public abstract class BaseKey : IKey
             ));
         }
         var subkeyArray = subkeys.ToArray();
-        Array.Sort(subkeyArray, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+        Array.Sort(
+            subkeyArray,
+            (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds())
+        );
         Subkeys = subkeyArray.AsReadOnly();
 
         IList<IPacket> packets = [
@@ -201,10 +212,14 @@ public abstract class BaseKey : IKey
     {
         KeyPacket = keyPacket;
 
-        var revocations = revocationSignatures.Where(signature => signature.IsKeyRevocation).ToArray();
+        var revocations = revocationSignatures.Where(
+            signature => signature.IsKeyRevocation
+        ).ToArray();
         RevocationSignatures = SortSignatures(revocations).AsReadOnly();
 
-        var directs = directSignatures.Where(signature => signature.IsDirectKey).ToArray();
+        var directs = directSignatures.Where(
+            signature => signature.IsDirectKey
+        ).ToArray();
         DirectSignatures = SortSignatures(directs).AsReadOnly();
 
         var userArray = users.ToArray();
@@ -306,7 +321,9 @@ public abstract class BaseKey : IKey
                 if (signature != null)
                 {
                     if (signature.Signature.Verify(
-                        subkey.KeyPacket, [..KeyPacket.SignBytes(), ..subkey.KeyPacket.SignBytes()], time
+                        subkey.KeyPacket,
+                        [..KeyPacket.SignBytes(), ..subkey.KeyPacket.SignBytes()],
+                        time
                     ))
                     {
                         return subkey.KeyPacket;
@@ -340,7 +357,10 @@ public abstract class BaseKey : IKey
             }
         }
 
-        if (!KeyPacket.IsEncryptionKey || (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId)))
+        if (
+            !KeyPacket.IsEncryptionKey ||
+            (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId))
+        )
         {
             throw new Exception("Could not find valid encryption key packet.");
         }
@@ -377,19 +397,27 @@ public abstract class BaseKey : IKey
         DateTime? time = null
     )
     {
-        return Users.Any(user => user.IsPrimary && user.IsCertified(verifyKey, certificate, time));
+        return Users.Any(
+            user => user.IsPrimary && user.IsCertified(verifyKey, certificate, time)
+        );
     }
 
     public bool Verify(string userId = "", DateTime? time = null)
     {
         if (DirectSignatures.Any(
-            signature => signature.Verify(KeyPacket, KeyPacket.SignBytes(), time)
+            signature => signature.Verify(
+                KeyPacket,
+                KeyPacket.SignBytes(),
+                time
+            )
         ))
         {
             return true;
         }
 
-        return Users.Where(user => userId.Length == 0 || userId == user.UserId).Any(user => user.Verify(time));
+        return Users.Where(
+            user => userId.Length == 0 || userId == user.UserId
+        ).Any(user => user.Verify(time));
     }
 
     public abstract IKey CertifyBy(IPrivateKey signKey, DateTime? time = null);
