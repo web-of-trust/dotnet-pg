@@ -114,8 +114,8 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
     public static string Encode(
         ArmorType type,
         byte[] data,
-        IList<string> hashAlgos,
         string text = "",
+        IList<string>? hashAlgos = null,
         string customComment = ""
     )
     {
@@ -125,7 +125,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
             case ArmorType.SignedMessage:
                 sb.Append(SignedMessageBegin);
                 var hashHeaders = string.Join(
-                    Helper.Eol, hashAlgos.Select(hash => $"Hash: {hash}")
+                    Helper.Eol, hashAlgos?.Select(hash => $"Hash: {hash}") ?? []
                 );
                 if (!string.IsNullOrEmpty(hashHeaders)) sb.Append(hashHeaders).Append("\n\n");
                 sb.Append(Regex.Replace(

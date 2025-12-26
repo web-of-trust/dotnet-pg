@@ -107,5 +107,5 @@ public class Signature : ISignature
         return Verify(verificationKeys, LiteralData.FromText(cleartext.Text), time);
     }
 
-    public string Armor() => Common.Armor.Encode(ArmorType.Signature, PacketList.Encode(), []);
+    public string Armor() => Common.Armor.Encode(ArmorType.Signature, PacketList.Encode());
 }

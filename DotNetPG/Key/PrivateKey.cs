@@ -149,7 +149,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
     }
 
-    public string Armor() => Common.Armor.Encode(ArmorType.PrivateKey, PacketList.Encode(), []);
+    public string Armor() => Common.Armor.Encode(ArmorType.PrivateKey, PacketList.Encode());
 
     public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {

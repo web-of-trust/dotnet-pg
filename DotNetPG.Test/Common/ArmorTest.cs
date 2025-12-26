@@ -15,7 +15,7 @@ public class ArmorTest
         random.NextBytes(data);
         var text = Helper.ChunkSplit(Helper.GeneratePassword(1000), 100);
         const string hashAlgo = nameof(HashAlgorithm.Sha256);
-        var armored = Armor.Encode(ArmorType.SignedMessage, data, [hashAlgo], text);
+        var armored = Armor.Encode(ArmorType.SignedMessage, data, text, [hashAlgo]);
         Assert.Multiple(() =>
         {
             Assert.That(Regex.IsMatch(armored, @"BEGIN PGP SIGNED MESSAGE"), Is.EqualTo(true));
@@ -38,7 +38,7 @@ public class ArmorTest
         var random = new Random();
         byte[] data = new byte[1000];
         random.NextBytes(data);
-        var armored = Armor.Encode(ArmorType.Message, data, []);
+        var armored = Armor.Encode(ArmorType.Message, data);
         Assert.Multiple(() =>
         {
             Assert.That(Regex.IsMatch(armored, @"BEGIN PGP MESSAGE"), Is.EqualTo(true));
@@ -59,7 +59,7 @@ public class ArmorTest
         var random = new Random();
         byte[] data = new byte[1000];
         random.NextBytes(data);
-        var armored = Armor.Encode(ArmorType.PublicKey, data, []);
+        var armored = Armor.Encode(ArmorType.PublicKey, data);
         Assert.Multiple(() =>
         {
             Assert.That(Regex.IsMatch(armored, @"BEGIN PGP PUBLIC KEY BLOCK"), Is.EqualTo(true));
@@ -80,7 +80,7 @@ public class ArmorTest
         var random = new Random();
         byte[] data = new byte[1000];
         random.NextBytes(data);
-        var armored = Armor.Encode(ArmorType.PrivateKey, data, []);
+        var armored = Armor.Encode(ArmorType.PrivateKey, data);
         Assert.Multiple(() =>
         {
             Assert.That(Regex.IsMatch(armored, @"BEGIN PGP PRIVATE KEY BLOCK"), Is.EqualTo(true));
@@ -101,7 +101,7 @@ public class ArmorTest
         var random = new Random();
         byte[] data = new byte[1000];
         random.NextBytes(data);
-        var armored = Armor.Encode(ArmorType.Signature, data, []);
+        var armored = Armor.Encode(ArmorType.Signature, data);
         Assert.Multiple(() =>
         {
             Assert.That(Regex.IsMatch(armored, @"BEGIN PGP SIGNATURE"), Is.EqualTo(true));

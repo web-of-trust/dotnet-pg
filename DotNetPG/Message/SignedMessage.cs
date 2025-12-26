@@ -25,7 +25,7 @@ public class SignedMessage(string text, ISignature signature) : CleartextMessage
         var hashAlgos = signature.Packets.Select(
             packet => packet.HashAlgorithm.ToString()
         ).ToList();
-        return Common.Armor.Encode(ArmorType.SignedMessage, signature.PacketList.Encode(), hashAlgos, Text);
+        return Common.Armor.Encode(ArmorType.SignedMessage, signature.PacketList.Encode(), Text, hashAlgos);
     }
 
     public ISignature Signature => signature;

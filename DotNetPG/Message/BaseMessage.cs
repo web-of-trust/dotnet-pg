@@ -13,5 +13,5 @@ abstract class BaseMessage(IPacketList packetList) : IArmorable, IPacketContaine
 {
     public IPacketList PacketList => packetList;
 
-    public string Armor() => Common.Armor.Encode(ArmorType.Message, PacketList.Encode(), []);
+    public string Armor() => Common.Armor.Encode(ArmorType.Message, PacketList.Encode());
 }
