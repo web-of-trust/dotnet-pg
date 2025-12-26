@@ -7,7 +7,6 @@ using Enum;
 using Packet;
 using Packet.SubPacket;
 using Type;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Utilities;
 
 /// <summary>
@@ -315,14 +314,14 @@ public abstract class BaseKey : IKey
                 }
                 else
                 {
-                    throw new PgpException("Missing embedded signature.");
+                    throw new Exception("Missing embedded signature.");
                 }
             }
         }
 
         if (!KeyPacket.IsSigningKey || (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId)))
         {
-            throw new PgpException("Could not find valid signing key packet.");
+            throw new Exception("Could not find valid signing key packet.");
         }
         return KeyPacket;
     }
@@ -343,7 +342,7 @@ public abstract class BaseKey : IKey
 
         if (!KeyPacket.IsEncryptionKey || (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId)))
         {
-            throw new PgpException("Could not find valid encryption key packet.");
+            throw new Exception("Could not find valid encryption key packet.");
         }
 
         return KeyPacket;

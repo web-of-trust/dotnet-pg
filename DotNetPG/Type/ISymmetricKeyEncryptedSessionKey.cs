@@ -3,11 +3,25 @@
 
 namespace DotNetPG.Type;
 
+using Enum;
+
 /// <summary>
 ///     Symmetric key encrypted session key interface.
 /// </summary>
 public interface ISymmetricKeyEncryptedSessionKey : IEncryptedSessionKey
 {
+    int Version { get; }
+    
+    IString2Key S2k { get; }
+    
+    SymmetricAlgorithm Symmetric { get; }
+    
+    AeadAlgorithm? Aead { get; }
+    
+    byte[] Iv { get; }
+    
+    byte[] Encrypted { get; }
+
     /// <summary>
     ///     Decrypt session key
     /// </summary>

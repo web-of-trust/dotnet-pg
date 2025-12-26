@@ -22,5 +22,5 @@ public interface IEncryptedMessage : IArmorable
     ///     Decrypt the message.
     ///     One of `decryptionKeys` or `passwords` must be specified.
     /// </summary>
-    ILiteralMessage Decrypt(IList<IKey> decryptionKeys, IList<string> passwords);
+    ILiteralMessage Decrypt(IList<IPrivateKey> decryptionKeys, IList<string> passwords);
 }

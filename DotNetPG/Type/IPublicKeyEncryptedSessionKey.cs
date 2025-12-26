@@ -3,11 +3,25 @@
 
 namespace DotNetPG.Type;
 
+using Enum;
+
 /// <summary>
 ///     Public key encrypted session key interface
 /// </summary>
 public interface IPublicKeyEncryptedSessionKey : IEncryptedSessionKey
 {
+    int Version { get; }
+    
+    int KeyVersion { get; }
+    
+    byte[] KeyFingerprint { get; }
+    
+    byte[] KeyId { get; }
+
+    KeyAlgorithm KeyAlgorithm { get; }
+    
+    ISessionKeyCrypto SessionKeyCrypto { get; }
+
     /// <summary>
     ///     Decrypt session key
     /// </summary>
