@@ -490,7 +490,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     public static SignaturePacket CreateLiteralData(
         ISecretKeyPacket signKey,
         ILiteralData literalData,
-        IList<IKey>  recipients,
+        IList<IKey> recipients,
         INotationData? notationData = null,
         DateTime? time = null
     )
