@@ -15,13 +15,15 @@ public class Signature : ISignature
 {
     private IList<ISignaturePacket> _signatures;
 
+    private IList<byte[]> _signingKeyIDs;
+    
     private IList<Exception> _verificationErrors;
 
     public Signature(IList<ISignaturePacket> signatures)
     {
         _signatures = signatures;
         PacketList = new PacketList(signatures.OfType<IPacket>().ToList());
-        SigningKeyIDs = signatures.Select(signature => signature.IssuerKeyId).ToList();
+        _signingKeyIDs = signatures.Select(signature => signature.IssuerKeyId).ToList();
         _verificationErrors = [];
     }
 
@@ -37,7 +39,7 @@ public class Signature : ISignature
 
     public IPacketList PacketList { get; }
 
-    public IList<byte[]> SigningKeyIDs { get; }
+    public IList<byte[]> SigningKeyIDs => _signingKeyIDs.AsReadOnly();
 
     public IList<Exception> VerificationErrors => _verificationErrors.AsReadOnly();
 

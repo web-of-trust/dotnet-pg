@@ -24,5 +24,5 @@ public class Verification(
 
     public bool IsVerified => isVerified;
 
-    public IList<string> UserIDs => userIDs;
+    public IList<string> UserIDs => userIDs.AsReadOnly();
 }
