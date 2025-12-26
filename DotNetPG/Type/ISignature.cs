@@ -9,6 +9,11 @@ namespace DotNetPG.Type;
 public interface ISignature : IArmorable, IPacketContainer
 {
     /// <summary>
+    /// Signature packets
+    /// </summary>
+    IList<ISignaturePacket> Packets { get; }
+
+    /// <summary>
     ///     Get signing key IDs
     /// </summary>
     IList<byte[]> SigningKeyIDs { get; }

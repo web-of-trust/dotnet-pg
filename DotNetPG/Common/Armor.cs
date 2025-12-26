@@ -114,7 +114,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
     public static string Encode(
         ArmorType type,
         byte[] data,
-        string[] hashAlgos,
+        IList<string> hashAlgos,
         string text = "",
         string customComment = ""
     )

@@ -490,7 +490,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     public static SignaturePacket CreateLiteralData(
         ISecretKeyPacket signKey,
         ILiteralData literalData,
-        IKeyPacket[] recipients,
+        IList<IKey>  recipients,
         INotationData? notationData = null,
         DateTime? time = null
     )
@@ -506,7 +506,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             foreach (var recipient in recipients)
             {
                 subPackets.Add(
-                    IntendedRecipientFingerprint.FromKeyPacket(recipient)
+                    IntendedRecipientFingerprint.FromKeyPacket(recipient.KeyPacket)
                 );
             }
         }

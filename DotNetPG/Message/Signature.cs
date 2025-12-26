@@ -13,17 +13,17 @@ using Type;
 /// </summary>
 public class Signature : ISignature
 {
-    private IList<ISignaturePacket> _signatures;
+    private IList<ISignaturePacket> _packets;
 
     private IList<byte[]> _signingKeyIDs;
     
     private IList<Exception> _verificationErrors;
 
-    public Signature(IList<ISignaturePacket> signatures)
+    public Signature(IList<ISignaturePacket> packets)
     {
-        _signatures = signatures;
-        PacketList = new PacketList(signatures.OfType<IPacket>().ToList());
-        _signingKeyIDs = signatures.Select(signature => signature.IssuerKeyId).ToList();
+        _packets = packets;
+        PacketList = new PacketList(packets.OfType<IPacket>().ToList());
+        _signingKeyIDs = packets.Select(signature => signature.IssuerKeyId).ToList();
         _verificationErrors = [];
     }
 
@@ -37,6 +37,8 @@ public class Signature : ISignature
         return new Signature(Packet.PacketList.Decode(bytes).Packets.OfType<ISignaturePacket>().ToList());
     }
 
+    public IList<ISignaturePacket> Packets => _packets.AsReadOnly();
+    
     public IPacketList PacketList { get; }
 
     public IList<byte[]> SigningKeyIDs => _signingKeyIDs.AsReadOnly();
@@ -52,7 +54,7 @@ public class Signature : ISignature
 
         IList<IVerification> verifications = [];
 
-        foreach (var signature in _signatures)
+        foreach (var signature in _packets)
         {
             foreach (var key in verificationKeys)
             {
