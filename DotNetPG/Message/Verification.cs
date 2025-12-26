@@ -13,7 +13,7 @@ public class Verification(
     ISignaturePacket signaturePacket,
     string verificationError,
     bool isVerified,
-    string[] userIDs)
+    IList<string> userIDs)
     : IVerification
 {
     public byte[] KeyId => keyId;
@@ -24,5 +24,5 @@ public class Verification(
 
     public bool IsVerified => isVerified;
 
-    public string[] UserIDs => userIDs;
+    public IList<string> UserIDs => userIDs;
 }

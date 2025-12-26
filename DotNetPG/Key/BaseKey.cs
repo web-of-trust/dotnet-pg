@@ -7,6 +7,7 @@ using Enum;
 using Packet;
 using Packet.SubPacket;
 using Type;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Utilities;
 
 /// <summary>
@@ -291,6 +292,63 @@ public abstract class BaseKey : IKey
         return preferred ?? [];
     }
 
+    public IKeyPacket GetSigningKeyPacket(byte[] keyId, DateTime? time = null)
+    {
+        foreach (var subkey in Subkeys)
+        {
+            if (Arrays.IsNullOrEmpty(keyId) || Arrays.AreEqual(keyId, subkey.KeyId))
+            {
+                if (!subkey.IsSigningKey || subkey.IsRevoked(time: time))
+                {
+                    continue;
+                }
+
+                var signature = subkey.BindingSignatures[0].GetSubPacket<EmbeddedSignature>();
+                if (signature != null)
+                {
+                    if (signature.Signature.Verify(
+                        subkey.KeyPacket, [..KeyPacket.SignBytes(), ..subkey.KeyPacket.SignBytes()], time
+                    ))
+                    {
+                        return subkey.KeyPacket;
+                    }
+                }
+                else
+                {
+                    throw new PgpException("Missing embedded signature.");
+                }
+            }
+        }
+
+        if (!KeyPacket.IsSigningKey || (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId)))
+        {
+            throw new PgpException("Could not find valid signing key packet.");
+        }
+        return KeyPacket;
+    }
+
+    public IKeyPacket GetEncryptionKeyPacket(byte[] keyId, DateTime? time = null)
+    {
+        foreach (var subkey in Subkeys)
+        {
+            if (Arrays.IsNullOrEmpty(keyId) || Arrays.AreEqual(keyId, subkey.KeyId))
+            {
+                if (!subkey.IsEncryptionKey || subkey.IsRevoked(time: time))
+                {
+                    continue;
+                }
+                return subkey.KeyPacket;
+            }
+        }
+
+        if (!KeyPacket.IsEncryptionKey || (!Arrays.IsNullOrEmpty(keyId) && !Arrays.AreEqual(keyId, KeyId)))
+        {
+            throw new PgpException("Could not find valid encryption key packet.");
+        }
+
+        return KeyPacket;
+    }
+    
     public bool IsRevoked(
         IKey? verifyKey = null,
         ISignaturePacket? certificate = null,

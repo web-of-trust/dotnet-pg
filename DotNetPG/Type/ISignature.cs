@@ -16,12 +16,12 @@ public interface ISignature : IArmorable, IPacketContainer
     /// <summary>
     ///     Get verification errors
     /// </summary>
-    string[] VerificationErrors { get; }
+    IList<Exception> VerificationErrors { get; }
 
     /// <summary>
     ///     Verify signature with literal data
     /// </summary>
-    IVerification[] Verify(
+    IList<IVerification> Verify(
         IList<IKey> verificationKeys,
         ILiteralData literalData,
         DateTime? time = null
@@ -30,7 +30,7 @@ public interface ISignature : IArmorable, IPacketContainer
     /// <summary>
     ///     Verify signature with cleartext
     /// </summary>
-    IVerification[] VerifyCleartext(
+    IList<IVerification> VerifyCleartext(
         IList<IKey> verificationKeys,
         ICleartextMessage cleartext,
         DateTime? time = null

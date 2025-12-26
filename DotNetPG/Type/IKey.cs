@@ -96,6 +96,16 @@ public interface IKey : IPacketContainer
     AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric);
 
     /// <summary>
+    /// Get signing key packet
+    /// </summary>
+    IKeyPacket GetSigningKeyPacket(byte[] keyId, DateTime? time = null);
+
+    /// <summary>
+    /// Get encryption key packet
+    /// </summary>
+    IKeyPacket GetEncryptionKeyPacket(byte[] keyId, DateTime? time = null);
+
+    /// <summary>
     ///     The key is revoked.
     /// </summary>
     bool IsRevoked(
