@@ -15,7 +15,7 @@ public class CompressedData(
     byte[] compressed,
     IPacketList packetList,
     CompressionAlgorithm algorithm)
-    : BasePacket(PacketType.CompressedData)
+    : BasePacket(PacketType.CompressedData), ICompressedData
 {
     public byte[] Compressed => compressed;
 
