@@ -98,12 +98,16 @@ public interface IKey : IPacketContainer
     /// <summary>
     /// Get signing key packet
     /// </summary>
-    IKeyPacket GetSigningKeyPacket(byte[]? keyId = null, DateTime? time = null);
+    IKeyPacket GetSigningKeyPacket(
+        byte[]? keyId = null, DateTime? time = null
+    );
 
     /// <summary>
     /// Get encryption key packet
     /// </summary>
-    IKeyPacket GetEncryptionKeyPacket(byte[]? keyId = null, DateTime? time = null);
+    IKeyPacket GetEncryptionKeyPacket(
+        byte[]? keyId = null, DateTime? time = null
+    );
 
     /// <summary>
     ///     The key is revoked.
