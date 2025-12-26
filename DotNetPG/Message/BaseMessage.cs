@@ -9,7 +9,7 @@ using Type;
 /// <summary>
 /// OpenPGP abstract message class
 /// </summary>
-abstract class BaseMessage(IPacketList packetList) : IArmorable, IPacketContainer
+public abstract class BaseMessage(IPacketList packetList) : IArmorable, IPacketContainer
 {
     public IPacketList PacketList => packetList;
 

@@ -1,7 +1,6 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-
 namespace DotNetPG.Message;
 
 using Enum;
@@ -61,11 +60,7 @@ public class Signature : ISignature
                 IKeyPacket? keyPacket = null;
                 try
                 {
-                    keyPacket = key switch
-                    {
-                        IPrivateKey privateKey => privateKey.PublicKey.GetSigningKeyPacket(signature.IssuerKeyId),
-                        _ => key.GetSigningKeyPacket(signature.IssuerKeyId),
-                    };
+                    keyPacket = key.GetSigningKeyPacket(signature.IssuerKeyId);
                 }
                 catch (Exception e)
                 {

@@ -173,7 +173,12 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             throw new Exception("Signed digest mismatch!");
         }
 
-        if (verifyKey.KeyMaterial is IVerifyKeyMaterial km) return km.Verify(HashAlgorithm, message, Signature);
+        var keyMaterial = verifyKey switch
+        {
+            ISecretKeyPacket secretKey => secretKey.PublicKey.KeyMaterial,
+            _ => verifyKey.KeyMaterial,
+        };
+        if (keyMaterial is IVerifyKeyMaterial km) return km.Verify(HashAlgorithm, message, Signature);
         throw new Exception("Key material is not verifiable.");
     }
 

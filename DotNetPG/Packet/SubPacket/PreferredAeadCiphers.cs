@@ -11,7 +11,7 @@ using Enum;
 public class PreferredAeadCiphers(byte[] data, bool critical = false)
     : SignatureSubPacket((int)SignatureSubPacketType.PreferredAeadCiphers, data, critical)
 {
-    public AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric)
+    public IList<AeadAlgorithm> PreferredAeads(SymmetricAlgorithm symmetric)
     {
         var aeads = new List<AeadAlgorithm>();
         var data = Data;
@@ -26,6 +26,6 @@ public class PreferredAeadCiphers(byte[] data, bool critical = false)
             }
         }
 
-        return aeads.ToArray();
+        return aeads;
     }
 }

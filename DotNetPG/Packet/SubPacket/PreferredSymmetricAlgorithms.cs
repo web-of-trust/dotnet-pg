@@ -11,5 +11,5 @@ using Enum;
 public class PreferredSymmetricAlgorithms(byte[] data, bool critical = false)
     : SignatureSubPacket((int)SignatureSubPacketType.PreferredSymmetricAlgorithms, data, critical)
 {
-    public SymmetricAlgorithm[] Preferences => Data.Select(pref => (SymmetricAlgorithm)pref).ToArray();
+    public IList<SymmetricAlgorithm> Preferences => Data.Select(pref => (SymmetricAlgorithm)pref).ToList();
 }

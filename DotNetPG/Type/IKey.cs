@@ -83,7 +83,7 @@ public interface IKey : IPacketContainer
     /// <summary>
     ///     Return preferred symmetrics
     /// </summary>
-    SymmetricAlgorithm[] PreferredSymmetrics { get; }
+    IList<SymmetricAlgorithm> PreferredSymmetrics { get; }
 
     /// <summary>
     ///     Return AEAD is supported
@@ -93,17 +93,17 @@ public interface IKey : IPacketContainer
     /// <summary>
     ///     Return preferred aeads by given symmetric
     /// </summary>
-    AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric);
+    IList<AeadAlgorithm> PreferredAeads(SymmetricAlgorithm symmetric);
 
     /// <summary>
     /// Get signing key packet
     /// </summary>
-    IKeyPacket GetSigningKeyPacket(byte[] keyId, DateTime? time = null);
+    IKeyPacket GetSigningKeyPacket(byte[]? keyId = null, DateTime? time = null);
 
     /// <summary>
     /// Get encryption key packet
     /// </summary>
-    IKeyPacket GetEncryptionKeyPacket(byte[] keyId, DateTime? time = null);
+    IKeyPacket GetEncryptionKeyPacket(byte[]? keyId = null, DateTime? time = null);
 
     /// <summary>
     ///     The key is revoked.

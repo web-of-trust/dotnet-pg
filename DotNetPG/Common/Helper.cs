@@ -87,7 +87,10 @@ public static class Helper
 
     public static IString2Key String2Key(S2kType type = S2kType.Iterated)
     {
-        if (type == S2kType.Simple) throw new ArgumentException("Simple type not supported.");
+        if (type == S2kType.Simple)
+        {
+            throw new ArgumentException("Simple type not supported.");
+        }
         var random = new SecureRandom();
         return type switch
         {
@@ -120,7 +123,9 @@ public static class Helper
                 SymmetricAlgorithm.Camellia192 or
                 SymmetricAlgorithm.Camellia256 => new CamelliaEngine(),
             SymmetricAlgorithm.Twofish => new TwofishEngine(),
-            _ => throw new ArgumentException("Unsupported symmetric algorithm encountered.")
+            _ => throw new ArgumentException(
+                "Unsupported symmetric algorithm encountered."
+            )
         };
     }
 
@@ -142,7 +147,9 @@ public static class Helper
             HashAlgorithm.Sha224 => new Sha224Digest(),
             HashAlgorithm.Sha3_256 => new Sha3Digest(),
             HashAlgorithm.Sha3_512 => new Sha3Digest(512),
-            _ => throw new ArgumentException("Unsupported hash algorithm encountered.")
+            _ => throw new ArgumentException(
+                "Unsupported hash algorithm encountered."
+            )
         };
     }
 
@@ -153,8 +160,12 @@ public static class Helper
 
     public static BigInteger ReadMpi(byte[] bytes)
     {
-        var bitLength = BinaryPrimitives.ReadInt16BigEndian(bytes.Take(2).ToArray());
-        return BigIntegers.FromUnsignedByteArray(bytes.Skip(2).Take((bitLength + 7) >> 3).ToArray());
+        var bitLength = BinaryPrimitives.ReadInt16BigEndian(
+            bytes.Take(2).ToArray()
+        );
+        return BigIntegers.FromUnsignedByteArray(
+            bytes.Skip(2).Take((bitLength + 7) >> 3).ToArray()
+        );
     }
 
     public static int SymmetricBlockSize(SymmetricAlgorithm? symmetric)
@@ -225,7 +236,9 @@ public static class Helper
             case HashAlgorithm.Md5:
             case HashAlgorithm.Sha1:
             case HashAlgorithm.Ripemd160:
-                throw new ArgumentException($"{hash} hash algorithm is unsupported.");
+                throw new ArgumentException(
+                    $"{hash} hash algorithm is unsupported."
+                );
         }
     }
 
@@ -237,7 +250,9 @@ public static class Helper
             case SymmetricAlgorithm.Idea:
             case SymmetricAlgorithm.TripleDes:
             case SymmetricAlgorithm.Cast5:
-                throw new ArgumentException($"{symmetric} symmetric algorithm is unsupported.");
+                throw new ArgumentException(
+                    $"{symmetric} symmetric algorithm is unsupported."
+                );
         }
     }
 

@@ -264,7 +264,7 @@ public abstract class BaseKey : IKey
 
     public bool IsPrivate => KeyPacket is ISecretKeyPacket;
 
-    public SymmetricAlgorithm[] PreferredSymmetrics
+    public IList<SymmetricAlgorithm> PreferredSymmetrics
     {
         get
         {
@@ -286,13 +286,13 @@ public abstract class BaseKey : IKey
 
     public IPacketList PacketList { get; }
 
-    public AeadAlgorithm[] PreferredAeads(SymmetricAlgorithm symmetric)
+    public IList<AeadAlgorithm> PreferredAeads(SymmetricAlgorithm symmetric)
     {
         var preferred = DirectSignatures.FirstOrDefault()?.GetSubPacket<PreferredAeadCiphers>()?.PreferredAeads(symmetric);
         return preferred ?? [];
     }
 
-    public IKeyPacket GetSigningKeyPacket(byte[] keyId, DateTime? time = null)
+    public IKeyPacket GetSigningKeyPacket(byte[]? keyId = null, DateTime? time = null)
     {
         foreach (var subkey in Subkeys)
         {
@@ -327,7 +327,7 @@ public abstract class BaseKey : IKey
         return KeyPacket;
     }
 
-    public IKeyPacket GetEncryptionKeyPacket(byte[] keyId, DateTime? time = null)
+    public IKeyPacket GetEncryptionKeyPacket(byte[]? keyId = null, DateTime? time = null)
     {
         foreach (var subkey in Subkeys)
         {

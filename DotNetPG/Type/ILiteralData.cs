@@ -8,7 +8,7 @@ using Enum;
 /// <summary>
 ///     Literal data interface
 /// </summary>
-public interface ILiteralData : ISigning
+public interface ILiteralData : IPacket, ISigning
 {
     /// <summary>
     ///     Get literal format

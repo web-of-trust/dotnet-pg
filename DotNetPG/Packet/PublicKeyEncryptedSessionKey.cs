@@ -168,7 +168,12 @@ public class PublicKeyEncryptedSessionKey : BasePacket, IPublicKeyEncryptedSessi
         ISessionKey sessionKey, IKeyPacket keyPacket, int version
     )
     {
-        return keyPacket.KeyMaterial switch
+        var keyMaterial = keyPacket switch
+        {
+            ISecretKeyPacket secretKey => secretKey.PublicKey.KeyMaterial,
+            _ => keyPacket.KeyMaterial,
+        };
+        return keyMaterial switch
         {
             RsaPublicKeyMaterial rsa => RsaSessionKeyCrypto.EncryptSessionKey(
                 version == Version3

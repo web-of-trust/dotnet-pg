@@ -16,6 +16,11 @@ public interface ILiteralMessage
     ILiteralData LiteralData { get; }
 
     /// <summary>
+    ///     Get signature of signed message
+    /// </summary>
+    ISignature Signature { get; }
+    
+    /// <summary>
     ///     Sign the message
     /// </summary>
     ILiteralMessage Sign(
