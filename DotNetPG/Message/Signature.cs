@@ -57,7 +57,11 @@ public class Signature : ISignature
                 IKeyPacket? keyPacket = null;
                 try
                 {
-                    keyPacket = key.GetSigningKeyPacket(signature.IssuerKeyId);
+                    keyPacket = key switch
+                    {
+                        IPrivateKey privateKey => privateKey.PublicKey.GetSigningKeyPacket(signature.IssuerKeyId),
+                        _ => key.GetSigningKeyPacket(signature.IssuerKeyId),
+                    };
                 }
                 catch (Exception e)
                 {
