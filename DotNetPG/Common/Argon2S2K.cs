@@ -43,7 +43,9 @@ public class Argon2S2K(
             .Build();
         generator.Init(parameters);
         var result = new byte[length];
-        generator.GenerateBytes(Encoding.UTF8.GetBytes(passphrase), result, 0, result.Length);
+        generator.GenerateBytes(
+            Encoding.UTF8.GetBytes(passphrase), result, 0, result.Length
+        );
         return result;
     }
 
