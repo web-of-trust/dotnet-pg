@@ -6,6 +6,7 @@ namespace DotNetPG;
 using Common;
 using Enum;
 using Key;
+using Message;
 using Type;
 
 /// <summary>
@@ -168,5 +169,267 @@ public sealed class OpenPGP
     )
     {
         return privateKey.RevokeKey(key, revocationReason, reasonTag, time);
+    }
+
+    /// <summary>
+    /// Read OpenPGP signature from armored string.
+    /// </summary>
+    /// <returns>Return a signature object.</returns>
+    public static ISignature ReadSignature(string armored)
+    {
+        return Signature.FromArmored(armored);
+    }
+
+    /// <summary>
+    /// Read OpenPGP signature from binary.
+    /// </summary>
+    /// <returns>Return a signature object.</returns>
+    public static ISignature ReadSignature(byte[] signatureData)
+    {
+        return Signature.FromBytes(signatureData);
+    }
+
+    /// <summary>
+    /// Read OpenPGP signed message from armored string.
+    /// </summary>
+    /// <returns>Return a signed message object.</returns>
+    public static ISignedMessage ReadSignedMessage(string messageData)
+    {
+        return SignedMessage.FromArmored(messageData);
+    }
+
+    /// <summary>
+    /// Read OpenPGP encrypted message from armored string.
+    /// </summary>
+    /// <returns>Return an encrypted message object.</returns>
+    public static IEncryptedMessage ReadEncryptedMessage(string messageData)
+    {
+        return EncryptedMessage.FromArmored(messageData);
+    }
+
+    /// <summary>
+    /// Read OpenPGP encrypted message from binary.
+    /// </summary>
+    /// <returns>Return an encrypted message object.</returns>
+    public static IEncryptedMessage ReadEncryptedMessage(byte[] messageData)
+    {
+        return EncryptedMessage.FromBytes(messageData);
+    }
+
+    /// <summary>
+    /// Read OpenPGP literal message from armored string.
+    /// </summary>
+    /// <returns>Return a literal message object.</returns>
+    public static ILiteralMessage ReadLiteralMessage(string messageData)
+    {
+        return LiteralMessage.FromArmored(messageData);
+    }
+
+    /// <summary>
+    /// Read OpenPGP literal message from binary.
+    /// </summary>
+    /// <returns>Return a literal message object.</returns>
+    public static ILiteralMessage ReadLiteralMessage(byte[] messageData)
+    {
+        return LiteralMessage.FromBytes(messageData);
+    }
+
+    /// <summary>
+    /// Create new cleartext message object from text.
+    /// </summary>
+    public static ICleartextMessage CreateCleartextMessage(string text)
+    {
+        return new CleartextMessage(text);
+    }
+
+    /// <summary>
+    /// Create new literal message object from literal data.
+    /// </summary>
+    public static ILiteralMessage CreateLiteralMessage(
+        byte[] data,
+        string filename = "",
+        DateTime? time = null
+    )
+    {
+        return LiteralMessage.FromLiteralData(data, filename, time);
+    }
+
+    /// <summary>
+    /// Sign a cleartext message.
+    /// </summary>
+    /// <returns>Return a signed message object.</returns>
+    public static ISignedMessage SignCleartext(
+        string text,
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return CreateCleartextMessage(text).Sign(signingKeys, recipients, notationData, time);
+    }
+
+    /// <summary>
+    /// Sign a cleartext message & return detached signature.
+    /// </summary>
+    public static ISignature SignDetachedCleartext(
+        string text,
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return CreateCleartextMessage(text).SignDetached(signingKeys, recipients, notationData, time);
+    }
+
+    /// <summary>
+    /// Sign a message & return signed literal message.
+    /// </summary>
+    public static ILiteralMessage Sign(
+        ILiteralMessage message,
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return message.Sign(signingKeys, recipients, notationData, time);
+    }
+
+    /// <summary>
+    /// Sign a message & return detached signature.
+    /// </summary>
+    public static ISignature SignDetached(
+        ILiteralMessage message,
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return message.SignDetached(signingKeys, recipients, notationData, time);
+    }
+
+    /// <summary>
+    /// Verify signatures of cleartext signed message.
+    /// </summary>
+    /// <returns>Return verifications.</returns>
+    public static IList<IVerification> Verify(
+        string messageData,
+        IList<IKey> verificationKeys,
+        DateTime? time = null
+    )
+    {
+        return ReadSignedMessage(messageData).Verify(verificationKeys, time);
+    }
+
+    /// <summary>
+    /// Verify detached signatures of cleartext message.
+    /// </summary>
+    /// <returns>Return verifications.</returns>
+    public static IList<IVerification> VerifyDetached(
+        string text,
+        string signature,
+        IList<IKey> verificationKeys,
+        DateTime? time = null
+    )
+    {
+        return CreateCleartextMessage(text).VerifyDetached(verificationKeys, Signature.FromArmored(signature), time);
+    }
+
+    /// <summary>
+    /// Encrypt a message using public keys, passwords or both at once.
+    /// At least one of `encryptionKeys`, `passwords`must be specified.
+    /// If signing keys are specified, those will be used to sign the message.
+    /// </summary>
+    public static IEncryptedMessage Encrypt(
+        ILiteralMessage message,
+        IList<IKey> encryptionKeys,
+        IList<string> passwords,
+        IList<IPrivateKey> signingKeys,
+        SymmetricAlgorithm?  symmetric = null,
+        CompressionAlgorithm? compression = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        if (signingKeys.Count == 0)
+        {
+            return message.Compress(compression ?? Config.PreferredCompression).Encrypt(
+                encryptionKeys, passwords, symmetric ?? Config.PreferredSymmetric
+            );
+        }
+        else
+        {
+            return message.Sign(
+                signingKeys, encryptionKeys, notationData, time
+            ).Compress(compression ?? Config.PreferredCompression).Encrypt(
+                encryptionKeys, passwords, symmetric ?? Config.PreferredSymmetric
+            );
+        }
+    }
+
+    /// <summary>
+    /// Decrypt a message with the user's private keys, or passwords.
+    /// One of `decryptionKeys` or `passwords` must be specified.
+    /// </summary>
+    public static ILiteralMessage Decrypt(
+        IEncryptedMessage message,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> password
+    )
+    {
+        return message.Decrypt(decryptionKeys, password);
+    }
+
+    /// <summary>
+    /// Decrypt a armored encrypted string with
+    /// the user's private keys, or passwords.
+    /// One of `decryptionKeys` or `passwords` must be specified.
+    /// </summary>
+    public static ILiteralMessage Decrypt(
+        string messageData,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return ReadEncryptedMessage(messageData).Decrypt(decryptionKeys, passwords);
+    }
+
+    /// <summary>
+    /// Generate a new session key object.
+    /// Taking the algorithm preferences of the passed encryption keys, if any.
+    /// </summary>
+    public static ISessionKey GenerateSessionKey(
+        IList<IKey> encryptionKeys, SymmetricAlgorithm? symmetric = null
+    )
+    {
+        return LiteralMessage.GenerateSessionKey(encryptionKeys, symmetric ?? Config.PreferredSymmetric);
+    }
+
+    /// <summary>
+    /// Encrypt a session key either with public keys, passwords, or both at once.
+    /// </summary>
+    public static IPacketList EncryptSessionKey(
+        ISessionKey sessionKey,
+        IList<IKey> encryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return LiteralMessage.EncryptSessionKey(sessionKey, encryptionKeys, passwords);
+    }
+
+    /// <summary>
+    /// Decrypt encrypted session keys.
+    /// Using private keys or passwords (not both).
+    /// </summary>
+    public static ISessionKey DecryptSessionKey(
+        IPacketList packetList,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return EncryptedMessage.DecryptSessionKey(packetList, decryptionKeys, passwords);
     }
 }
