@@ -24,13 +24,19 @@ public class User : IUser
         MainKey = mainKey;
         UserIdPacket = userIdPacket;
 
-        var revocations = revocationSignatures.Where(signature => signature.IsCertRevocation).ToArray();
+        var revocations = revocationSignatures.Where(
+            signature => signature.IsCertRevocation
+        ).ToArray();
         RevocationSignatures = BaseKey.SortSignatures(revocations).AsReadOnly();
 
-        var selfSigs = selfSignatures.Where(signature => signature.IsCertification).ToArray();
+        var selfSigs = selfSignatures.Where(
+            signature => signature.IsCertification
+        ).ToArray();
         SelfSignatures = BaseKey.SortSignatures(selfSigs).AsReadOnly();
 
-        var others = otherSignatures.Where(signature => signature.IsCertification).ToArray();
+        var others = otherSignatures.Where(
+            signature => signature.IsCertification
+        ).ToArray();
         OtherSignatures = BaseKey.SortSignatures(others).AsReadOnly();
 
         PacketList = new PacketList([
@@ -127,7 +133,9 @@ public class User : IUser
     {
         if (Arrays.AreEqual(signKey.Fingerprint, MainKey.Fingerprint))
         {
-            throw new Exception("The user\\'s own key can only be used for self-certifications.");
+            throw new Exception(
+                "The user\\'s own key can only be used for self-certifications."
+            );
         }
         return new User(
             MainKey,

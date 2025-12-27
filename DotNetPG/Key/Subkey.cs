@@ -23,10 +23,14 @@ public class Subkey : ISubkey
         MainKey = mainKey;
         KeyPacket = keyPacket;
 
-        var revocations = revocationSignatures.Where(signature => signature.IsSubkeyRevocation).ToArray();
+        var revocations = revocationSignatures.Where(
+            signature => signature.IsSubkeyRevocation
+        ).ToArray();
         RevocationSignatures = BaseKey.SortSignatures(revocations).AsReadOnly();
 
-        var bindings = bindingSignatures.Where(signature => signature.IsSubkeyBinding).ToArray();
+        var bindings = bindingSignatures.Where(
+            signature => signature.IsSubkeyBinding
+        ).ToArray();
         BindingSignatures = BaseKey.SortSignatures(bindings).AsReadOnly();
 
         PacketList = new PacketList([
