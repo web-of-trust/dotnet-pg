@@ -139,8 +139,8 @@ M2eW+sS8HCEkqpccy8Imc0abq4+voVjMiis6bc4CCQ==
     private const string EccCurve25519PrivateKey = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
 
 lIYEaUpAYRYJKwYBBAHaRw8BAQdAxNFrk1BAfIODwbzj7j+cQn+35C0ID1hj60Cy
-U86oPb7+BwMCoUB0MyObPDn/gA4b4RCAteNQ/GahKnjJzKFfQmmb9NX97fSDj/dr
-5BNzyRYracvpXi5P5czln4KrEfOIF8eWL0NHiUeYpdNBppYnpeD3IrQqTmd1eWVu
+U86oPb7+BwMC6DDB/G7F9MP/RcAvhC1JFnzkt6gf9NV2vZoPGm392v8kKZQwb8ra
+UvPCfYejAIAR4qjGjc+kjqApMZOCOlygZbMGAjxeXalqouS+ugzGObQqTmd1eWVu
 IFZhbiBOZ3V5ZW4gPG5ndXllbm52MTk4MUBnbWFpbC5jb20+iJMEExYKADsWIQQ6
 dYnwWZSnUDoorfViUvVkpTtJXgUCaUpAYQIbAwULCQgHAgIiAgYVCgkICwIEFgID
 AQIeBwIXgAAKCRBiUvVkpTtJXuBLAQCPA/cVcjviwsa8fDCY8WW46xW8ZFeCn69i
@@ -155,12 +155,12 @@ pumpe4K21x9AYeggduKrWHPIxYs4rxPUaqPT8iN6Jv15jW+Tps4xcF0kvxyfOWdR
 CZ1bB/xMz2mC4f/PehpaNWAN/C2vw57sLVa7foi3YbUV2RRYwm5kG2ijkLmr8OmG
 dXBttqkTrmFpVVqY9k1SfjVH45+1TXOVCDeEEA8lk0OH/LuqhB6A5EkvvrF2eYqc
 iwRpSkBhEgorBgEEAZdVAQUBAQdAcwCnokWFZCcGwu+0MCh7vBjeHa5cgc1q413D
-gKuPRE4DAQgH/gcDApGSCDvO+IFU/z8FJ/TEcaR19c8wkUmzJnN8U0vjjYfw9NDM
-fvr4DhFVC9xy6qNasJUuWbozFQhnGflVeDzM3VC7BKwkDmXlcTZp1qScYPGIeAQY
+gKuPRE4DAQgH/gcDAvhHJ3nGMtl6/xTZ3/3yLm9L0uFu1AV9lYh1Y8uoq7+iqTMB
+6nWTuMJGFtVVriseoYTLgrsfmC/Mxe3bJCuiC2bqhgBZOjCiIaW6YcUJlr+IeAQY
 FgoAIBYhBDp1ifBZlKdQOiit9WJS9WSlO0leBQJpSkBhAhsMAAoJEGJS9WSlO0le
 03MA+gPUPzX0LqO+OuPmwiuYEJibUneKde3nU2NE5kGplgf2AP9rU8+rOkhvrj0t
 Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
-=bSaL
+=3dNI
 -----END PGP PRIVATE KEY BLOCK-----";
 
     [Test]
@@ -309,7 +309,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
             Assert.That(privateKey.KeyId, Is.EqualTo(Hex.Decode("6252f564a53b495e")));
-            Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
+            Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
             Assert.That(privateKey.Version, Is.EqualTo(4));
             Assert.That(privateKey.IsPrivate, Is.EqualTo(true));
