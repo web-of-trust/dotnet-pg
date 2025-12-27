@@ -218,7 +218,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
 
         var subkeys = Subkeys.ToList();
-        foreach (var subkey in subkeys)
+        foreach (var subkey in Subkeys)
         {
             var index = subkeys.IndexOf(subkey);
             var subkeyPass = subkeyPassphrases?[index] ?? passphrase;
@@ -249,7 +249,7 @@ public class PrivateKey : BaseKey, IPrivateKey
             throw new ArgumentException("Passphrase are required for key decryption.");
         }
         var subkeys = Subkeys.ToList();
-        foreach (var subkey in subkeys)
+        foreach (var subkey in Subkeys)
         {
             var index = subkeys.IndexOf(subkey);
             var subkeyPass = subkeyPassphrases?[index] ?? passphrase;
@@ -366,7 +366,7 @@ public class PrivateKey : BaseKey, IPrivateKey
     )
     {
         var users = Users.ToList();
-        foreach (var user in users)
+        foreach (var user in Users)
         {
             if (user.UserId == userId)
             {
@@ -391,7 +391,7 @@ public class PrivateKey : BaseKey, IPrivateKey
     )
     {
         var subkeys = Subkeys.ToList();
-        foreach (var subkey in subkeys)
+        foreach (var subkey in Subkeys)
         {
             if (Arrays.AreEqual(subkey.KeyId, keyId))
             {
