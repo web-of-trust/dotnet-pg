@@ -398,7 +398,7 @@ public abstract class BaseKey : IKey
     )
     {
         return Users.Any(
-            user => user.IsPrimary && user.IsCertified(verifyKey, certificate, time)
+            user => user.IsCertified(verifyKey, certificate, time)
         );
     }
 
