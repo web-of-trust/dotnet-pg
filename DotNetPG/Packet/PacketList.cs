@@ -61,7 +61,7 @@ public class PacketList(IList<IPacket> packets) : IPacketList
                 PacketType.LiteralData => LiteralData.FromBytes(reader.Data),
                 PacketType.Trust => Trust.FromBytes(reader.Data),
                 PacketType.UserId => UserId.FromBytes(reader.Data),
-                PacketType.PublicSubkey => PublicKey.FromBytes(reader.Data),
+                PacketType.PublicSubkey => PublicSubkey.FromBytes(reader.Data),
                 PacketType.UserAttribute => UserAttribute.FromBytes(reader.Data),
                 PacketType.SymEncryptedIntegrityProtectedData => SymEncryptedIntegrityProtectedData.FromBytes(
                     reader.Data),
