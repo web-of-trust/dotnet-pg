@@ -193,18 +193,18 @@ public sealed class OpenPGP
     /// Read OpenPGP signed message from armored string.
     /// </summary>
     /// <returns>Return a signed message object.</returns>
-    public static ISignedMessage ReadSignedMessage(string messageData)
+    public static ISignedMessage ReadSignedMessage(string armored)
     {
-        return SignedMessage.FromArmored(messageData);
+        return SignedMessage.FromArmored(armored);
     }
 
     /// <summary>
     /// Read OpenPGP encrypted message from armored string.
     /// </summary>
     /// <returns>Return an encrypted message object.</returns>
-    public static IEncryptedMessage ReadEncryptedMessage(string messageData)
+    public static IEncryptedMessage ReadEncryptedMessage(string armored)
     {
-        return EncryptedMessage.FromArmored(messageData);
+        return EncryptedMessage.FromArmored(armored);
     }
 
     /// <summary>
@@ -220,9 +220,9 @@ public sealed class OpenPGP
     /// Read OpenPGP literal message from armored string.
     /// </summary>
     /// <returns>Return a literal message object.</returns>
-    public static ILiteralMessage ReadLiteralMessage(string messageData)
+    public static ILiteralMessage ReadLiteralMessage(string armored)
     {
-        return LiteralMessage.FromArmored(messageData);
+        return LiteralMessage.FromArmored(armored);
     }
 
     /// <summary>
@@ -316,12 +316,12 @@ public sealed class OpenPGP
     /// </summary>
     /// <returns>Return verifications.</returns>
     public static IList<IVerification> Verify(
-        string messageData,
+        string armored,
         IList<IKey> verificationKeys,
         DateTime? time = null
     )
     {
-        return ReadSignedMessage(messageData).Verify(verificationKeys, time);
+        return ReadSignedMessage(armored).Verify(verificationKeys, time);
     }
 
     /// <summary>
