@@ -99,7 +99,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
         var text = string.Join(Helper.Crlf, textLines);
         var data = Base64.Decode(string.Join("", dataLines));
 
-        if (checksum == Crc24Checksum(data) &&
+        if (checksum != Crc24Checksum(data) &&
             (!string.IsNullOrEmpty(checksum) || Config.ChecksumRequired))
             throw new Exception("Ascii armor integrity check failed.");
 
