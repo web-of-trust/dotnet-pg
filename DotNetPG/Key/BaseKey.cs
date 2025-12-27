@@ -134,7 +134,7 @@ public abstract class BaseKey : IKey
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
         Users = userArray.AsReadOnly();
-        PrimaryUser = users.Find(user => user.IsPrimary);
+        PrimaryUser = users.Find(user => user.IsPrimary && user.Verify() && !user.IsRevoked()) ?? Users.TakeWhile(user => user.Verify() && !user.IsRevoked()).First();
 
         ISubkeyPacket? subkeyPacket = null;
         var subkeys = new List<ISubkey>();
@@ -381,7 +381,7 @@ public abstract class BaseKey : IKey
             if (keyId == null || Arrays.AreEqual(keyId, signature.IssuerKeyId))
             {
                 if (signature.Verify(
-                    keyPacket, keyPacket.SignBytes(), time
+                    keyPacket, KeyPacket.SignBytes(), time
                 ))
                 {
                     return true;
