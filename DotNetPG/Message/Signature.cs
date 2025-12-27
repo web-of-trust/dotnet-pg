@@ -8,7 +8,7 @@ using Packet;
 using Type;
 
 /// <summary>
-/// Class that represents a detacted OpenPGP signature.
+/// Class that represents a detached OpenPGP signature.
 /// </summary>
 public class Signature : ISignature
 {
