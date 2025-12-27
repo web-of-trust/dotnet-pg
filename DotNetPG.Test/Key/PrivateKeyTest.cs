@@ -11,6 +11,8 @@ public class PrivateKeyTest
 
     private const string UserId = "Nguyen Van Nguyen <nguyennv1981@gmail.com>";
 
+    private const string Email = "nguyennv1981@gmail.com";
+
     private const string RsaPrivateKey = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
 
 lQWFBGlKP0MBDADA8nF1IvkpAaUY7+AKQoVOGs4rDMUhZYiVTmuYeR8RlhcYxqpF
@@ -207,6 +209,22 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("d108af739d75c215b33d69ceadab00e6c157cc0d")));
+
+        privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.RsaSign);
+        user = privateKey.Users[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(user.UserId, Is.EqualTo(Email));
+            Assert.That(user.Verify(), Is.EqualTo(true));
+        });
+        subkey = privateKey.Subkeys[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaSign));
+            Assert.That(subkey.KeyLength, Is.EqualTo(2048));
+            Assert.That(subkey.Version, Is.EqualTo(4));
+            Assert.That(subkey.Verify(), Is.EqualTo(true));
+        });
     }
 
     [Test]
@@ -253,6 +271,22 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("301f0bfe368ef77061ab6e67f7a5af3768f29a6a")));
+
+        privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EcDsa, ecCurve: EcCurve.Secp384R1);
+        user = privateKey.Users[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(user.UserId, Is.EqualTo(Email));
+            Assert.That(user.Verify(), Is.EqualTo(true));
+        });
+        subkey = privateKey.Subkeys[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
+            Assert.That(subkey.KeyLength, Is.EqualTo(384));
+            Assert.That(subkey.Version, Is.EqualTo(4));
+            Assert.That(subkey.Verify(), Is.EqualTo(true));
+        });
     }
 
     [Test]
@@ -299,6 +333,22 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("23fbfc82863c58b77fc17fd06ea630cef4c57be8")));
+
+        privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EcDsa, ecCurve: EcCurve.BrainpoolP256R1);
+        user = privateKey.Users[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(user.UserId, Is.EqualTo(Email));
+            Assert.That(user.Verify(), Is.EqualTo(true));
+        });
+        subkey = privateKey.Subkeys[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
+            Assert.That(subkey.KeyLength, Is.EqualTo(256));
+            Assert.That(subkey.Version, Is.EqualTo(4));
+            Assert.That(subkey.Verify(), Is.EqualTo(true));
+        });
     }
 
     [Test]
@@ -345,6 +395,22 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
+
+        privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EdDsaLegacy, ecCurve: EcCurve.Ed25519);
+        user = privateKey.Users[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(user.UserId, Is.EqualTo(Email));
+            Assert.That(user.Verify(), Is.EqualTo(true));
+        });
+        subkey = privateKey.Subkeys[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
+            Assert.That(subkey.KeyLength, Is.EqualTo(255));
+            Assert.That(subkey.Version, Is.EqualTo(4));
+            Assert.That(subkey.Verify(), Is.EqualTo(true));
+        });
     }
 
     [Test]
@@ -464,6 +530,22 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
         privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
+        
+        privateKey = privateKey.AddUsers([UserId]).AddSubkey(passphrase, KeyAlgorithm.Ed25519);
+        var user = privateKey.Users[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(user.UserId, Is.EqualTo(UserId));
+            Assert.That(user.Verify(), Is.EqualTo(true));
+        });
+        subkey = privateKey.Subkeys[1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
+            Assert.That(subkey.KeyLength, Is.EqualTo(255));
+            Assert.That(subkey.Version, Is.EqualTo(6));
+            Assert.That(subkey.Verify(), Is.EqualTo(true));
+        });
     }
 
     [Test]
