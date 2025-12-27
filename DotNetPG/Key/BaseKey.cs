@@ -134,7 +134,8 @@ public abstract class BaseKey : IKey
             return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
         Users = userArray.AsReadOnly();
-        PrimaryUser = users.Find(user => user.IsPrimary && user.Verify() && !user.IsRevoked()) ?? Users.TakeWhile(user => user.Verify() && !user.IsRevoked()).First();
+        var validUsers = Users.TakeWhile(user => user.Verify() && !user.IsRevoked()).ToList();
+        PrimaryUser = validUsers.Find(user => user.IsPrimary) ?? validUsers.FirstOrDefault();
 
         ISubkeyPacket? subkeyPacket = null;
         var subkeys = new List<ISubkey>();
