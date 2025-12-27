@@ -16,14 +16,25 @@ public class CleartextMessage(string text) : ICleartextMessage
 
     public string NormalizeText => Helper.RemoveTrailingSpaces(text);
 
-    public ISignedMessage Sign(IList<IPrivateKey> signingKeys, IList<IKey>? recipients = null, INotationData? notationData = null,
-        DateTime? time = null)
+    public ISignedMessage Sign(
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+     )
     {
-        return new SignedMessage(Text, SignDetached(signingKeys, recipients, notationData, time));
+        return new SignedMessage(
+            Text,
+            SignDetached(signingKeys, recipients, notationData, time)
+        );
     }
 
-    public ISignature SignDetached(IList<IPrivateKey> signingKeys, IList<IKey>? recipients = null, INotationData? notationData = null,
-        DateTime? time = null)
+    public ISignature SignDetached(
+        IList<IPrivateKey> signingKeys,
+        IList<IKey>? recipients = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
     {
         if (signingKeys.Count == 0)
         {
@@ -31,12 +42,22 @@ public class CleartextMessage(string text) : ICleartextMessage
         }
 
         var signatures = signingKeys.Select(
-            key => SignaturePacket.CreateLiteralData(key.SecretKeyPacket, LiteralData.FromText(Text), recipients ?? [], notationData, time)
+            key => SignaturePacket.CreateLiteralData(
+                key.SecretKeyPacket,
+                LiteralData.FromText(Text),
+                recipients ?? [],
+                notationData,
+                time
+            )
         );
         return new Signature([..signatures]);
     }
 
-    public IList<IVerification> VerifyDetached(IList<IKey> verificationKeys, ISignature signature, DateTime? time = null)
+    public IList<IVerification> VerifyDetached(
+        IList<IKey> verificationKeys,
+        ISignature signature,
+        DateTime? time = null
+    )
     {
         return signature.VerifyCleartext(verificationKeys, this, time);
     }

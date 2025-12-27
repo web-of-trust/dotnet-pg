@@ -30,7 +30,10 @@ public class SignedMessage(string text, ISignature signature) : CleartextMessage
 
     public ISignature Signature => signature;
 
-    public IList<IVerification> Verify(IList<IKey> verificationKeys, DateTime? time = null)
+    public IList<IVerification> Verify(
+        IList<IKey> verificationKeys,
+        DateTime? time = null
+    )
     {
         return signature.VerifyCleartext(verificationKeys, this, time);
     }

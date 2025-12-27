@@ -44,7 +44,11 @@ public class Signature : ISignature
 
     public IList<Exception> VerificationErrors => _verificationErrors.AsReadOnly();
 
-    public IList<IVerification> Verify(IList<IKey> verificationKeys, ILiteralData literalData, DateTime? time = null)
+    public IList<IVerification> Verify(
+        IList<IKey> verificationKeys,
+        ILiteralData literalData,
+        DateTime? time = null
+    )
     {
         if (verificationKeys.Count == 0)
         {
@@ -97,7 +101,11 @@ public class Signature : ISignature
         return verifications;
     }
 
-    public IList<IVerification> VerifyCleartext(IList<IKey> verificationKeys, ICleartextMessage cleartext, DateTime? time = null)
+    public IList<IVerification> VerifyCleartext(
+        IList<IKey> verificationKeys,
+        ICleartextMessage cleartext,
+        DateTime? time = null
+    )
     {
         return Verify(verificationKeys, LiteralData.FromText(cleartext.Text), time);
     }

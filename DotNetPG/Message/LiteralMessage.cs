@@ -37,7 +37,11 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         return new LiteralMessage(Packet.PacketList.Decode(bytes));
     }
 
-    public static LiteralMessage FromLiteralData(byte[] data, string filename = "", DateTime? time = null)
+    public static LiteralMessage FromLiteralData(
+        byte[] data,
+        string filename = "",
+        DateTime? time = null
+    )
     {
         return new LiteralMessage(
             new Packet.PacketList(
@@ -171,18 +175,28 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         return new Signature([..signatures]);
     }
 
-    public IList<IVerification> Verify(IList<IKey> verificationKeys, DateTime? time = null)
+    public IList<IVerification> Verify(
+        IList<IKey> verificationKeys,
+        DateTime? time = null
+    )
     {
         return Signature.Verify(verificationKeys, LiteralData, time);
     }
 
-    public IList<IVerification> VerifyDetached(IList<IKey> verificationKeys, ISignature signature, DateTime? time = null)
+    public IList<IVerification> VerifyDetached(
+        IList<IKey> verificationKeys,
+        ISignature signature,
+        DateTime? time = null
+    )
     {
         return signature.Verify(verificationKeys, LiteralData, time);
     }
 
-    public IEncryptedMessage Encrypt(IList<IKey> encryptionKeys, IList<string> passwords,
-        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256)
+    public IEncryptedMessage Encrypt(
+        IList<IKey> encryptionKeys,
+        IList<string> passwords,
+        SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256
+    )
     {
         var sessionKey = GenerateSessionKey(encryptionKeys, symmetric);
         var addPadding = sessionKey.Aead != null;
@@ -198,7 +212,9 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         ]));
     }
 
-    public ILiteralMessage Compress(CompressionAlgorithm algorithm = CompressionAlgorithm.Uncompressed)
+    public ILiteralMessage Compress(
+        CompressionAlgorithm algorithm = CompressionAlgorithm.Uncompressed
+    )
     {
         if (algorithm != CompressionAlgorithm.Uncompressed)
         {
