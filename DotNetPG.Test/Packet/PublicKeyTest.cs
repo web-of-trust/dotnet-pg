@@ -1,9 +1,10 @@
-using DotNetPG.Enum;
+namespace DotNetPG.Test.Packet;
+
+using Enum;
 using DotNetPG.Packet;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace DotNetPG.Test.Packet;
-
+[TestFixture]
 public class PublicKeyTest
 {
     [Test]

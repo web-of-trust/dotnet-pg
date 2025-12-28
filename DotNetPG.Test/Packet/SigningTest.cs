@@ -1,12 +1,13 @@
+namespace DotNetPG.Test.Packet;
+
 using System.Text;
-using DotNetPG.Enum;
+using Enum;
 using DotNetPG.Packet;
 using DotNetPG.Packet.SubPacket;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace DotNetPG.Test.Packet;
-
+[TestFixture]
 public class SigningTest
 {
     private const string LiteralText = "Hello, world!";

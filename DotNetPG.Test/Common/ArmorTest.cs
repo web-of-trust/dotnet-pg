@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using DotNetPG.Common;
 using DotNetPG.Enum;
 
+[TestFixture]
 public class ArmorTest
 {
     [Test]

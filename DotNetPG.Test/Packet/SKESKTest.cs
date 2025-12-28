@@ -1,11 +1,12 @@
+namespace DotNetPG.Test.Packet;
+
 using DotNetPG.Common;
-using DotNetPG.Enum;
+using Enum;
 using DotNetPG.Packet;
 using DotNetPG.Packet.Key;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace DotNetPG.Test.Packet;
-
+[TestFixture]
 public class SKESKTest
 {
     private const string Passphrase = "password";

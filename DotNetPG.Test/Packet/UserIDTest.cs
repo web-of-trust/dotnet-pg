@@ -1,8 +1,9 @@
+namespace DotNetPG.Test.Packet;
+
 using DotNetPG.Packet;
 using Org.BouncyCastle.Security;
 
-namespace DotNetPG.Test.Packet;
-
+[TestFixture]
 public class UserIDTest
 {
     [Test]

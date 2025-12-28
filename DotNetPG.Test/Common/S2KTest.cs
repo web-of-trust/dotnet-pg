@@ -6,6 +6,7 @@ using DotNetPG.Common;
 using DotNetPG.Enum;
 using DotNetPG.Packet;
 
+[TestFixture]
 public class S2KTest
 {
     [Test]

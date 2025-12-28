@@ -1,13 +1,14 @@
 
-using System.Text;
-using DotNetPG.Enum;
-using DotNetPG.Packet;
-using DotNetPG.Packet.Key;
-using DotNetPG.Type;
-using Org.BouncyCastle.Utilities.Encoders;
-
 namespace DotNetPG.Test.Packet;
 
+using System.Text;
+using Enum;
+using DotNetPG.Packet;
+using DotNetPG.Packet.Key;
+using Type;
+using Org.BouncyCastle.Utilities.Encoders;
+
+[TestFixture]
 public class AeadTest
 {
     private const string LiteralText = "Hello, world!\n";

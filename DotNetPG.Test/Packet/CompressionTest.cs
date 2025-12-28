@@ -1,10 +1,11 @@
+namespace DotNetPG.Test.Packet;
+
 using DotNetPG.Common;
-using DotNetPG.Enum;
+using Enum;
 using DotNetPG.Packet;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace DotNetPG.Test.Packet;
-
+[TestFixture]
 public class CompressionTest
 {
     private const string Passphrase = "password";
