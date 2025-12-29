@@ -80,9 +80,9 @@ public static class Helper
 
     public static string RemoveTrailingSpaces(string text)
     {
-        var lines = text.Split(Eol).Select(line => line.TrimEnd(' ', '\r', '\n'))
-            .Where(line => !string.IsNullOrEmpty(line));
-        return string.Join(Eol, lines);
+        return string.Join(
+            Eol, text.Split(Eol).Select(line => line.TrimEnd(' ', '\r', '\t'))
+        );
     }
 
     public static IString2Key String2Key(S2kType type = S2kType.Iterated)

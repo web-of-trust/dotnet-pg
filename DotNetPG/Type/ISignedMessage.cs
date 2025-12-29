@@ -6,7 +6,7 @@ namespace DotNetPG.Type;
 /// <summary>
 ///     Signed message interface.
 /// </summary>
-public interface ISignedMessage : IArmorable
+public interface ISignedMessage : IArmorable, ICleartextMessage
 {
     /// <summary>
     ///     Get signature of signed message
