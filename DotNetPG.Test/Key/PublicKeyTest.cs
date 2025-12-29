@@ -118,7 +118,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(publicKey.KeyLength, Is.EqualTo(3072));
             Assert.That(publicKey.Version, Is.EqualTo(4));
-            Assert.That(publicKey.IsPrivate, Is.EqualTo(false));
+            Assert.That(publicKey.IsPrivate, Is.False);
         });
 
         var subkey = publicKey.Subkeys[0];
@@ -129,14 +129,14 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(subkey.KeyLength, Is.EqualTo(3072));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
     }
     
@@ -151,7 +151,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(publicKey.KeyLength, Is.EqualTo(384));
             Assert.That(publicKey.Version, Is.EqualTo(4));
-            Assert.That(publicKey.IsPrivate, Is.EqualTo(false));
+            Assert.That(publicKey.IsPrivate, Is.False);
         });
 
         var subkey = publicKey.Subkeys[0];
@@ -162,14 +162,14 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(384));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
     }
 
@@ -184,7 +184,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(publicKey.KeyLength, Is.EqualTo(256));
             Assert.That(publicKey.Version, Is.EqualTo(4));
-            Assert.That(publicKey.IsPrivate, Is.EqualTo(false));
+            Assert.That(publicKey.IsPrivate, Is.False);
         });
 
         var subkey = publicKey.Subkeys[0];
@@ -195,14 +195,14 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(256));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
     }
 
@@ -217,7 +217,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(publicKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(publicKey.KeyLength, Is.EqualTo(255));
             Assert.That(publicKey.Version, Is.EqualTo(4));
-            Assert.That(publicKey.IsPrivate, Is.EqualTo(false));
+            Assert.That(publicKey.IsPrivate, Is.False);
         });
 
         var subkey = publicKey.Subkeys[0];
@@ -228,14 +228,14 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = publicKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
     }
 
@@ -309,7 +309,7 @@ I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUrk0mXubZvyl4GBg==
     {
         var verifyKey = OpenPGP.ReadPublicKey(RsaPublicKey);
         var certifiedKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
-        Assert.That(certifiedKey.IsCertified(verifyKey), Is.EqualTo(true));
+        Assert.That(certifiedKey.IsCertified(verifyKey), Is.True);
     }
 
     [Test]

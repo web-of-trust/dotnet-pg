@@ -176,13 +176,13 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(privateKey.KeyLength, Is.EqualTo(3072));
             Assert.That(privateKey.Version, Is.EqualTo(4));
-            Assert.That(privateKey.IsPrivate, Is.EqualTo(true));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
+            Assert.That(privateKey.IsPrivate, Is.True);
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.False);
         });
 
         privateKey = privateKey.Decrypt(Passphrase);
-        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+        Assert.That(privateKey.IsDecrypted, Is.True);
 
         var subkey = privateKey.Subkeys[0];
         Assert.Multiple(() =>
@@ -192,14 +192,14 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(subkey.KeyLength, Is.EqualTo(3072));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -215,7 +215,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(Email));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
         subkey = privateKey.Subkeys[1];
         Assert.Multiple(() =>
@@ -223,7 +223,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaSign));
             Assert.That(subkey.KeyLength, Is.EqualTo(2048));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
     }
 
@@ -238,13 +238,13 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(privateKey.KeyLength, Is.EqualTo(384));
             Assert.That(privateKey.Version, Is.EqualTo(4));
-            Assert.That(privateKey.IsPrivate, Is.EqualTo(true));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
+            Assert.That(privateKey.IsPrivate, Is.True);
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.False);
         });
 
         privateKey = privateKey.Decrypt(Passphrase);
-        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+        Assert.That(privateKey.IsDecrypted, Is.True);
 
         var subkey = privateKey.Subkeys[0];
         Assert.Multiple(() =>
@@ -254,14 +254,14 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(384));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -277,7 +277,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(Email));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
         subkey = privateKey.Subkeys[1];
         Assert.Multiple(() =>
@@ -285,7 +285,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(subkey.KeyLength, Is.EqualTo(384));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
     }
 
@@ -300,13 +300,13 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(privateKey.KeyLength, Is.EqualTo(256));
             Assert.That(privateKey.Version, Is.EqualTo(4));
-            Assert.That(privateKey.IsPrivate, Is.EqualTo(true));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
+            Assert.That(privateKey.IsPrivate, Is.True);
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.False);
         });
 
         privateKey = privateKey.Decrypt(Passphrase);
-        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+        Assert.That(privateKey.IsDecrypted, Is.True);
 
         var subkey = privateKey.Subkeys[0];
         Assert.Multiple(() =>
@@ -316,14 +316,14 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(256));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -339,7 +339,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(Email));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
         subkey = privateKey.Subkeys[1];
         Assert.Multiple(() =>
@@ -347,7 +347,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(subkey.KeyLength, Is.EqualTo(256));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
     }
 
@@ -362,13 +362,13 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
             Assert.That(privateKey.Version, Is.EqualTo(4));
-            Assert.That(privateKey.IsPrivate, Is.EqualTo(true));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
+            Assert.That(privateKey.IsPrivate, Is.True);
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.False);
         });
 
         privateKey = privateKey.Decrypt(Passphrase);
-        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+        Assert.That(privateKey.IsDecrypted, Is.True);
 
         var subkey = privateKey.Subkeys[0];
         Assert.Multiple(() =>
@@ -378,14 +378,14 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -401,7 +401,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(Email));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
         subkey = privateKey.Subkeys[1];
         Assert.Multiple(() =>
@@ -409,7 +409,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
             Assert.That(subkey.Version, Is.EqualTo(4));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
     }
 
@@ -438,7 +438,7 @@ k0mXubZvyl4GBg==
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(false));
+            Assert.That(privateKey.IsEncrypted, Is.False);
         });
 
         var directSig = privateKey.DirectSignatures[0];
@@ -496,9 +496,9 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(false));
-            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.False);
+            Assert.That(privateKey.AeadProtected, Is.True);
         });
 
         var directSig = privateKey.DirectSignatures[0];
@@ -524,7 +524,7 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
         });
 
         privateKey = privateKey.Decrypt("correct horse battery staple");
-        Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+        Assert.That(privateKey.IsDecrypted, Is.True);
 
         var passphrase = Helper.GeneratePassword();
         var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
@@ -536,7 +536,7 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
         subkey = privateKey.Subkeys[1];
         Assert.Multiple(() =>
@@ -544,7 +544,7 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
             Assert.That(subkey.Version, Is.EqualTo(6));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
     }
 
@@ -573,8 +573,8 @@ WMyKKzptzgIJ
         Assert.Multiple(() =>
         {
             Assert.That(certifiedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));
-            Assert.That(publicKey.IsCertified(privateKey), Is.EqualTo(false));
-            Assert.That(certifiedKey.IsCertified(privateKey), Is.EqualTo(true));
+            Assert.That(publicKey.IsCertified(privateKey), Is.False);
+            Assert.That(certifiedKey.IsCertified(privateKey), Is.True);
         });
     }
 
@@ -603,8 +603,8 @@ WMyKKzptzgIJ
         Assert.Multiple(() =>
         {
             Assert.That(revokedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));
-            Assert.That(publicKey.IsRevoked(privateKey), Is.EqualTo(false));
-            Assert.That(revokedKey.IsRevoked(privateKey), Is.EqualTo(true));
+            Assert.That(publicKey.IsRevoked(privateKey), Is.False);
+            Assert.That(revokedKey.IsRevoked(privateKey), Is.True);
         });
     }
 }

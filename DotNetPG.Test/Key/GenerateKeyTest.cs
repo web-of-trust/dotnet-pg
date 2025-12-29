@@ -18,8 +18,8 @@ public class GenerateKeyTest
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(privateKey.KeyLength, Is.EqualTo(2048));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.True);
         });
 
         var subkey = privateKey.Subkeys[0];
@@ -27,15 +27,15 @@ public class GenerateKeyTest
         {
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(subkey.KeyLength, Is.EqualTo(2048));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
-            Assert.That(user.IsPrimary, Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
+            Assert.That(user.IsPrimary, Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -50,8 +50,8 @@ public class GenerateKeyTest
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(privateKey.KeyLength, Is.EqualTo(384));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.True);
         });
 
         var subkey = privateKey.Subkeys[0];
@@ -59,15 +59,15 @@ public class GenerateKeyTest
         {
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(384));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
-            Assert.That(user.IsPrimary, Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
+            Assert.That(user.IsPrimary, Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -82,8 +82,8 @@ public class GenerateKeyTest
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(privateKey.KeyLength, Is.EqualTo(256));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.True);
         });
 
         var subkey = privateKey.Subkeys[0];
@@ -91,15 +91,15 @@ public class GenerateKeyTest
         {
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(256));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
-            Assert.That(user.IsPrimary, Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
+            Assert.That(user.IsPrimary, Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -114,8 +114,8 @@ public class GenerateKeyTest
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
-            Assert.That(privateKey.IsEncrypted, Is.EqualTo(true));
-            Assert.That(privateKey.IsDecrypted, Is.EqualTo(true));
+            Assert.That(privateKey.IsEncrypted, Is.True);
+            Assert.That(privateKey.IsDecrypted, Is.True);
         });
 
         var subkey = privateKey.Subkeys[0];
@@ -123,15 +123,15 @@ public class GenerateKeyTest
         {
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
         Assert.Multiple(() =>
         {
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
-            Assert.That(user.IsPrimary, Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
+            Assert.That(user.IsPrimary, Is.True);
         });
 
         var publicKey = privateKey.PublicKey;
@@ -150,7 +150,7 @@ public class GenerateKeyTest
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(privateKey.KeyLength, Is.EqualTo(2048));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+            Assert.That(privateKey.AeadProtected, Is.True);
         });
 
         var signature = privateKey.DirectSignatures[0];
@@ -162,7 +162,7 @@ public class GenerateKeyTest
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
             Assert.That(subkey.KeyLength, Is.EqualTo(2048));
             Assert.That(subkey.Version, Is.EqualTo(6));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
@@ -170,7 +170,7 @@ public class GenerateKeyTest
         {
             Assert.That(user.SelfSignatures[0].Version, Is.EqualTo(6));
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         Config.PresetRfc = PresetRfc.Rfc4880;
@@ -189,7 +189,7 @@ public class GenerateKeyTest
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
             Assert.That(privateKey.KeyLength, Is.EqualTo(521));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+            Assert.That(privateKey.AeadProtected, Is.True);
         });
 
         var signature = privateKey.DirectSignatures[0];
@@ -201,7 +201,7 @@ public class GenerateKeyTest
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDh));
             Assert.That(subkey.KeyLength, Is.EqualTo(521));
             Assert.That(subkey.Version, Is.EqualTo(6));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
@@ -209,7 +209,7 @@ public class GenerateKeyTest
         {
             Assert.That(user.SelfSignatures[0].Version, Is.EqualTo(6));
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         Config.PresetRfc = PresetRfc.Rfc4880;
@@ -227,7 +227,7 @@ public class GenerateKeyTest
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
             Assert.That(privateKey.KeyLength, Is.EqualTo(255));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+            Assert.That(privateKey.AeadProtected, Is.True);
         });
 
         var signature = privateKey.DirectSignatures[0];
@@ -239,7 +239,7 @@ public class GenerateKeyTest
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.X25519));
             Assert.That(subkey.KeyLength, Is.EqualTo(255));
             Assert.That(subkey.Version, Is.EqualTo(6));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
@@ -247,7 +247,7 @@ public class GenerateKeyTest
         {
             Assert.That(user.SelfSignatures[0].Version, Is.EqualTo(6));
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         Config.AeadProtect = false;
@@ -264,7 +264,7 @@ public class GenerateKeyTest
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed448));
             Assert.That(privateKey.KeyLength, Is.EqualTo(448));
             Assert.That(privateKey.Version, Is.EqualTo(6));
-            Assert.That(privateKey.AeadProtected, Is.EqualTo(true));
+            Assert.That(privateKey.AeadProtected, Is.True);
         });
 
         var signature = privateKey.DirectSignatures[0];
@@ -276,7 +276,7 @@ public class GenerateKeyTest
             Assert.That(subkey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.X448));
             Assert.That(subkey.KeyLength, Is.EqualTo(448));
             Assert.That(subkey.Version, Is.EqualTo(6));
-            Assert.That(subkey.Verify(), Is.EqualTo(true));
+            Assert.That(subkey.Verify(), Is.True);
         });
 
         var user = privateKey.Users[0];
@@ -284,7 +284,7 @@ public class GenerateKeyTest
         {
             Assert.That(user.SelfSignatures[0].Version, Is.EqualTo(6));
             Assert.That(user.UserId, Is.EqualTo(UserId));
-            Assert.That(user.Verify(), Is.EqualTo(true));
+            Assert.That(user.Verify(), Is.True);
         });
 
         Config.AeadProtect = false;
