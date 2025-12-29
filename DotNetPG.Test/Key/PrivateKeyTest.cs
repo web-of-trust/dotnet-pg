@@ -1,8 +1,8 @@
-using DotNetPG.Common;
-using DotNetPG.Enum;
-using Org.BouncyCastle.Utilities.Encoders;
-
 namespace DotNetPG.Test.Key;
+
+using DotNetPG.Common;
+using Enum;
+using Org.BouncyCastle.Utilities.Encoders;
 
 [TestFixture]
 public class PrivateKeyTest

@@ -1,7 +1,7 @@
+namespace DotNetPG.Test.Message;
+
 using DotNetPG.Packet;
 using Org.BouncyCastle.Utilities.Encoders;
-
-namespace DotNetPG.Test.Message;
 
 [TestFixture]
 public class SignatureTest
@@ -85,29 +85,6 @@ WMyKKzptzgIJ
 -----END PGP PUBLIC KEY BLOCK-----";
 
     private const string EccCurve25519PublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-mDMEaUpAYRYJKwYBBAHaRw8BAQdAxNFrk1BAfIODwbzj7j+cQn+35C0ID1hj60Cy
-U86oPb60Kk5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5udjE5ODFAZ21haWwuY29t
-PoiTBBMWCgA7FiEEOnWJ8FmUp1A6KK31YlL1ZKU7SV4FAmlKQGECGwMFCwkIBwIC
-IgIGFQoJCAsCBBYCAwECHgcCF4AACgkQYlL1ZKU7SV7gSwEAjwP3FXI74sLGvHww
-mPFluOsVvGRXgp+vYjeYDGE4skUA/1tM8NZnhpcvVJ3aH0GWOtL8ZuZJbDyggurf
-uImamdMFiQGzBBABCgAdFiEE0Qivc511whWzPWnOrasA5sFXzA0FAmlLtk4ACgkQ
-rasA5sFXzA2YzQwAqub4zDTMmLwSAPeTxvPJdcdgFd/H9QfbrwIZoSKJ1pLK01xK
-wnDtYo0GCa9UPYSULgXhGTdeWCYcy6DLl8Lwn8iumCGkyELG7mGP8gO8mpNS8v4/
-2GH2uYGvlNBDQUBT0IQQvw0bbq9x9VWH+eBrgTEhkH33q+vvbO53JcJ2DyyHnnzZ
-xH9UvcgV+nq+vvl36tu0RGj+Ly2X27O/paPWDxrQ3R/h+86MuHLZicda2hsPerSD
-hHCWHhBcKbNPp/mQFn+VpCXiXEJWfLqyr3483N2qqRN0NsCZkOHsGMXN8FNlmTw4
-rq5A7aCapr71X9ikcabpqXuCttcfQGHoIHbiq1hzyMWLOK8T1Gqj0/Ijeib9eY1v
-k6bOMXBdJL8cnzlnUQmdWwf8TM9pguH/z3oaWjVgDfwtr8Oe7C1Wu36It2G1FdkU
-WMJuZBtoo5C5q/DphnVwbbapE65haVVamPZNUn41R+OftU1zlQg3hBAPJZNDh/y7
-qoQegORJL76xdnmKuDgEaUpAYRIKKwYBBAGXVQEFAQEHQHMAp6JFhWQnBsLvtDAo
-e7wY3h2uXIHNauNdw4Crj0ROAwEIB4h4BBgWCgAgFiEEOnWJ8FmUp1A6KK31YlL1
-ZKU7SV4FAmlKQGECGwwACgkQYlL1ZKU7SV7TcwD6A9Q/NfQuo7464+bCK5gQmJtS
-d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
-=0tFF
------END PGP PUBLIC KEY BLOCK-----";
-
-    const string EccEd25519PublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mDMEaUpAYRYJKwYBBAHaRw8BAQdAxNFrk1BAfIODwbzj7j+cQn+35C0ID1hj60Cy
 U86oPb60Kk5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5udjE5ODFAZ21haWwuY29t
@@ -221,7 +198,7 @@ AOyJSAZeeTULHdJT67hEB4DHOIsvZ9qTJbVhJMDaWlpzAQCrCQnljZoLT9mjAYR57kgddCy1f4bx
 UKldVdcODYW/Ag==
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(EccEd25519PublicKey);
+        var publicKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
         var signature = OpenPGP.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>

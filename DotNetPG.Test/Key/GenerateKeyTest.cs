@@ -1,7 +1,7 @@
-using DotNetPG.Common;
-using DotNetPG.Enum;
-
 namespace DotNetPG.Test.Key;
+
+using DotNetPG.Common;
+using Enum;
 
 [TestFixture]
 public class GenerateKeyTest

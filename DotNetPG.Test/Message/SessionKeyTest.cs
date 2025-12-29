@@ -1,6 +1,6 @@
-using DotNetPG.Enum;
-
 namespace DotNetPG.Test.Message;
+
+using Enum;
 
 [TestFixture]
 public class SessionKeyTest
