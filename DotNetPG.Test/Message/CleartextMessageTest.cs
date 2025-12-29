@@ -1,4 +1,6 @@
 
+using System.Text.RegularExpressions;
+
 namespace DotNetPG.Test.Message;
 
 using Org.BouncyCastle.Utilities.Encoders;
@@ -9,9 +11,9 @@ public class CleartextMessageTest
     private const string Cleartext = @"Hello DotNetPG
 What we need from the grocery store:
 
---tofu
---vegetables
---noodles";
+-tofu
+-vegetables
+-noodles";
 
     private const string Passphrase = "dotnetpg";
 
@@ -181,6 +183,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(verification.IsVerified, Is.True);
         });
 
+        var armored = signedMessage.Armor();
         signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 

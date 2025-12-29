@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using System.Text.RegularExpressions;
+
 namespace DotNetPG.Message;
 
 using Common;
@@ -12,9 +14,11 @@ using Type;
 /// </summary>
 public class CleartextMessage(string text) : ICleartextMessage
 {
-    public string Text => text;
+    private readonly string _text = Helper.RemoveTrailingSpaces(text);
 
-    public string NormalizeText => Helper.RemoveTrailingSpaces(text);
+    public string Text => Regex.Replace(_text, "\r?\n", "\r\n", RegexOptions.Multiline);
+
+    public string NormalizeText => Regex.Replace(_text, "\r\n", "\n", RegexOptions.Multiline);
 
     public ISignedMessage Sign(
         IList<IPrivateKey> signingKeys,

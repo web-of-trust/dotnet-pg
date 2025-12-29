@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using System.Text.RegularExpressions;
+
 namespace DotNetPG.Packet;
 
 using Common;
@@ -41,7 +43,9 @@ public class LiteralData(byte[] data, LiteralFormat format, string filename = ""
         var text = Helper.RemoveTrailingSpaces(
             Encoding.UTF8.GetString(data)
         );
-        return Encoding.UTF8.GetBytes(text);
+        return Encoding.UTF8.GetBytes(
+            Regex.Replace(text, "\r?\n", "\r\n", RegexOptions.Multiline)
+        );
     }
 
     /// <summary>

@@ -129,7 +129,7 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
                 );
                 if (!string.IsNullOrEmpty(hashHeaders)) sb.Append(hashHeaders).Append("\n\n");
                 sb.Append(Regex.Replace(
-                    text, DashPattern, "- -", RegexOptions.Multiline
+                    text, @"^-", "- -", RegexOptions.Multiline
                 )).Append(Helper.Eol);
                 sb.Append(SignatureBegin);
                 sb.Append(AddHeader(customComment)).Append(Helper.Eol);
