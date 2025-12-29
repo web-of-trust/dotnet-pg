@@ -1,6 +1,3 @@
-
-using System.Text.RegularExpressions;
-
 namespace DotNetPG.Test.Message;
 
 using Org.BouncyCastle.Utilities.Encoders;

@@ -1,6 +1,6 @@
-using Org.BouncyCastle.Utilities.Encoders;
-
 namespace DotNetPG.Test.Message;
+
+using Org.BouncyCastle.Utilities.Encoders;
 
 [TestFixture]
 public class SignedMessageTest
