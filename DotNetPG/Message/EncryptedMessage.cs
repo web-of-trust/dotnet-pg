@@ -77,8 +77,8 @@ public class EncryptedMessage : BaseMessage, IEncryptedMessage
             {
                 foreach (var key in decryptionKeys)
                 {
-                    var keyPacket = key.SecretKeyPacket;
-                    if (pkesk.KeyAlgorithm == keyPacket.KeyAlgorithm && Arrays.AreEqual(pkesk.KeyId, key.KeyId))
+                    var keyPacket = key.GetEncryptionKeyPacket() as ISecretKeyPacket;
+                    if (pkesk.KeyAlgorithm == keyPacket?.KeyAlgorithm && Arrays.AreEqual(pkesk.KeyId, keyPacket.KeyId))
                     {
                         try
                         {
