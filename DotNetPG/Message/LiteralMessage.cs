@@ -37,6 +37,15 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         return new LiteralMessage(Packet.PacketList.Decode(bytes));
     }
 
+    public static LiteralMessage FromText(string text)
+    {
+        return new LiteralMessage(
+            new PacketList(
+                [Packet.LiteralData.FromText(text)]
+            )
+        );
+    }
+
     public static LiteralMessage FromLiteralData(
         byte[] data,
         string filename = "",
@@ -44,7 +53,7 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
     )
     {
         return new LiteralMessage(
-            new Packet.PacketList(
+            new PacketList(
                 [new LiteralData(data, LiteralFormat.Binary, filename, time)]
             )
         );

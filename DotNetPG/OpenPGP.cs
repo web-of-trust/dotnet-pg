@@ -255,6 +255,16 @@ public sealed class OpenPGP
     }
 
     /// <summary>
+    /// Create new literal message object from text.
+    /// </summary>
+    public static ILiteralMessage CreateLiteralMessage(
+        string text
+    )
+    {
+        return LiteralMessage.FromText(text);
+    }
+
+    /// <summary>
     /// Sign a cleartext message.
     /// </summary>
     /// <returns>Return a signed message object.</returns>
