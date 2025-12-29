@@ -198,8 +198,7 @@ Ijnmxt5Tm2u66ClYJAg/BN/1fxHBFH5Mrgz1nDXiaAek3mA=
 wqMEARMIAFUFAmlR+IoWIQQj+/yChjxYt3/Bf9BupjDO9MV76AkQbqYwzvTFe+gtFAAAAAAAFAAQ
 c2FsdEBwaHAtb3BlbnBncC5vcmchMciNTZ9MRiJGrhWXtgxyAAAxzQEAnapEBxPEdIm2njGWrYcj
 jw0qzg0sLkaqABojPt0H5RIA/i446+p3MeVuFC2gO3qwEI5mi/s89axBQSK3kU+dGvHU
------END PGP SIGNATURE-----
-";
+-----END PGP SIGNATURE-----";
 
         var publicKey = OpenPGP.ReadPublicKey(EccBrainpoolPublicKey);
         var signature = OpenPGP.ReadSignature(signatureData);
