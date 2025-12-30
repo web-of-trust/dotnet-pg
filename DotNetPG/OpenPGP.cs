@@ -387,10 +387,10 @@ public sealed class OpenPGP
     public static ILiteralMessage Decrypt(
         IEncryptedMessage message,
         IList<IPrivateKey> decryptionKeys,
-        IList<string> password
+        IList<string> passwords
     )
     {
-        return message.Decrypt(decryptionKeys, password);
+        return message.Decrypt(decryptionKeys, passwords);
     }
 
     /// <summary>
