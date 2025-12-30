@@ -1,8 +1,8 @@
-using System.Text;
-using DotNetPG.Enum;
-using Org.BouncyCastle.Utilities.Encoders;
-
 namespace DotNetPG.Test.Message;
+
+using System.Text;
+using Enum;
+using Org.BouncyCastle.Utilities.Encoders;
 
 [TestFixture]
 public class EncryptedMessageTest
