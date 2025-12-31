@@ -8,7 +8,7 @@ using Enum;
 /// <summary>
 ///     Public key encrypted session key interface
 /// </summary>
-public interface IPublicKeyEncryptedSessionKey : IEncryptedSessionKey
+public interface IPublicKeyEncryptedSessionKey : IEncryptedSessionKey, IPacket
 {
     int Version { get; }
     
