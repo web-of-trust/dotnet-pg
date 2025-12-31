@@ -11,15 +11,15 @@ using Enum;
 public interface IPublicKeyEncryptedSessionKey : IEncryptedSessionKey, IPacket
 {
     int Version { get; }
-    
+
     int KeyVersion { get; }
-    
+
     byte[] KeyFingerprint { get; }
-    
+
     byte[] KeyId { get; }
 
     KeyAlgorithm KeyAlgorithm { get; }
-    
+
     ISessionKeyCrypto SessionKeyCrypto { get; }
 
     /// <summary>

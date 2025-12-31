@@ -19,7 +19,7 @@ public interface ILiteralMessage
     ///     Get signature of signed message
     /// </summary>
     ISignature Signature { get; }
-    
+
     /// <summary>
     ///     Sign the message
     /// </summary>

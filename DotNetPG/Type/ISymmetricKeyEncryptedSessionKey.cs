@@ -11,15 +11,15 @@ using Enum;
 public interface ISymmetricKeyEncryptedSessionKey : IEncryptedSessionKey, IPacket
 {
     int Version { get; }
-    
+
     IString2Key S2k { get; }
-    
+
     SymmetricAlgorithm Symmetric { get; }
-    
+
     AeadAlgorithm? Aead { get; }
-    
+
     byte[] Iv { get; }
-    
+
     byte[] Encrypted { get; }
 
     /// <summary>
