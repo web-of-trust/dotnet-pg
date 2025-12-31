@@ -13,7 +13,7 @@ using System.Text;
 public class RevocationReason(byte[] data, bool critical = false)
     : SignatureSubPacket((int)SignatureSubPacketType.RevocationReason, data, critical)
 {
-    public RevocationReasonTag SignatureClass => (RevocationReasonTag)Data[0];
+    public RevocationReasonTag ReasonTag => (RevocationReasonTag)Data[0];
 
     public string Description => Encoding.UTF8.GetString(Data.Skip(1).ToArray());
 

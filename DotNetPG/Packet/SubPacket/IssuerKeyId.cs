@@ -19,9 +19,9 @@ public class IssuerKeyId(byte[] data, bool critical = false)
         return new IssuerKeyId(keyId, critical);
     }
 
-    public static IssuerFingerprint Wildcard(bool critical = false)
+    public static IssuerKeyId Wildcard(bool critical = false)
     {
-        return new IssuerFingerprint(
+        return new IssuerKeyId(
             new byte[8], critical
         );
     }

@@ -293,7 +293,7 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             salt = SecureRandom.GetNextBytes(new SecureRandom(), saltSize);
         else
             hashedSubpackets.Add(NotationData.FromNotation(
-                NotationData.SaltNotaion,
+                NotationData.SaltNotation,
                 Helper.GeneratePassword(saltSize)
             ));
 

@@ -18,7 +18,7 @@ public class NotationData(byte[] data, bool critical = false)
     private const int NameLength = 2;
     private const int ValueLength = 2;
 
-    public const string SaltNotaion = "salt@dotpg.openpgp.org";
+    public const string SaltNotation = "salt@dotpg.openpgp.org";
 
     public byte[] NameData
     {
