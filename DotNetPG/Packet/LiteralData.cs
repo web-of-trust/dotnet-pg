@@ -39,7 +39,8 @@ public class LiteralData(byte[] data, LiteralFormat format, string filename = ""
 
     public byte[] SignBytes()
     {
-        if (format != LiteralFormat.Text && format != LiteralFormat.Utf8) return data;
+        if (format != LiteralFormat.Text && format != LiteralFormat.Utf8)
+            return data;
         var text = Helper.RemoveTrailingSpaces(
             Encoding.UTF8.GetString(data)
         );

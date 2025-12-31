@@ -299,7 +299,8 @@ public class SecretKey : BasePacket, ISecretKeyPacket
             var hashed = DigestUtilities.CalculateDigest(
                 nameof(HashAlgorithm.Sha1), clearText
             );
-            if (!Arrays.AreEqual(hashed, hashText)) throw new Exception("Incorrect key passphrase.");
+            if (!Arrays.AreEqual(hashed, hashText))
+                throw new Exception("Incorrect key passphrase.");
         }
 
         return ReadKeyMaterial(clearText, _publicKey);
@@ -357,8 +358,15 @@ public class SecretKey : BasePacket, ISecretKeyPacket
         };
     }
 
-    protected static (byte[] KeyData, byte[] Iv, IKeyMaterial? KeyMaterial, S2kUsage S2kUsage, SymmetricAlgorithm?
-        Symmetric, IString2Key? S2k, AeadAlgorithm? Aead) DecodeSecretKey(byte[] bytes, IPublicKeyPacket publicKey)
+    protected static (
+        byte[] KeyData,
+        byte[] Iv,
+        IKeyMaterial? KeyMaterial,
+        S2kUsage S2kUsage,
+        SymmetricAlgorithm? Symmetric,
+        IString2Key? S2k,
+        AeadAlgorithm? Aead
+    ) DecodeSecretKey(byte[] bytes, IPublicKeyPacket publicKey)
     {
         var offset = publicKey.ToBytes().Length;
         var s2kUsage = (S2kUsage)bytes[offset++];
@@ -439,6 +447,7 @@ public class SecretKey : BasePacket, ISecretKeyPacket
             _ => throw new ArgumentException($"Key algorithm {publicKey.KeyAlgorithm} is unsupported.")
         };
 
-        return !keyMaterial.IsValid() ? throw new Exception("Key material is not consistent.") : keyMaterial;
+        return !keyMaterial.IsValid() ?
+            throw new Exception("Key material is not consistent.") : keyMaterial;
     }
 }

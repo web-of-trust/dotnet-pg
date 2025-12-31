@@ -58,7 +58,7 @@ public sealed class SubPacketReader(int type, byte[] data, int length)
         );
     }
 
-    public static ISubPacket[] ReadSignatureSubPackets(byte[] bytes)
+    public static IList<ISubPacket> ReadSignatureSubPackets(byte[] bytes)
     {
         var data = Arrays.Clone(bytes);
         var subPackets = new List<ISubPacket>();
@@ -157,6 +157,6 @@ public sealed class SubPacketReader(int type, byte[] data, int length)
             }
         }
 
-        return subPackets.ToArray();
+        return subPackets.AsReadOnly();
     }
 }

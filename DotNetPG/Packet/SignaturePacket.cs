@@ -39,7 +39,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         UnhashedSubpackets = unhashedSubPackets.AsReadOnly();
 
         if (version != (int)KeyVersion.V4 && version != (int)KeyVersion.V6)
-            throw new ArgumentException("Version of the signature packet is unsupported.");
+            throw new ArgumentException(
+                "Version of the signature packet is unsupported."
+            );
 
         Helper.AssertKeyAlgorithm(keyAlgorithm);
         Helper.AssertHash(hashAlgorithm);
@@ -84,20 +86,25 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
     public byte[] Signature { get; }
 
-    public DateTime? CreationTime => GetSubPacket<SignatureCreationTime>()?.CreationTime;
+    public DateTime? CreationTime =>
+        GetSubPacket<SignatureCreationTime>()?.CreationTime;
 
-    public DateTime? ExpirationTime => GetSubPacket<SignatureExpirationTime>()?.ExpirationTime;
+    public DateTime? ExpirationTime =>
+        GetSubPacket<SignatureExpirationTime>()?.ExpirationTime;
 
-    public int KeyExpirationTime => GetSubPacket<KeyExpirationTime>()?.ExpirationTime ?? 0;
+    public int KeyExpirationTime =>
+        GetSubPacket<KeyExpirationTime>()?.ExpirationTime ?? 0;
 
     public byte[] IssuerKeyId => GetSubPacket<IssuerKeyId>()?.KeyId ??
-                                 IssuerFingerprint.Skip(Version == (int)KeyVersion.V6 ? 0 : 12)
-                                 .Take(PublicKey.KeyIdSize).ToArray();
+         IssuerFingerprint.Skip(Version == (int)KeyVersion.V6 ? 0 : 12)
+         .Take(PublicKey.KeyIdSize).ToArray();
 
-    public byte[] IssuerFingerprint => GetSubPacket<IssuerFingerprint>()?.KeyFingerprint ??
-                                       SubPacket.IssuerFingerprint.Wildcard().KeyFingerprint;
+    public byte[] IssuerFingerprint =>
+        GetSubPacket<IssuerFingerprint>()?.KeyFingerprint ??
+        SubPacket.IssuerFingerprint.Wildcard().KeyFingerprint;
 
-    public bool IsPrimaryUserId => GetSubPacket<PrimaryUserId>()?.IsPrimaryUserId ?? false;
+    public bool IsPrimaryUserId =>
+        GetSubPacket<PrimaryUserId>()?.IsPrimaryUserId ?? false;
 
     public bool IsCertification
     {
@@ -116,15 +123,20 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         }
     }
 
-    public bool IsCertRevocation => SignatureType == SignatureType.CertRevocation;
+    public bool IsCertRevocation =>
+        SignatureType == SignatureType.CertRevocation;
 
-    public bool IsDirectKey => SignatureType == SignatureType.DirectKey;
+    public bool IsDirectKey =>
+        SignatureType == SignatureType.DirectKey;
 
-    public bool IsKeyRevocation => SignatureType == SignatureType.KeyRevocation;
+    public bool IsKeyRevocation =>
+        SignatureType == SignatureType.KeyRevocation;
 
-    public bool IsSubkeyBinding => SignatureType == SignatureType.SubkeyBinding;
+    public bool IsSubkeyBinding =>
+        SignatureType == SignatureType.SubkeyBinding;
 
-    public bool IsSubkeyRevocation => SignatureType == SignatureType.SubkeyRevocation;
+    public bool IsSubkeyRevocation =>
+        SignatureType == SignatureType.SubkeyRevocation;
 
     public T? GetSubPacket<T>() where T : ISubPacket
     {
@@ -137,8 +149,10 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     {
         var now = DateTime.Now;
         var timestamp = new DateTimeOffset(time ?? now).ToUnixTimeSeconds();
-        var creation = new DateTimeOffset(CreationTime ?? DateTime.UnixEpoch).ToUnixTimeSeconds();
-        var expiration = new DateTimeOffset(ExpirationTime ?? now).ToUnixTimeSeconds();
+        var creation = new DateTimeOffset(CreationTime ?? DateTime.UnixEpoch)
+            .ToUnixTimeSeconds();
+        var expiration = new DateTimeOffset(ExpirationTime ?? now)
+            .ToUnixTimeSeconds();
         return !(creation <= timestamp && timestamp <= expiration);
     }
 
@@ -150,7 +164,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
     {
         if (!Arrays.AreEqual(verifyKey.KeyId, IssuerKeyId))
         {
-            throw new Exception("Signature was not issued by the given public key.");
+            throw new Exception(
+                "Signature was not issued by the given public key."
+            );
         }
 
         if (verifyKey.KeyAlgorithm != KeyAlgorithm)
@@ -178,7 +194,8 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             ISecretKeyPacket secretKey => secretKey.PublicKey.KeyMaterial,
             _ => verifyKey.KeyMaterial,
         };
-        if (keyMaterial is IVerifyKeyMaterial km) return km.Verify(HashAlgorithm, message, Signature);
+        if (keyMaterial is IVerifyKeyMaterial km)
+            return km.Verify(HashAlgorithm, message, Signature);
         throw new Exception("Key material is not verifiable.");
     }
 
@@ -217,8 +234,12 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
         // Read hashed subpackets
         var hashedLength = isV6
-            ? BinaryPrimitives.ReadInt32BigEndian(bytes.Skip(offset).Take(4).ToArray())
-            : BinaryPrimitives.ReadInt16BigEndian(bytes.Skip(offset).Take(2).ToArray());
+            ? BinaryPrimitives.ReadInt32BigEndian(
+                bytes.Skip(offset).Take(4).ToArray()
+            )
+            : BinaryPrimitives.ReadInt16BigEndian(
+                bytes.Skip(offset).Take(2).ToArray()
+            );
         offset += isV6 ? 4 : 2;
         var hashedSubpackets = SubPacketReader.ReadSignatureSubPackets(
             bytes.Skip(offset).Take(hashedLength).ToArray()
@@ -227,8 +248,12 @@ public class SignaturePacket : BasePacket, ISignaturePacket
 
         // read unhashed subpackets
         var unhashedLength= isV6
-            ? BinaryPrimitives.ReadInt32BigEndian(bytes.Skip(offset).Take(4).ToArray())
-            : BinaryPrimitives.ReadInt16BigEndian(bytes.Skip(offset).Take(2).ToArray());
+            ? BinaryPrimitives.ReadInt32BigEndian(
+                bytes.Skip(offset).Take(4).ToArray()
+            )
+            : BinaryPrimitives.ReadInt16BigEndian(
+                bytes.Skip(offset).Take(2).ToArray()
+            );
         offset += isV6 ? 4 : 2;
         var unhashedSubpackets = SubPacketReader.ReadSignatureSubPackets(
             bytes.Skip(offset).Take(unhashedLength).ToArray()
@@ -312,7 +337,9 @@ public class SignaturePacket : BasePacket, ISignaturePacket
             ..signatureData,
             ..CalculateTrailer(version, signatureData.Length)
         ];
-        var signedHash = DigestUtilities.CalculateDigest(hashAlg.ToString(), message);
+        var signedHash = DigestUtilities.CalculateDigest(
+            hashAlg.ToString(), message
+        );
         return new SignaturePacket(
             version,
             signatureType,
@@ -537,7 +564,8 @@ public class SignaturePacket : BasePacket, ISignaturePacket
         ISecretKeyPacket signKey, HashAlgorithm hash, byte[] message
     )
     {
-        if (signKey.SecretKeyMaterial is ISignKeyMaterial km) return km.Sign(hash, message);
+        if (signKey.SecretKeyMaterial is ISignKeyMaterial km)
+            return km.Sign(hash, message);
         throw new Exception("Invalid key material for signing.");
     }
 

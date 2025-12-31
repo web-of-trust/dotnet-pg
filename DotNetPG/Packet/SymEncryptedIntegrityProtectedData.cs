@@ -123,12 +123,20 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
             var realHash = decrypted.Skip(decrypted.Length - digestSize).ToArray();
             var toHash = decrypted.Take(decrypted.Length - digestSize).ToArray();
             var verifyHash = DigestUtilities.CalculateDigest(nameof(HashAlgorithm.Sha1), toHash);
-            if (!Arrays.AreEqual(realHash, verifyHash)) throw new Exception("Modification detected.");
-            packetBytes = toHash.Skip(blockSize + 2).Take(toHash.Length - blockSize - 4).ToArray();
+            if (!Arrays.AreEqual(realHash, verifyHash))
+                throw new Exception("Modification detected.");
+            packetBytes = toHash.Skip(blockSize + 2)
+                .Take(toHash.Length - blockSize - 4).ToArray();
         }
 
         return new SymEncryptedIntegrityProtectedData(
-            Version, Encrypted, Salt, ChunkSize, cipherSymmetric, Aead, Packet.PacketList.Decode(packetBytes)
+            Version,
+            Encrypted,
+            Salt,
+            ChunkSize,
+            cipherSymmetric,
+            Aead,
+            Packet.PacketList.Decode(packetBytes)
         );
     }
 
@@ -162,7 +170,12 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
         offset += SaltSize;
 
         return new SymEncryptedIntegrityProtectedData(
-            version, bytes.Skip(offset).ToArray(), salt, chunkSize, symmetric, aead
+            version,
+            bytes.Skip(offset).ToArray(),
+            salt,
+            chunkSize,
+            symmetric,
+            aead
         );
     }
 
@@ -179,7 +192,8 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
         Helper.AssertSymmetric(symmetric);
         var aeadProtect = aead != null;
         var version = aeadProtect ? Version2 : Version1;
-        var salt = aeadProtect ? SecureRandom.GetNextBytes(new SecureRandom(), SaltSize) : [];
+        var salt = aeadProtect ?
+            SecureRandom.GetNextBytes(new SecureRandom(), SaltSize) : [];
         var chunkSize = aeadProtect ? Config.AeadChunkSize : 0;
 
         byte[] encrypted;
@@ -230,7 +244,9 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
         ISessionKey sessionKey, IPacketList packetList, AeadAlgorithm? aead = null
     )
     {
-        return EncryptPackets(sessionKey.EncryptionKey, packetList, sessionKey.Symmetric, aead);
+        return EncryptPackets(
+            sessionKey.EncryptionKey, packetList, sessionKey.Symmetric, aead
+        );
     }
 
     public override byte[] ToBytes()
@@ -297,15 +313,21 @@ public class SymEncryptedIntegrityProtectedData : BasePacket, IEncryptedDataPack
             var cryptedData = forEncryption
                 ? cipher.Encrypt(chunkData.Take(size).ToArray(), nonce, aData)
                 : cipher.Decrypt(chunkData.Take(size).ToArray(), nonce, aData);
-            Array.Copy(cryptedData, 0, crypted, index * size, cryptedData.Length);
+            Array.Copy(
+                cryptedData, 0, crypted, index * size, cryptedData.Length
+            );
             chunkData = chunkData.Skip(size).ToArray();
-            Array.Copy(Helper.Pack32(++index), 0, nonce, ivLength - 4, 4);
+            Array.Copy(
+                Helper.Pack32(++index), 0, nonce, ivLength - 4, 4
+            );
         }
 
         // For encryption: empty final chunk
         // For decryption: final authentication tag
         byte[] aDataTag = [..aData, ..new byte[8]];
-        Array.Copy(Helper.Pack32(processed), 0, aDataTag, aDataTag.Length - 4, 4);
+        Array.Copy(
+            Helper.Pack32(processed), 0, aDataTag, aDataTag.Length - 4, 4
+        );
         var finalCrypted = forEncryption
             ? cipher.Encrypt(
                 finalChunk,

@@ -190,7 +190,9 @@ public class PublicKeyEncryptedSessionKey : BasePacket, IPublicKeyEncryptedSessi
             MontgomeryPublicKeyMaterial montgomery => MontgomerySessionKeyCrypto.EncryptSessionKey(
                 sessionKey.EncryptionKey, montgomery
             ),
-            _ => throw new Exception($"{keyPacket.KeyAlgorithm} key algorithm is unsupported.")
+            _ => throw new Exception(
+                $"{keyPacket.KeyAlgorithm} key algorithm is unsupported."
+            )
         };
     }
 

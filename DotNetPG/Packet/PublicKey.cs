@@ -105,7 +105,8 @@ public class PublicKey : BasePacket, IPublicKeyPacket
 
     public HashAlgorithm GetPreferredHash(HashAlgorithm? algorithm = null)
     {
-        if (KeyMaterial is EcPublicKeyMaterial material) return Helper.EcCurveHash(material.Curve);
+        if (KeyMaterial is EcPublicKeyMaterial material)
+            return Helper.EcCurveHash(material.Curve);
 
         return KeyAlgorithm switch
         {
@@ -135,7 +136,9 @@ public class PublicKey : BasePacket, IPublicKeyPacket
         return
         [
             (byte)(Version + 0x95),
-            ..Version == (int)KeyVersion.V6 ? Helper.Pack32(bytes.Length) : Helper.Pack16((short)bytes.Length),
+            ..Version == (int)KeyVersion.V6 ?
+                Helper.Pack32(bytes.Length) :
+                Helper.Pack16((short)bytes.Length),
             ..bytes
         ];
     }
@@ -154,8 +157,12 @@ public class PublicKey : BasePacket, IPublicKeyPacket
         );
     }
 
-    protected static (int Version, DateTime CreationTime, KeyAlgorithm KeyAlgorithm, IKeyMaterial KeyMaterial)
-        DecodePublicKey(byte[] bytes)
+    protected static (
+        int Version,
+        DateTime CreationTime,
+        KeyAlgorithm KeyAlgorithm,
+        IKeyMaterial KeyMaterial
+    ) DecodePublicKey(byte[] bytes)
     {
         var offset = 0;
 

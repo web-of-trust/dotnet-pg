@@ -87,7 +87,8 @@ public class SymmetricKeyEncryptedSessionKey : BasePacket, ISymmetricKeyEncrypte
                     (byte)Symmetric,
                     (byte)Aead
                 ];
-                var kek = Version == Version6 ? Helper.Hkdf(key, keySize, info: adata) : key;
+                var kek = Version == Version6 ?
+                    Helper.Hkdf(key, keySize, info: adata) : key;
                 var aeadCipher = new AeadCipher(
                     kek, (AeadAlgorithm)Aead, Symmetric
                 );
@@ -191,7 +192,9 @@ public class SymmetricKeyEncryptedSessionKey : BasePacket, ISymmetricKeyEncrypte
                     (byte)aead!
                 ];
                 var kek = Helper.Hkdf(key, keySize, info: adata);
-                iv = SecureRandom.GetNextBytes(new SecureRandom(), Helper.AeadIvLength(aead));
+                iv = SecureRandom.GetNextBytes(
+                    new SecureRandom(), Helper.AeadIvLength(aead)
+                );
                 var aeadCipher = new AeadCipher(
                     kek, (AeadAlgorithm)aead, encryptSymmetric
                 );

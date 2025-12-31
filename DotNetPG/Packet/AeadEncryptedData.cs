@@ -38,9 +38,12 @@ public class AeadEncryptedData(
 
     public IPacketList? PacketList => packetList;
 
-    public IEncryptedDataPacket Encrypt(byte[] key, SymmetricAlgorithm sym = SymmetricAlgorithm.Aes256)
+    public IEncryptedDataPacket Encrypt(
+        byte[] key, SymmetricAlgorithm sym = SymmetricAlgorithm.Aes256
+    )
     {
-        return PacketList != null ? EncryptPackets(key, PacketList, sym, aead) : this;
+        return PacketList != null ?
+            EncryptPackets(key, PacketList, sym, aead) : this;
     }
 
     public IEncryptedDataPacket EncryptWithSessionKey(ISessionKey sessionKey)
@@ -102,7 +105,9 @@ public class AeadEncryptedData(
         var iv = bytes.Skip(offset).Take(ivLength).ToArray();
         offset += ivLength;
         var encrypted = bytes.Skip(offset).ToArray();
-        return new AeadEncryptedData(symmetric, aead, chunkSize, iv, encrypted);
+        return new AeadEncryptedData(
+            symmetric, aead, chunkSize, iv, encrypted
+        );
     }
 
     /// <summary>
@@ -117,7 +122,9 @@ public class AeadEncryptedData(
     {
         Helper.AssertSymmetric(symmetric);
         var chunkSize = Config.AeadChunkSize;
-        var iv = SecureRandom.GetNextBytes(new SecureRandom(), Helper.AeadIvLength(aead));
+        var iv = SecureRandom.GetNextBytes(
+            new SecureRandom(), Helper.AeadIvLength(aead)
+        );
         return new AeadEncryptedData(
             symmetric,
             aead,
@@ -207,9 +214,13 @@ public class AeadEncryptedData(
             var cryptedData = forEncryption
                 ? cipher.Encrypt(chunkData.Take(size).ToArray(), nonce, adataBuffer)
                 : cipher.Decrypt(chunkData.Take(size).ToArray(), nonce, adataBuffer);
-            Array.Copy(cryptedData, 0, crypted, index * size, cryptedData.Length);
+            Array.Copy(
+                cryptedData, 0, crypted, index * size, cryptedData.Length
+            );
             chunkData = chunkData.Skip(size).ToArray();
-            Array.Copy(Helper.Pack32(++index), 0, adataBuffer, 9, 4);
+            Array.Copy(
+                Helper.Pack32(++index), 0, adataBuffer, 9, 4
+            );
         }
 
         // For encryption: empty final chunk

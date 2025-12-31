@@ -64,7 +64,8 @@ public class PacketList(IList<IPacket> packets) : IPacketList
                 PacketType.PublicSubkey => PublicSubkey.FromBytes(reader.Data),
                 PacketType.UserAttribute => UserAttribute.FromBytes(reader.Data),
                 PacketType.SymEncryptedIntegrityProtectedData => SymEncryptedIntegrityProtectedData.FromBytes(
-                    reader.Data),
+                    reader.Data
+                ),
                 PacketType.AeadEncryptedData => AeadEncryptedData.FromBytes(reader.Data),
                 PacketType.Padding => new Padding(reader.Data),
                 _ => null
