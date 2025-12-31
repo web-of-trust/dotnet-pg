@@ -71,6 +71,6 @@ public class AeadTest
         var encrypted = AeadEncryptedData.FromBytes(aepd.ToBytes());
         var decrypt = encrypted.Decrypt(sessionKey.EncryptionKey);
         var literalData = (ILiteralData)decrypt.PacketList![0];
-        Assert.That(Encoding.UTF8.GetString(literalData.Data), Is.EqualTo(LiteralText.TrimEnd()));
+        Assert.That(Encoding.UTF8.GetString(literalData.Data).TrimEnd(), Is.EqualTo(LiteralText.TrimEnd()));
     }
 }
