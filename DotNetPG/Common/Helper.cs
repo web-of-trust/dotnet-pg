@@ -103,7 +103,7 @@ public static class Helper
                 Config.Argon2MemoryExponent
             ),
             _ => new GenericS2K(
-                SecureRandom.GetNextBytes(random, GenericS2K.SaltLegnth),
+                SecureRandom.GetNextBytes(random, GenericS2K.SaltLength),
                 type,
                 Config.PreferredHash,
                 Config.S2kItCount

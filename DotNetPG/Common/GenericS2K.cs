@@ -14,7 +14,7 @@ using Org.BouncyCastle.Security;
 /// </summary>
 public class GenericS2K : IString2Key
 {
-    public const int SaltLegnth = 8;
+    public const int SaltLength = 8;
     private const int ExpBias = 6;
     private const int DefaultItCount = 224;
     private readonly int _count;
@@ -81,10 +81,10 @@ public class GenericS2K : IString2Key
         var hash = (HashAlgorithm)bytes[1];
         var salt = type switch
         {
-            S2kType.Salted or S2kType.Iterated => bytes.Skip(2).Take(SaltLegnth).ToArray(),
+            S2kType.Salted or S2kType.Iterated => bytes.Skip(2).Take(SaltLength).ToArray(),
             _ => []
         };
-        var itCount = type == S2kType.Iterated ? bytes[SaltLegnth + 2] : 0;
+        var itCount = type == S2kType.Iterated ? bytes[SaltLength + 2] : 0;
         return new GenericS2K(salt, type, hash, itCount);
     }
 

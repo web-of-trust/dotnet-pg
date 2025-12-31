@@ -60,22 +60,22 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
         foreach (var line in lines)
         {
             // Remove trailing spaces
-            var trimedline = line.TrimEnd(' ', '\r', '\n');
-            if (type == null && Regex.IsMatch(trimedline, SplitPattern))
+            var trimedLine = line.TrimEnd(' ', '\r', '\n');
+            if (type == null && Regex.IsMatch(trimedLine, SplitPattern))
             {
-                type = ParseArmorType(trimedline);
+                type = ParseArmorType(trimedLine);
             }
             else
             {
-                if (Regex.IsMatch(trimedline, HeaderPattern))
+                if (Regex.IsMatch(trimedLine, HeaderPattern))
                 {
-                    headers.Add(trimedline);
+                    headers.Add(trimedLine);
                 }
                 else if (!textDone && type == ArmorType.SignedMessage)
                 {
-                    if (!Regex.IsMatch(trimedline, SplitPattern))
+                    if (!Regex.IsMatch(trimedLine, SplitPattern))
                     {
-                        textLines.Add(Regex.Replace(trimedline, DashPattern, string.Empty));
+                        textLines.Add(Regex.Replace(trimedLine, DashPattern, string.Empty));
                     }
                     else
                     {
@@ -84,14 +84,14 @@ public sealed class Armor(ArmorType type, byte[] data, string[] header, string t
                         textLines.RemoveAt(0);
                     }
                 }
-                else if (!Regex.IsMatch(trimedline, SplitPattern))
+                else if (!Regex.IsMatch(trimedLine, SplitPattern))
                 {
-                    if (Regex.IsMatch(trimedline, EmptyPattern)) continue;
+                    if (Regex.IsMatch(trimedLine, EmptyPattern)) continue;
 
-                    if (trimedline.StartsWith('='))
-                        checksum = trimedline.Substring(1);
+                    if (trimedLine.StartsWith('='))
+                        checksum = trimedLine.Substring(1);
                     else
-                        dataLines.Add(trimedline);
+                        dataLines.Add(trimedLine);
                 }
             }
         }
