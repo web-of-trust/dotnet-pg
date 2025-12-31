@@ -358,7 +358,7 @@ public sealed class OpenPGP
         IList<IKey> encryptionKeys,
         IList<string> passwords,
         IList<IPrivateKey> signingKeys,
-        SymmetricAlgorithm?  symmetric = null,
+        SymmetricAlgorithm? symmetric = null,
         CompressionAlgorithm? compression = null,
         INotationData? notationData = null,
         DateTime? time = null

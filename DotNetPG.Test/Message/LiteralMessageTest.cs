@@ -1,7 +1,11 @@
-using System.Text;
-using Org.BouncyCastle.Utilities.Encoders;
 
 namespace DotNetPG.Test.Message;
+
+using System.Text;
+using Enum;
+using DotNetPG.Packet;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.Encoders;
 
 [TestFixture]
 public class LiteralMessageTest
@@ -442,13 +446,12 @@ E2IAaVOPyEhlbGxvLCB3b3JsZCHCkgYAGwgAAAAzBQJpU4/IIiEGyxhsTwYJppfk1S36bHIrDB8e
 J8GKVnCPZSXsJ7rZrMkJEMsYbE8GCaaXAAAAAOrKELV5sdslMqOJ5z7EQmQkiyKvUI0VhuqmN8u0
 ygM/YUyWLg7SHN5p/J0J2BOe8QHymIBfKQtZLr2DRJzvA21yRiydtyvscQipOcFA6nmA8o4H
 -----END PGP MESSAGE-----";
-        const string signatureData = @"-----BEGIN PGP MESSAGE-----
+        const string signatureData = @"-----BEGIN PGP SIGNATURE-----
 
-xDYGAAgbELV5sdslMqOJ5z7EQmQkiyLLGGxPBgmml+TVLfpscisMHx4nwYpWcI9lJewnutmsyQHL
-E2IAaVOPyEhlbGxvLCB3b3JsZCHCkgYAGwgAAAAzBQJpU4/IIiEGyxhsTwYJppfk1S36bHIrDB8e
-J8GKVnCPZSXsJ7rZrMkJEMsYbE8GCaaXAAAAAOrKELV5sdslMqOJ5z7EQmQkiyKvUI0VhuqmN8u0
-ygM/YUyWLg7SHN5p/J0J2BOe8QHymIBfKQtZLr2DRJzvA21yRiydtyvscQipOcFA6nmA8o4H
------END PGP MESSAGE-----";
+wpIGABsIAAAAMwUCaVOhDCIhBssYbE8GCaaX5NUt+mxyKwwfHifBilZwj2Ul7Ce62azJCRDLGGxP
+BgmmlwAAAAD8WBDa/poarOdGjOu4yIESH/rw4Z08pfPJ6+368heUTFcUquJ3O1Eo8Zi8gs1KLs2A
+/FNiwVXxCDGbbMUWc+WBYg/TmbhNl4ZItg8r2lkQalkoDQ==
+-----END PGP SIGNATURE-----";
         const string keyData = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 xioGY4d/4xsAAAAg+U2nu0jWCmHlZ3BqZYfQMxmZu52JGggkLq2EVD34laPCsQYf
@@ -562,5 +565,91 @@ k0mXubZvyl4GBg==
 
         signature = OpenPGP.SignDetached(literalMessage, [privateKey]);
         Assert.That(signature.SigningKeyIDs[0], Is.EqualTo(Hex.Decode("cb186c4f0609a697")));
+    }
+
+    [Test]
+    public void TestEncryptWithCompressMessage()
+    {
+        var literalData = SecureRandom.GetNextBytes(new SecureRandom(), 10000);
+        var encryptedMessage = OpenPGP.Encrypt(
+            OpenPGP.CreateLiteralMessage(literalData),
+            [
+                OpenPGP.ReadPublicKey(RsaPublicKey),
+                OpenPGP.ReadPublicKey(EccNistP384PublicKey),
+                OpenPGP.ReadPublicKey(EccBrainpoolPublicKey),
+                OpenPGP.ReadPublicKey(EccCurve25519PublicKey),
+            ],
+            [Passphrase],
+            [],
+            compression: CompressionAlgorithm.BZip2
+        );
+
+        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+
+        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [OpenPGP.DecryptPrivateKey(RsaPrivateKey, Passphrase)], []);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+
+        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase)], []);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+
+        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [OpenPGP.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase)], []);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+
+        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [OpenPGP.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase)], []);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+    }
+
+    [Test]
+    public void TestSignAeadEncryptMessageWithV6Key()
+    {
+        const string keyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xUsGY4d/4xsAAAAg+U2nu0jWCmHlZ3BqZYfQMxmZu52JGggkLq2EVD34laMAGXKB
+exK+cH6NX1hs5hNhIB00TrJmosgv3mg1ditlsLfCsQYfGwoAAABCBYJjh3/jAwsJ
+BwUVCg4IDAIWAAKbAwIeCSIhBssYbE8GCaaX5NUt+mxyKwwfHifBilZwj2Ul7Ce6
+2azJBScJAgcCAAAAAK0oIBA+LX0ifsDm185Ecds2v8lwgyU2kCcUmKfvBXbAf6rh
+RYWzuQOwEn7E/aLwIwRaLsdry0+VcallHhSu4RN6HWaEQsiPlR4zxP/TP7mhfVEe
+7XWPxtnMUMtf15OyA51YBMdLBmOHf+MZAAAAIIaTJINn+eUBXbki+PSAld2nhJh/
+LVmFsS+60WyvXkQ1AE1gCk95TUR3XFeibg/u/tVY6a//1q0NWC1X+yui3O24wpsG
+GBsKAAAALAWCY4d/4wKbDCIhBssYbE8GCaaX5NUt+mxyKwwfHifBilZwj2Ul7Ce6
+2azJAAAAAAQBIKbpGG2dWTX8j+VjFM21J0hqWlEg+bdiojWnKfA5AQpWUWtnNwDE
+M0g12vYxoWM8Y81W+bHBw805I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUr
+k0mXubZvyl4GBg==
+-----END PGP PRIVATE KEY BLOCK-----";
+
+        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        var publicKey = privateKey.PublicKey;
+        var literalData = SecureRandom.GetNextBytes(new SecureRandom(), 10000);
+        var literalMessage = OpenPGP.CreateLiteralMessage(literalData);
+
+        var signedMessage = OpenPGP.Sign(literalMessage, [privateKey]);
+        Assert.That(signedMessage.Signature.Packets[0].Version, Is.EqualTo(6));
+        Assert.That(signedMessage.Signature.Packets[0].IssuerFingerprint, Is.EqualTo(privateKey.Fingerprint));
+
+        var verification = signedMessage.Verify([publicKey])[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(verification.KeyId, Is.EqualTo(privateKey.KeyId));
+            Assert.That(verification.IsVerified, Is.True);
+        });
+
+        var signature = literalMessage.SignDetached([privateKey]);
+        Assert.That(signature.Packets[0].Version, Is.EqualTo(6));
+        Assert.That(signature.Packets[0].IssuerFingerprint, Is.EqualTo(privateKey.Fingerprint));
+
+        verification = literalMessage.VerifyDetached([publicKey], signature)[0];
+        Assert.Multiple(() =>
+        {
+            Assert.That(verification.KeyId, Is.EqualTo(privateKey.KeyId));
+            Assert.That(verification.IsVerified, Is.True);
+        });
+
+        var encryptedMessage = signedMessage.Encrypt([publicKey], []);
+        var encryptedPacket = encryptedMessage.EncryptedPacket as SymEncryptedIntegrityProtectedData;
+        Assert.That(encryptedPacket?.Aead, Is.EqualTo(AeadAlgorithm.Ocb));
+
+        var decryptedMessage = encryptedMessage.Decrypt([privateKey], []);
+        Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
     }
 }

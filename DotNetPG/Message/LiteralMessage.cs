@@ -119,7 +119,7 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         IList<string> passwords
     )
     {
-        if (encryptionKeys.Count == 0 || passwords.Count == 0)
+        if (encryptionKeys.Count == 0 && passwords.Count == 0)
         {
             throw new ArgumentException("No encryption keys or passwords provided.");
         }
