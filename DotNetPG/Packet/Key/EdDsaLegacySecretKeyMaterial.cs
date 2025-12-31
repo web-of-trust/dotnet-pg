@@ -33,7 +33,9 @@ public class EdDsaLegacySecretKeyMaterial(BigInteger d, EdDsaLegacyPublicKeyMate
         var digest = DigestUtilities.CalculateDigest(hash.ToString(), message);
 
         var signer = new Ed25519Signer();
-        signer.Init(true, new Ed25519PrivateKeyParameters(D.ToByteArrayUnsigned()));
+        signer.Init(
+            true, new Ed25519PrivateKeyParameters(D.ToByteArrayUnsigned())
+        );
         signer.BlockUpdate(digest, 0, digest.Length);
         var signature = signer.GenerateSignature();
         var size = Ed25519.SignatureSize / 2;
@@ -49,9 +51,13 @@ public class EdDsaLegacySecretKeyMaterial(BigInteger d, EdDsaLegacyPublicKeyMate
     /// <summary>
     ///     Read key material from bytes
     /// </summary>
-    public static EdDsaLegacySecretKeyMaterial FromBytes(byte[] bytes, EdDsaLegacyPublicKeyMaterial publicMaterial)
+    public static EdDsaLegacySecretKeyMaterial FromBytes(
+        byte[] bytes, EdDsaLegacyPublicKeyMaterial publicMaterial
+    )
     {
-        return new EdDsaLegacySecretKeyMaterial(Helper.ReadMpi(bytes), publicMaterial);
+        return new EdDsaLegacySecretKeyMaterial(
+            Helper.ReadMpi(bytes), publicMaterial
+        );
     }
 
     /// <summary>

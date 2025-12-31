@@ -49,7 +49,8 @@ public class SessionKey(
     public static ISessionKey FromBytes(byte[] bytes)
     {
         var sessionKey = new SessionKey(
-            bytes.Skip(1).Take(bytes.Length - 3).ToArray(), (SymmetricAlgorithm)bytes[0]
+            bytes.Skip(1).Take(bytes.Length - 3).ToArray(),
+            (SymmetricAlgorithm)bytes[0]
         );
         return sessionKey.Checksum(bytes.Skip(bytes.Length - 2).ToArray());
     }

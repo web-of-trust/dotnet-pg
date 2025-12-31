@@ -45,7 +45,9 @@ public class EcDhSecretKeyMaterial(BigInteger d, EcDhPublicKeyMaterial publicMat
                     )
                 );
             case EcCurve.Ed25519:
-                throw new ArgumentException("Ed25519 curve is unsupported for ECDH key generation.");
+                throw new ArgumentException(
+                    "Ed25519 curve is unsupported for ECDH key generation."
+                );
             default:
                 var keyPair = GenerateKeyPair(curve);
                 var pubKey = (ECPublicKeyParameters)keyPair.Public;
@@ -66,7 +68,9 @@ public class EcDhSecretKeyMaterial(BigInteger d, EcDhPublicKeyMaterial publicMat
     {
         if (publicMaterial.Curve == EcCurve.Curve25519)
         {
-            var privateKey = new X25519PrivateKeyParameters(D.ToByteArrayUnsigned().Reverse().ToArray());
+            var privateKey = new X25519PrivateKeyParameters(
+                D.ToByteArrayUnsigned().Reverse().ToArray()
+            );
             var publicKey = privateKey.GeneratePublicKey();
             return publicMaterial.EncodedPoint.Equals(
                 BigIntegers.FromUnsignedByteArray([0x40, ..publicKey.GetEncoded()])

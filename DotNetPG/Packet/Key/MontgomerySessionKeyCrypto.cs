@@ -22,7 +22,9 @@ public class MontgomerySessionKeyCrypto(byte[] ephemeralKey, byte[] wrappedKey) 
     public byte[] Decrypt(ISecretKeyPacket secretKey)
     {
         if (secretKey.SecretKeyMaterial is not MontgomerySecretKeyMaterial km)
-            throw new ArgumentException("Secret key material is not Montgomery key");
+            throw new ArgumentException(
+                "Secret key material is not Montgomery key"
+            );
         var kek = Helper.Hkdf(
             [
                 ..ephemeralKey,
@@ -47,7 +49,8 @@ public class MontgomerySessionKeyCrypto(byte[] ephemeralKey, byte[] wrappedKey) 
         byte[] bytes, MontgomeryCurve curve
     )
     {
-        var size = curve == MontgomeryCurve.Curve25519 ? X25519.ScalarSize : X448.ScalarSize;
+        var size = curve == MontgomeryCurve.Curve25519 ?
+            X25519.ScalarSize : X448.ScalarSize;
         return new MontgomerySessionKeyCrypto(
             bytes.Take(size).ToArray(),
             bytes.Skip(size + 1).Take(bytes[size]).ToArray()

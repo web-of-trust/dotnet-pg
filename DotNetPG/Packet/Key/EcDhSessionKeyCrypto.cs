@@ -42,13 +42,17 @@ public class EcDhSessionKeyCrypto(BigInteger ephemeralKey, byte[] wrappedKey) : 
     public byte[] Decrypt(ISecretKeyPacket secretKey)
     {
         if (secretKey.SecretKeyMaterial is not EcDhSecretKeyMaterial km)
+        {
             throw new Exception("Key material is not ECDH key.");
+        }
 
         byte[] sharedSecret;
         switch (km.Curve)
         {
             case EcCurve.Curve25519:
-                var privateKey = new X25519PrivateKeyParameters(km.D.ToByteArrayUnsigned().Reverse().ToArray());
+                var privateKey = new X25519PrivateKeyParameters(
+                    km.D.ToByteArrayUnsigned().Reverse().ToArray()
+                );
                 var agreement = new X25519Agreement();
                 agreement.Init(privateKey);
                 sharedSecret = new byte[agreement.AgreementSize];
@@ -60,27 +64,42 @@ public class EcDhSessionKeyCrypto(BigInteger ephemeralKey, byte[] wrappedKey) : 
                 );
                 break;
             case EcCurve.Ed25519:
-                throw new Exception("Ed25519 curve is unsupported for key agreement calculation.");
+                throw new Exception(
+                    "Ed25519 curve is unsupported for key agreement calculation."
+                );
             default:
                 var parameters = ECNamedDomainParameters.LookupOid(km.CurveOid);
-                var q = parameters.Curve.DecodePoint(ephemeralKey.ToByteArrayUnsigned());
+                var q = parameters.Curve.DecodePoint(
+                    ephemeralKey.ToByteArrayUnsigned()
+                );
 
                 var ecdhAgreement = new ECDHBasicAgreement();
-                ecdhAgreement.Init(new ECPrivateKeyParameters("ECDH", km.D, parameters));
+                ecdhAgreement.Init(
+                    new ECPrivateKeyParameters("ECDH", km.D, parameters)
+                );
                 var secret = ecdhAgreement.CalculateAgreement(
                     new ECPublicKeyParameters("ECDH", q, parameters)
                 );
-                sharedSecret = BigIntegers.AsUnsignedByteArray(ecdhAgreement.GetFieldSize(), secret);
+                sharedSecret = BigIntegers.AsUnsignedByteArray(
+                    ecdhAgreement.GetFieldSize(), secret
+                );
                 break;
         }
 
         var publicKm = (EcDhPublicKeyMaterial)km.PublicMaterial;
         var keySize = (Helper.SymmetricKeySize(publicKm.KdfSymmetric) + 7) >> 3;
-        var kek = EcDhKdf(publicKm.KdfHash, sharedSecret, EcDhParam(publicKm, secretKey.Fingerprint), keySize);
+        var kek = EcDhKdf(
+            publicKm.KdfHash,
+            sharedSecret,
+            EcDhParam(publicKm, secretKey.Fingerprint),
+            keySize
+        );
 
         var wrapper = SelectKeyWrapper(publicKm.KdfSymmetric);
         wrapper.Init(false, new KeyParameter(kek));
-        return Pkcs5Decode(wrapper.Unwrap(wrappedKey, 0, wrappedKey.Length));
+        return Pkcs5Decode(
+            wrapper.Unwrap(wrappedKey, 0, wrappedKey.Length)
+        );
     }
 
     /// <summary>
@@ -125,7 +144,9 @@ public class EcDhSessionKeyCrypto(BigInteger ephemeralKey, byte[] wrappedKey) : 
                 );
                 break;
             case EcCurve.Ed25519:
-                throw new Exception("Ed25519 curve is unsupported for ephemeral key generation.");
+                throw new Exception(
+                    "Ed25519 curve is unsupported for ephemeral key generation."
+                );
             default:
                 var generator = new ECKeyPairGenerator();
                 generator.Init(
@@ -136,22 +157,33 @@ public class EcDhSessionKeyCrypto(BigInteger ephemeralKey, byte[] wrappedKey) : 
                 );
                 var keyPair = generator.GenerateKeyPair();
                 var pubKey = (ECPublicKeyParameters)keyPair.Public;
-                ephemeralKey = BigIntegers.FromUnsignedByteArray(pubKey.Q.GetEncoded());
+                ephemeralKey = BigIntegers.FromUnsignedByteArray(
+                    pubKey.Q.GetEncoded()
+                );
 
                 var parameters = ECNamedDomainParameters.LookupOid(key.CurveOid);
-                var q = parameters.Curve.DecodePoint(key.EncodedPoint.ToByteArrayUnsigned());
+                var q = parameters.Curve.DecodePoint(
+                    key.EncodedPoint.ToByteArrayUnsigned()
+                );
 
                 var ecdhAgreement = new ECDHBasicAgreement();
                 ecdhAgreement.Init(keyPair.Private);
                 var secret = ecdhAgreement.CalculateAgreement(
                     new ECPublicKeyParameters("ECDH", q, parameters)
                 );
-                sharedSecret = BigIntegers.AsUnsignedByteArray(ecdhAgreement.GetFieldSize(), secret);
+                sharedSecret = BigIntegers.AsUnsignedByteArray(
+                    ecdhAgreement.GetFieldSize(), secret
+                );
                 break;
         }
 
         var keySize = (Helper.SymmetricKeySize(key.KdfSymmetric) + 7) >> 3;
-        var kek = EcDhKdf(key.KdfHash, sharedSecret, EcDhParam(key, fingerprint), keySize);
+        var kek = EcDhKdf(
+            key.KdfHash,
+            sharedSecret,
+            EcDhParam(key, fingerprint),
+            keySize
+        );
 
         var wrapper = SelectKeyWrapper(key.KdfSymmetric);
         wrapper.Init(true, new KeyParameter(kek));
@@ -207,7 +239,8 @@ public class EcDhSessionKeyCrypto(BigInteger ephemeralKey, byte[] wrappedKey) : 
                 var provided = message.Skip(length - c).ToArray();
                 var computed = new byte[c];
                 Array.Fill(computed, c);
-                if (Arrays.AreEqual(provided, computed)) return message.Take(length - c).ToArray();
+                if (Arrays.AreEqual(provided, computed))
+                    return message.Take(length - c).ToArray();
             }
         }
 

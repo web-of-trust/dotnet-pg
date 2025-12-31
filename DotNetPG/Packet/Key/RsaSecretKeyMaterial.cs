@@ -48,13 +48,17 @@ public class RsaSecretKeyMaterial(
     public bool IsValid()
     {
         // expect pq = n
-        if (primeP.Multiply(primeQ).CompareTo(publicMaterial.Modulus) != 0) return false;
+        if (primeP.Multiply(primeQ).CompareTo(publicMaterial.Modulus) != 0)
+            return false;
 
         // expect p*u = 1 mod q
-        if (primeP.Multiply(coefficient).Mod(primeQ).CompareTo(BigInteger.One) != 0) return false;
+        if (primeP.Multiply(coefficient).Mod(primeQ).CompareTo(BigInteger.One) != 0)
+            return false;
 
         var sizeOver3 = publicMaterial.Modulus.BitLength / 3;
-        var r = Helper.RandomBigInteger(BigInteger.One, BigInteger.Two.ShiftLeft(sizeOver3));
+        var r = Helper.RandomBigInteger(
+            BigInteger.One, BigInteger.Two.ShiftLeft(sizeOver3)
+        );
         var rde = r.Multiply(exponent).Multiply(publicMaterial.Exponent);
         return rde.Mod(primeP.Subtract(BigInteger.One)).CompareTo(r) == 0 &&
                rde.Mod(primeQ.Subtract(BigInteger.One)).CompareTo(r) == 0;
@@ -87,7 +91,9 @@ public class RsaSecretKeyMaterial(
     /// <summary>
     ///     Read key material from bytes
     /// </summary>
-    public static RsaSecretKeyMaterial FromBytes(byte[] bytes, RsaPublicKeyMaterial publicMaterial)
+    public static RsaSecretKeyMaterial FromBytes(
+        byte[] bytes, RsaPublicKeyMaterial publicMaterial
+    )
     {
         var exponent = Helper.ReadMpi(bytes);
 
@@ -105,10 +111,14 @@ public class RsaSecretKeyMaterial(
         );
     }
 
-    public static RsaSecretKeyMaterial Generate(RsaKeySize keySize = RsaKeySize.Normal)
+    public static RsaSecretKeyMaterial Generate(
+        RsaKeySize keySize = RsaKeySize.Normal
+    )
     {
         var generator = new RsaKeyPairGenerator();
-        generator.Init(new KeyGenerationParameters(new SecureRandom(), (int)keySize));
+        generator.Init(
+            new KeyGenerationParameters(new SecureRandom(), (int)keySize)
+        );
         var keyPair = generator.GenerateKeyPair();
         var pubKey = (RsaKeyParameters)keyPair.Public;
         var priKey = (RsaPrivateCrtKeyParameters)keyPair.Private;

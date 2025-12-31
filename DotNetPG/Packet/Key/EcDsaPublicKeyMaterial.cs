@@ -27,9 +27,13 @@ public class EcDsaPublicKeyMaterial(DerObjectIdentifier oid, BigInteger point)
         var digest = DigestUtilities.CalculateDigest(hash.ToString(), message);
 
         var parameters = ECNamedDomainParameters.LookupOid(CurveOid);
-        var q = parameters.Curve.DecodePoint(BigIntegers.AsUnsignedByteArray(EncodedPoint));
+        var q = parameters.Curve.DecodePoint(
+            BigIntegers.AsUnsignedByteArray(EncodedPoint)
+        );
         var verifier = new ECDsaSigner();
-        verifier.Init(false, new ECPublicKeyParameters("ECDSA", q, parameters));
+        verifier.Init(
+            false, new ECPublicKeyParameters("ECDSA", q, parameters)
+        );
         return verifier.VerifySignature(digest, r, s);
     }
 

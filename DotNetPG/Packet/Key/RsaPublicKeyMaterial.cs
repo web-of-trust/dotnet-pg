@@ -20,7 +20,8 @@ public class RsaPublicKeyMaterial(BigInteger modulus, BigInteger exponent) : IVe
 
     public BigInteger Exponent => exponent;
 
-    public AsymmetricKeyParameter KeyParameters => new RsaKeyParameters(false, modulus, exponent);
+    public AsymmetricKeyParameter KeyParameters =>
+        new RsaKeyParameters(false, modulus, exponent);
 
     public IKeyMaterial PublicMaterial => this;
 
@@ -47,7 +48,9 @@ public class RsaPublicKeyMaterial(BigInteger modulus, BigInteger exponent) : IVe
         var verifier = new RsaDigestSigner(Helper.HashDigest(hash));
         verifier.Init(false, KeyParameters);
         verifier.BlockUpdate(message, 0, message.Length);
-        return verifier.VerifySignature(Helper.ReadMpi(signature).ToByteArrayUnsigned());
+        return verifier.VerifySignature(
+            Helper.ReadMpi(signature).ToByteArrayUnsigned()
+        );
     }
 
     /// <summary>

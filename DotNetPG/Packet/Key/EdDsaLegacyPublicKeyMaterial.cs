@@ -28,10 +28,14 @@ public class EdDsaLegacyPublicKeyMaterial(DerObjectIdentifier oid, BigInteger po
         var verifier = new Ed25519Signer();
         verifier.Init(
             false,
-            new Ed25519PublicKeyParameters(EncodedPoint.ToByteArrayUnsigned().Skip(1).ToArray())
+            new Ed25519PublicKeyParameters(
+                EncodedPoint.ToByteArrayUnsigned().Skip(1).ToArray()
+            )
         );
         verifier.BlockUpdate(digest, 0, digest.Length);
-        return verifier.VerifySignature([..r.ToByteArrayUnsigned(), ..s.ToByteArrayUnsigned()]);
+        return verifier.VerifySignature(
+            [..r.ToByteArrayUnsigned(), ..s.ToByteArrayUnsigned()]
+        );
     }
 
     /// <summary>

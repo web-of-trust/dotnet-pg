@@ -63,10 +63,15 @@ public class EdDsaSecretKeyMaterial(byte[] secretKey, EdDsaPublicKeyMaterial pub
     /// <summary>
     ///     Read key material from bytes
     /// </summary>
-    public static EdDsaSecretKeyMaterial FromBytes(byte[] bytes, EdDsaPublicKeyMaterial publicMaterial)
+    public static EdDsaSecretKeyMaterial FromBytes(
+        byte[] bytes, EdDsaPublicKeyMaterial publicMaterial
+    )
     {
-        var size = publicMaterial.Curve == EdDsaCurve.Ed25519 ? Ed25519.SecretKeySize : Ed448.SecretKeySize;
-        return new EdDsaSecretKeyMaterial(bytes.Take(size).ToArray(), publicMaterial);
+        var size = publicMaterial.Curve == EdDsaCurve.Ed25519 ?
+            Ed25519.SecretKeySize : Ed448.SecretKeySize;
+        return new EdDsaSecretKeyMaterial(
+            bytes.Take(size).ToArray(), publicMaterial
+        );
     }
 
     /// <summary>
@@ -80,14 +85,18 @@ public class EdDsaSecretKeyMaterial(byte[] secretKey, EdDsaPublicKeyMaterial pub
                 var pk448 = new Ed448PrivateKeyParameters(new SecureRandom());
                 return new EdDsaSecretKeyMaterial(
                     pk448.GetEncoded(),
-                    new EdDsaPublicKeyMaterial(pk448.GeneratePublicKey().GetEncoded(), curve)
+                    new EdDsaPublicKeyMaterial(
+                        pk448.GeneratePublicKey().GetEncoded(), curve
+                    )
                 );
             case EdDsaCurve.Ed25519:
             default:
                 var pk255 = new Ed25519PrivateKeyParameters(new SecureRandom());
                 return new EdDsaSecretKeyMaterial(
                     pk255.GetEncoded(),
-                    new EdDsaPublicKeyMaterial(pk255.GeneratePublicKey().GetEncoded(), curve)
+                    new EdDsaPublicKeyMaterial(
+                        pk255.GeneratePublicKey().GetEncoded(), curve
+                    )
                 );
         }
     }

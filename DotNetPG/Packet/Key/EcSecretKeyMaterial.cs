@@ -37,8 +37,12 @@ public abstract class EcSecretKeyMaterial(BigInteger d, EcPublicKeyMaterial publ
             case EcCurve.Curve25519:
                 return false;
             default:
-                var parameters = ECNamedDomainParameters.LookupOid(publicMaterial.CurveOid);
-                var q = parameters.Curve.DecodePoint(publicMaterial.EncodedPoint.ToByteArrayUnsigned());
+                var parameters = ECNamedDomainParameters.LookupOid(
+                    publicMaterial.CurveOid
+                );
+                var q = parameters.Curve.DecodePoint(
+                    publicMaterial.EncodedPoint.ToByteArrayUnsigned()
+                );
                 return q is { IsInfinity: false } && parameters.G.Multiply(d).Equals(q);
         }
     }

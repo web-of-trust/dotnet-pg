@@ -42,10 +42,14 @@ public class MontgomerySecretKeyMaterial(byte[] secretKey, MontgomeryPublicKeyMa
         {
             case MontgomeryCurve.Curve448:
                 var public448 = new X448PrivateKeyParameters(secretKey).GeneratePublicKey();
-                return Arrays.AreEqual(public448.GetEncoded(), publicMaterial.PublicKey);
+                return Arrays.AreEqual(
+                    public448.GetEncoded(), publicMaterial.PublicKey
+                );
             default:
                 var public255 = new X25519PrivateKeyParameters(secretKey).GeneratePublicKey();
-                return Arrays.AreEqual(public255.GetEncoded(), publicMaterial.PublicKey);
+                return Arrays.AreEqual(
+                    public255.GetEncoded(), publicMaterial.PublicKey
+                );
         }
     }
 
@@ -57,10 +61,15 @@ public class MontgomerySecretKeyMaterial(byte[] secretKey, MontgomeryPublicKeyMa
     /// <summary>
     ///     Read key material from bytes
     /// </summary>
-    public static MontgomerySecretKeyMaterial FromBytes(byte[] bytes, MontgomeryPublicKeyMaterial publicMaterial)
+    public static MontgomerySecretKeyMaterial FromBytes(
+        byte[] bytes, MontgomeryPublicKeyMaterial publicMaterial
+    )
     {
-        var size = publicMaterial.Curve == MontgomeryCurve.Curve25519 ? X25519.ScalarSize : X448.ScalarSize;
-        return new MontgomerySecretKeyMaterial(bytes.Take(size).ToArray(), publicMaterial);
+        var size = publicMaterial.Curve == MontgomeryCurve.Curve25519 ?
+            X25519.ScalarSize : X448.ScalarSize;
+        return new MontgomerySecretKeyMaterial(
+            bytes.Take(size).ToArray(), publicMaterial
+        );
     }
 
     /// <summary>
@@ -96,13 +105,17 @@ public class MontgomerySecretKeyMaterial(byte[] secretKey, MontgomeryPublicKeyMa
                 var x448Agreement = new X448Agreement();
                 x448Agreement.Init(new X448PrivateKeyParameters(secretKey));
                 secret = new byte[x448Agreement.AgreementSize];
-                x448Agreement.CalculateAgreement(new X448PublicKeyParameters(publicKey), secret);
+                x448Agreement.CalculateAgreement(
+                    new X448PublicKeyParameters(publicKey), secret
+                );
                 break;
             default:
                 var x255Agreement = new X25519Agreement();
                 x255Agreement.Init(new X25519PrivateKeyParameters(secretKey));
                 secret = new byte[x255Agreement.AgreementSize];
-                x255Agreement.CalculateAgreement(new X25519PublicKeyParameters(publicKey), secret);
+                x255Agreement.CalculateAgreement(
+                    new X25519PublicKeyParameters(publicKey), secret
+                );
                 break;
         }
 

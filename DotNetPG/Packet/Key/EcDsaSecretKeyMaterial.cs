@@ -39,9 +39,13 @@ public class EcDsaSecretKeyMaterial(BigInteger d, EcDsaPublicKeyMaterial publicM
     /// <summary>
     ///     Read key material from bytes
     /// </summary>
-    public static EcDsaSecretKeyMaterial FromBytes(byte[] bytes, EcDsaPublicKeyMaterial publicMaterial)
+    public static EcDsaSecretKeyMaterial FromBytes(
+        byte[] bytes, EcDsaPublicKeyMaterial publicMaterial
+    )
     {
-        return new EcDsaSecretKeyMaterial(Helper.ReadMpi(bytes), publicMaterial);
+        return new EcDsaSecretKeyMaterial(
+            Helper.ReadMpi(bytes), publicMaterial
+        );
     }
 
     /// <summary>
@@ -53,7 +57,9 @@ public class EcDsaSecretKeyMaterial(BigInteger d, EcDsaPublicKeyMaterial publicM
         {
             case EcCurve.Ed25519:
             case EcCurve.Curve25519:
-                throw new ArgumentException("Ed25519 or Curve25519 curve is not supported for ECDSA key generation.");
+                throw new ArgumentException(
+                    "Ed25519 or Curve25519 curve is not supported for ECDSA key generation."
+                );
             default:
                 var keyPair = GenerateKeyPair(curve);
                 var pubKey = (ECPublicKeyParameters)keyPair.Public;
