@@ -50,7 +50,9 @@ public class PublicKey : BaseKey, IPublicKey
             if ((i + 1) < indexes.Length)
             {
                 publicKeys.Add(new PublicKey(
-                    new PacketList(packetList.Packets.Skip(indexes[i]).Take(indexes[i + 1]).ToList())
+                    new PacketList(
+                        packetList.Packets.Skip(indexes[i]).Take(indexes[i + 1]).ToList()
+                    )
                 ));
             }
             else
@@ -78,7 +80,9 @@ public class PublicKey : BaseKey, IPublicKey
         keys.SelectMany(key => key.PacketList.Encode()).ToArray()
     );
 
-    public string Armor() => Common.Armor.Encode(ArmorType.PublicKey, PacketList.Encode());
+    public string Armor() => Common.Armor.Encode(
+        ArmorType.PublicKey, PacketList.Encode()
+    );
 
     public IPublicKeyPacket PublicKeyPacket { get; }
 

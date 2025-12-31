@@ -185,7 +185,9 @@ public abstract class BaseKey : IKey
         var subkeyArray = subkeys.ToArray();
         Array.Sort(
             subkeyArray,
-            (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds())
+            (a, b) =>
+                (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() -
+                      new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds())
         );
         Subkeys = subkeyArray.AsReadOnly();
 
@@ -228,13 +230,16 @@ public abstract class BaseKey : IKey
         {
             var aTime = a.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
             var bTime = b.SelfSignatures.FirstOrDefault()?.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() -
+                         new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
         Users = userArray.AsReadOnly();
         PrimaryUser = users.ToList().Find(user => user.IsPrimary);
 
         var subkeyArray = subkeys.ToArray();
-        Array.Sort(subkeyArray, (a, b) => (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() - new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
+        Array.Sort(subkeyArray, (a, b) =>
+            (int)(new DateTimeOffset(a.CreationTime).ToUnixTimeSeconds() -
+                  new DateTimeOffset(b.CreationTime).ToUnixTimeSeconds()));
         Subkeys = subkeyArray.AsReadOnly();
 
         IList<IPacket> packets = [
@@ -436,7 +441,9 @@ public abstract class BaseKey : IKey
         {
             if (signature.KeyExpirationTime > 0)
             {
-                var creationTime = new DateTimeOffset((DateTime)signature.CreationTime!);
+                var creationTime = new DateTimeOffset(
+                    (DateTime)signature.CreationTime!
+                );
                 var dto = creationTime.AddSeconds(signature.KeyExpirationTime);
                 return dto.DateTime;
             }
@@ -455,7 +462,8 @@ public abstract class BaseKey : IKey
         {
             var aTime = a.CreationTime ?? DateTime.Now;
             var bTime = b.CreationTime ?? DateTime.Now;
-            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() - new DateTimeOffset(bTime).ToUnixTimeSeconds());
+            return (int)(new DateTimeOffset(aTime).ToUnixTimeSeconds() -
+                         new DateTimeOffset(bTime).ToUnixTimeSeconds());
         });
         return signatures;
     }

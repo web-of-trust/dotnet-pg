@@ -64,20 +64,28 @@ public class PrivateKey : BaseKey, IPrivateKey
 
         var keyAlgorithm = keyType switch
         {
-            KeyType.Ecc => curve == EcCurve.Ed25519 ? KeyAlgorithm.EdDsaLegacy : KeyAlgorithm.EcDsa,
+            KeyType.Ecc => curve == EcCurve.Ed25519 ?
+                KeyAlgorithm.EdDsaLegacy : KeyAlgorithm.EcDsa,
             KeyType.Curve25519 => KeyAlgorithm.Ed25519,
             KeyType.Curve448 => KeyAlgorithm.Ed448,
             _ => KeyAlgorithm.RsaGeneral
         };
 
         var secretKey = SecretKey.Generate(keyAlgorithm, keySize, curve, time);
-        AeadAlgorithm? aead = secretKey.IsV6Key && Config.AeadProtect ? Config.PreferredAead : null;
+        AeadAlgorithm? aead = secretKey.IsV6Key && Config.AeadProtect ?
+            Config.PreferredAead : null;
 
-        IList<IPacket> packets = [secretKey.Encrypt(passphrase, Config.PreferredSymmetric, aead)];
+        IList<IPacket> packets = [
+            secretKey.Encrypt(passphrase, Config.PreferredSymmetric, aead)
+        ];
         if (secretKey.IsV6Key)
         {
             // Wrap secret key with direct key signature
-            packets.Add(SignaturePacket.CreateDirectKeySignature(secretKey, keyExpiry, time));
+            packets.Add(
+                SignaturePacket.CreateDirectKeySignature(
+                    secretKey, keyExpiry, time
+                )
+            );
         }
 
         // Wrap user id with certificate signature
@@ -106,9 +114,18 @@ public class PrivateKey : BaseKey, IPrivateKey
                 KeyType.Curve448 => KeyAlgorithm.X448,
                 _ => KeyAlgorithm.RsaGeneral
             };
-            var subkeyCurve = keyAlgorithm == KeyAlgorithm.EdDsaLegacy ? EcCurve.Curve25519 : curve;
-            var secretSubkey = SecretSubkey.Generate(subkeyAlgorithm, keySize, subkeyCurve, time);
-            packets.Add(secretSubkey.Encrypt(passphrase, Config.PreferredSymmetric, aead));
+            var subkeyCurve = keyAlgorithm == KeyAlgorithm.EdDsaLegacy ?
+                EcCurve.Curve25519 : curve;
+            var secretSubkey = SecretSubkey.Generate(
+                subkeyAlgorithm, keySize, subkeyCurve, time
+            );
+            packets.Add(
+                secretSubkey.Encrypt(
+                    passphrase,
+                    Config.PreferredSymmetric,
+                    aead
+                )
+            );
             packets.Add(SignaturePacket.CreateSubkeyBinding(
                 secretKey,
                 secretSubkey,
@@ -149,7 +166,9 @@ public class PrivateKey : BaseKey, IPrivateKey
         }
     }
 
-    public string Armor() => Common.Armor.Encode(ArmorType.PrivateKey, PacketList.Encode());
+    public string Armor() => Common.Armor.Encode(
+        ArmorType.PrivateKey, PacketList.Encode()
+    );
 
     public override IKey CertifyBy(IPrivateKey signKey, DateTime? time = null)
     {
@@ -210,11 +229,15 @@ public class PrivateKey : BaseKey, IPrivateKey
     {
         if (passphrase.Length == 0)
         {
-            throw new ArgumentException("Passphrase are required for key encryption.");
+            throw new ArgumentException(
+                "Passphrase are required for key encryption."
+            );
         }
         if (!IsDecrypted)
         {
-            throw new Exception("Private key must be decrypted before encrypting.");
+            throw new Exception(
+                "Private key must be decrypted before encrypting."
+            );
         }
 
         var subkeys = Subkeys.ToList();
@@ -246,7 +269,9 @@ public class PrivateKey : BaseKey, IPrivateKey
     {
         if (passphrase.Length == 0)
         {
-            throw new ArgumentException("Passphrase are required for key decryption.");
+            throw new ArgumentException(
+                "Passphrase are required for key decryption."
+            );
         }
         var subkeys = Subkeys.ToList();
         foreach (var subkey in Subkeys)
@@ -312,7 +337,9 @@ public class PrivateKey : BaseKey, IPrivateKey
     {
         if (passphrase.Length == 0)
         {
-            throw new ArgumentException("Passphrase is required for key generation.");
+            throw new ArgumentException(
+                "Passphrase is required for key generation."
+            );
         }
         AeadAlgorithm? aead = null;
         if (SecretKeyPacket.IsV6Key && Config.AeadProtect)
@@ -320,8 +347,9 @@ public class PrivateKey : BaseKey, IPrivateKey
             aead = Config.PreferredAead;
         }
 
-        var secretSubkey = (SecretSubkey)SecretSubkey.Generate(keyAlgorithm, rsaKeySize, ecCurve, time)
-            .Encrypt(passphrase, Config.PreferredSymmetric, aead);
+        var secretSubkey = (SecretSubkey)SecretSubkey.Generate(
+                keyAlgorithm, rsaKeySize, ecCurve, time
+        ).Encrypt(passphrase, Config.PreferredSymmetric, aead);
         var subkey = new Subkey(
             this, 
             secretSubkey, 
@@ -371,7 +399,9 @@ public class PrivateKey : BaseKey, IPrivateKey
             if (user.UserId == userId)
             {
                 var index = users.IndexOf(user);
-                users[index] = user.RevokeBy(this, revocationReason, reasonTag, time);
+                users[index] = user.RevokeBy(
+                    this, revocationReason, reasonTag, time
+                );
             }
         }
         return new PrivateKey(
@@ -396,7 +426,9 @@ public class PrivateKey : BaseKey, IPrivateKey
             if (Arrays.AreEqual(subkey.KeyId, keyId))
             {
                 var index = subkeys.IndexOf(subkey);
-                subkeys[index] = subkey.RevokeBy(this, revocationReason, reasonTag, time);
+                subkeys[index] = subkey.RevokeBy(
+                    this, revocationReason, reasonTag, time
+                );
             }
         }
         return new PrivateKey(

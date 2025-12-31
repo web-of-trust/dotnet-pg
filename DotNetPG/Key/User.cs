@@ -57,7 +57,9 @@ public class User : IUser
 
     public IList<ISignaturePacket> OtherSignatures { get; }
 
-    public bool IsPrimary => SelfSignatures.Any(signature => signature.IsPrimaryUserId);
+    public bool IsPrimary => SelfSignatures.Any(
+        signature => signature.IsPrimaryUserId
+    );
 
     public string UserId => UserIdPacket.Id;
 
