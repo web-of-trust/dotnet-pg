@@ -1,13 +1,12 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
-using System.Text.RegularExpressions;
-
 namespace DotNetPG.Message;
 
 using Common;
 using Packet;
 using Type;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// Class that represents an OpenPGP cleartext message.

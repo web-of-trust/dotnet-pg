@@ -33,7 +33,9 @@ public class Signature : ISignature
 
     public static ISignature FromBytes(byte[] bytes)
     {
-        return new Signature(Packet.PacketList.Decode(bytes).Packets.OfType<ISignaturePacket>().ToList());
+        return new Signature(
+            Packet.PacketList.Decode(bytes).Packets.OfType<ISignaturePacket>().ToList()
+        );
     }
 
     public IList<ISignaturePacket> Packets => _packets.AsReadOnly();
@@ -77,7 +79,9 @@ public class Signature : ISignature
                     var verificationError = "";
                     try
                     {
-                        isVerified = signature.Verify(keyPacket, literalData.SignBytes(), time);
+                        isVerified = signature.Verify(
+                            keyPacket, literalData.SignBytes(), time
+                        );
                     }
                     catch (Exception e)
                     {
@@ -110,5 +114,7 @@ public class Signature : ISignature
         return Verify(verificationKeys, LiteralData.FromText(cleartext.Text), time);
     }
 
-    public string Armor() => Common.Armor.Encode(ArmorType.Signature, PacketList.Encode());
+    public string Armor() => Common.Armor.Encode(
+        ArmorType.Signature, PacketList.Encode()
+    );
 }

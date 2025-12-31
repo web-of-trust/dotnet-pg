@@ -99,7 +99,9 @@ public class EncryptedMessage : BaseMessage, IEncryptedMessage
 
         if (sessionKeys.Count == 0)
         {
-            throw new Exception(string.Join("\n", ["Session key decryption failed.", ..errors]));
+            throw new Exception(
+                string.Join("\n", ["Session key decryption failed.", ..errors])
+            );
         }
         return sessionKeys[0];
     }
@@ -112,16 +114,22 @@ public class EncryptedMessage : BaseMessage, IEncryptedMessage
     {
         if (decryptionKeys.Count == 0 && passwords.Count == 0)
         {
-            throw new ArgumentException("No decryption keys or passwords provided.");
+            throw new ArgumentException(
+                "No decryption keys or passwords provided."
+            );
         }
         _sessionKey = DecryptSessionKey(PacketList, decryptionKeys, passwords);
         var packetList = EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
-        return packetList != null ? new LiteralMessage(packetList) : throw new Exception("Decrypt with session key failed.");
+        return packetList != null ?
+            new LiteralMessage(packetList) :
+            throw new Exception("Decrypt with session key failed.");
     }
 
     private static IEncryptedDataPacket AssertEncryptedPacket(IPacketList packetList)
     {
         var encryptedPackets = packetList.Packets.OfType<IEncryptedDataPacket>().ToList();
-        return encryptedPackets.Count == 0 ? throw new Exception("No encrypted data packet in packet list.") : encryptedPackets[0];
+        return encryptedPackets.Count == 0 ?
+            throw new Exception("No encrypted data packet in packet list.") :
+            encryptedPackets[0];
     }
 }

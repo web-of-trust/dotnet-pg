@@ -82,7 +82,8 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
                 ).ToList();
             }
         }
-        var symmetric = preferredSymmetrics.Count > 0 ? preferredSymmetrics[0] : defaultSymmetric;
+        var symmetric = preferredSymmetrics.Count > 0 ?
+            preferredSymmetrics[0] : defaultSymmetric;
 
         IList<AeadAlgorithm> preferredAeads = [
             AeadAlgorithm.Ocb,
@@ -121,11 +122,15 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
     {
         if (encryptionKeys.Count == 0 && passwords.Count == 0)
         {
-            throw new ArgumentException("No encryption keys or passwords provided.");
+            throw new ArgumentException(
+                "No encryption keys or passwords provided."
+            );
         }
 
         var pkeskPackets = encryptionKeys.Select(key =>
-            PublicKeyEncryptedSessionKey.EncryptSessionKey(sessionKey, key.GetEncryptionKeyPacket())
+            PublicKeyEncryptedSessionKey.EncryptSessionKey(
+                sessionKey, key.GetEncryptionKeyPacket()
+            )
         );
         var skeskPackets = passwords.Select(
             password => SymmetricKeyEncryptedSessionKey.EncryptSessionKey(
@@ -178,7 +183,11 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         }
         var signatures = signingKeys.Select(
             key => SignaturePacket.CreateLiteralData(
-                key.SecretKeyPacket, LiteralData, recipients ?? [], notationData, time
+                key.SecretKeyPacket,
+                LiteralData,
+                recipients ?? [],
+                notationData,
+                time
             )
         );
         return new Signature([..signatures]);
@@ -213,11 +222,15 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         {
             addPadding = false;
         }
-        var packetList = addPadding ? new PacketList([..PacketList.Packets, Padding.CreatePadding()]) : PacketList;
+        var packetList = addPadding ?
+            new PacketList([..PacketList.Packets, Padding.CreatePadding()]) :
+            PacketList;
 
         return new EncryptedMessage(new PacketList([
             ..EncryptSessionKey(sessionKey, encryptionKeys, passwords).Packets,
-            SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(sessionKey, packetList, sessionKey.Aead)
+            SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(
+                sessionKey, packetList, sessionKey.Aead
+            )
         ]));
     }
 
@@ -240,6 +253,7 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
     private static IPacketList UnwrapCompressed(IPacketList packetList)
     {
         var compressedPackets = packetList.Packets.OfType<ICompressedData>().ToList();
-        return compressedPackets.Count > 0 ? compressedPackets[0].PacketList : packetList;
+        return compressedPackets.Count > 0 ?
+            compressedPackets[0].PacketList : packetList;
     }
 }
