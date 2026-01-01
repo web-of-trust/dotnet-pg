@@ -29,13 +29,26 @@ digital signatures, compression, and key management.
   [brainpoolP256r1, brainpoolP384r1, brainpoolP512r1](https://www.rfc-editor.org/rfc/rfc5639),
   [Curve25519, Curve448](https://www.rfc-editor.org/rfc/rfc7748),
   [Ed25519, Ed448](https://www.rfc-editor.org/rfc/rfc8032).
-* Support symmetric ciphers & hash algorithms for signature verification &
-  message decryption (backward compatibility): TripleDES, IDEA, CAST5, MD5, SHA-1, RIPEMD-160.
+* Support symmetric ciphers & hash algorithms for message decryption
+  (backward compatibility): TripleDES, IDEA, CAST5, MD5, SHA-1, RIPEMD-160.
 
 ## Installation
 
 ## Basic usage of DotNet PG
+Sign and verify cleartext message
+~~~csharp
+using DotNetPG;
 
+var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----"
+var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
+var passphrase = "Your passphrase";
+
+var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+var cleartextMessage = OpenPGP.CreateCleartextMessage("Hello, DotNet PG!");
+var signedMessage = cleartextMessage.Sign([privateKey]);
+var verifications = signedMessage.Verify([publicKey]);
+~~~
 ## Licensing
 [BSD 3-Clause](LICENSE)
 
