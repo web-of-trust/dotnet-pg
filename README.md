@@ -6,8 +6,8 @@ provides encryption with public key or symmetric cryptographic algorithms,
 digital signatures, compression, and key management.
 
 ## Requirement
-* .NET 9.x or later,
-* [BouncyCastle.NET](https://www.bouncycastle.org/csharp) library provides cryptography algorithms,
+* .NET 9.x or later.
+* [BouncyCastle.NET](https://www.bouncycastle.org/csharp) library provides cryptography algorithms.
 
 ## Features
 * Support data signing & encryption.
