@@ -10,8 +10,8 @@ using Enum;
 /// </summary>
 public static class Config
 {
-    public const string Version = "DotNet Privacy Guard v1";
-    public const string Comment = "The DotNet OpenPGP library";
+    public const string Version = "DotNet Privacy Guard V1";
+    public const string Comment = "The DotNet OpenPGP Library";
 
     private const int AeadChunkSizeMin = 10;
     private const int AeadChunkSizeMax = 16;
