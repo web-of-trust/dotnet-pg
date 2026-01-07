@@ -4,6 +4,8 @@ Message signing & encryption
 ### Encrypt and decrypt data with a password
 
 ```csharp
+using DotNetPG;
+
 var text = "Hello DotNet PG!";
 var password = "secret stuff";
 
@@ -23,6 +25,8 @@ Encryption will use the algorithm preferred by the public (encryption) key (defa
 and decryption will use the algorithm used for encryption.
 
 ```csharp
+using DotNetPG;
+
 var text = "Hello DotNet PG!";
 var passphrase = "secret stuff";
 var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
@@ -45,6 +49,8 @@ Console.WriteLine(decryptedMessage.LiteralData.Data);
 Sign message & encrypt with multiple public keys:
 
 ```csharp
+using DotNetPG;
+
 var text = "Hello DotNet PG!";
 var passphrase = "secret stuff";
 var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
