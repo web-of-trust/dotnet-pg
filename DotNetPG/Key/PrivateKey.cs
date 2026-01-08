@@ -45,7 +45,7 @@ public class PrivateKey : BaseKey, IPrivateKey
     }
 
     public static IPrivateKey Generate(
-        string[] userIds,
+        IList<string> userIds,
         string passphrase,
         KeyType keyType = KeyType.Rsa,
         RsaKeySize keySize = RsaKeySize.Normal,
@@ -55,7 +55,7 @@ public class PrivateKey : BaseKey, IPrivateKey
         DateTime? time = null
     )
     {
-        if (Arrays.IsNullOrEmpty(userIds) || passphrase.Length == 0)
+        if (userIds.Count == 0 || passphrase.Length == 0)
         {
             throw new ArgumentException(
                 "UserIDs and passphrase are required for key generation."

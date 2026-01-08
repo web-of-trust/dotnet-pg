@@ -21,7 +21,7 @@ public sealed class OpenPGP
     /// One subkey with encryption capabilities is also generated if `signOnly` is false.
     /// </summary>
     public static IPrivateKey GenerateKey(
-        string[] userIds,
+        IList<string> userIds,
         string passphrase,
         KeyType keyType = KeyType.Rsa,
         RsaKeySize keySize = RsaKeySize.Normal,
