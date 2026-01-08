@@ -1,0 +1,137 @@
+﻿// See https://aka.ms/new-console-template for more information
+
+using DotNetPG;
+using Org.BouncyCastle.Utilities.Encoders;
+
+const string rsaPublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+-----END PGP PUBLIC KEY BLOCK-----";
+
+Console.WriteLine("Read RSA public key");
+var rsaKey = OpenPGP.ReadPublicKey(rsaPublicKey);
+Console.WriteLine($"Key algorithm: {rsaKey.KeyAlgorithm}");
+Console.WriteLine($"Key version: {rsaKey.Version}");
+Console.WriteLine($"Key fingerprint: {Hex.ToHexString(rsaKey.Fingerprint)}");
+Console.WriteLine($"User ID: {rsaKey.PrimaryUser?.UserId}");
+
+const string eccPublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xpMEaV8iGxMFK4EEACMEIwQBaps3HfFwNhTdabMnho02/ik2AlEGbGjiLjm/Qt7hL2c4NI088IHV
+qe0EJo3jeaS6QRyCOw5LMqxBnWKk0i5UZJkB3cYFvj3Dg+kp3BVF8+545KaNhMrg6lvgkL/zJ1Ln
+59aGmsVo3LN5p0P0XBbIksqvjhS0T6oHFW7v4T2upT5YuPTNKk5ndXllbiBWYW4gTmd1eWVuIDxu
+Z3V5ZW5udjE5ODFAZ21haWwuY29tPsLAVAQQEwoAgwUCaV8iGxYhBI9GwDmmAnuqOfxcvVofzYi0
+qNZgCRBaH82ItKjWYAIbAwMLCQcEIgIDAQUVCAwKDgUWAAECAwIeCwIZAT0UAAAAAAAUACBzYWx0
+QHBocC1vcGVucGdwLm9yZ1WO0KmrJLnCMr1NTlLBr4iwmjIXAhxnF7eze93HoCzhAACqWQIIrBFS
+FUVjDdcgnGW5YM0vI/lfUB2fVDQS3aKXXxtJzh6Dc2Hu7YQqh12MipA2E98r1C1YcsOIfrE+u3tO
+92EiPwUCCQE5QNAm94O4PvMHjfadq/mstFUHW1mkz6AHzXyMjPHHHkSeFJiWdi653oykIFXMt7rE
+qNbXKvIClM1I2MaEar1N2s0sTmd1eWVuIFZhbiBOZ3V5ZW4gPG5ndXllbm52QGl3YXl2aWV0bmFt
+LmNvbT7CwFEEEBMKAIAFAmlfIhsWIQSPRsA5pgJ7qjn8XL1aH82ItKjWYAkQWh/NiLSo1mACGwMD
+CwkHBCICAwEFFQgMCg4FFgABAgMCHgs9FAAAAAAAFAAgc2FsdEBwaHAtb3BlbnBncC5vcmdvf+lM
++H7eli3SEnqn6d8iz3AYCVksl6LBb+QM2964igAAOtUCB1GhiFsG9f1K0ZCuFESv/ty0n7dQHUaz
+0UMrbfQp5t64JUqmLtVhqQ0XATAxr7eHVV5Ynf1SPB3DMy3lU15Wy9Q/AgkBfs/cJzk1qiv7or5G
+4ew58/n2ybX0ouFHij+ckN8CmVUbXHxVVfL1TnircJVXHb2dPDOGaJdPjfenIgEeaBu/CfzOlwRp
+XyIbEgUrgQQAIwQjBAEafpQBJgk3Ct+q+lUkaZDan/ZBIrz34924uSJmHAwVIUtndydk7DX2TzAD
+zY7bEfi5k9R0UvCNLBZtBNBKhHEnFwC946Kqu+qGPpYeew+XCsWt9tY2NavpsV93Bao7zCrPhNak
+IKrCTaI39D3KlMSOE/nDb2Ntbn1ys9fLgxHbUdcKZwMACgnCwDgEGBMKAGgFAmlfIhsWIQSPRsA5
+pgJ7qjn8XL1aH82ItKjWYAkQWh/NiLSo1mACGww9FAAAAAAAFAAgc2FsdEBwaHAtb3BlbnBncC5v
+cmcs9f38PKmUOwBNBGtYw8wGLeTUzsiQTZoMUl7/ptEB3gAAjqYCCJvkknwgkrmyhCzDyEtnTznL
+fzjbLItX0Tz/zJ5YtQheTGtEtueTMYkc4ByApysNcxC7qoSaQis0ZirAlxcofRuEAgjr27Oz/Nw6
+aiJX46m23/eoDhW/HgfI3jfzkMA73JQrRopvRKFMekp/izdmZFIYIcD4eRJ5XLaMJD3/9TpzTJaZ
+Ug==
+-----END PGP PUBLIC KEY BLOCK-----";
+
+Console.WriteLine("Read Ecc public key");
+var eccKey = OpenPGP.ReadPublicKey(eccPublicKey);
+Console.WriteLine($"Key algorithm: {eccKey.KeyAlgorithm}");
+Console.WriteLine($"Key version: {eccKey.Version}");
+Console.WriteLine($"Key fingerprint: {Hex.ToHexString(eccKey.Fingerprint)}");
+Console.WriteLine($"User ID: {eccKey.PrimaryUser?.UserId}");
+
+const string curve25519PublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xioGaV8iGxsAAAAgmPG3qMMP8O1fPa6myXSl2OkKNYCE1pbvvnF/Dasb+VTCuQYfGwgAAABaBQJp
+XyIbIiEGIwff0t+6W4PppGApMFWDBTLNnyOtDOLcddaFplqHfhwJECMH39LfuluDAhsDAwsJBwQi
+AgMBBRUIDAoOBRYAAQIDAh4LCycJAgkDBwIHAwcBAAAAAEoPEENQ1m6pjMb0mLjFqrirff2D0KdR
+mSmO4vhmPqyOO995L7TGRMfupzF13dUBaO6gwPQXIeJHVyO+7AnrWPQHCgzWRj/BPjNa91pNTIWG
+p5kBzSpOZ3V5ZW4gVmFuIE5ndXllbiA8bmd1eWVubnYxOTgxQGdtYWlsLmNvbT7ClQYQGwgAAAA2
+BQJpXyIbIiEGIwff0t+6W4PppGApMFWDBTLNnyOtDOLcddaFplqHfhwJECMH39LfuluDAhkBAAAA
+AFQBEHsaXhhRjrSw5GGFz8yhxcLrfKi+Uuf3de/h/MuGZ1VyKfe29mVZUZMUWuq9OZoU78D4xyK2
+J+SalejpWuxmySotw+oXg1zz8xWLQtgnRH8IzSxOZ3V5ZW4gVmFuIE5ndXllbiA8bmd1eWVubnZA
+aXdheXZpZXRuYW0uY29tPsKSBhAbCAAAADMFAmlfIhsiIQYjB9/S37pbg+mkYCkwVYMFMs2fI60M
+4tx11oWmWod+HAkQIwff0t+6W4MAAAAAzPQQ91Zkryw5MsWVyKeC257Htzq9GmoYkL4c8fRu5lwk
+0q41osjZJAXjJaQ5yIza92ZNElgmKSA1cE2fuiwPjQiyq4Ba5NifD4DOgrXXwNmSZgrOKgZpXyIb
+GQAAACA7PmRwLQ0/R+VkdyqEwPIeaQwLoZ6k3JFY4vldQp8He8KVBhgbCAAAADYFAmlfIhsiIQYj
+B9/S37pbg+mkYCkwVYMFMs2fI60M4tx11oWmWod+HAkQIwff0t+6W4MCGwwAAAAACtcQvxPioUo5
+bWxd4P96TwSa1v1CQcfb9gxocPAq/rlrlmXO5GYhu7S5K00GicpPXUeIU6J7Q4M20EJwHv00Zbwe
+8I7X3L9II9CmCf7R2kagVwbVHyfk/s1Djl4YpT4ppvGZOLCXSWbHfK66CwtNGjjOn5o=
+-----END PGP PUBLIC KEY BLOCK-----";
+
+Console.WriteLine("Read Curve25519 public key");
+var curve25519Key = OpenPGP.ReadPublicKey(curve25519PublicKey);
+Console.WriteLine($"Key algorithm: {curve25519Key.KeyAlgorithm}");
+Console.WriteLine($"Key version: {curve25519Key.Version}");
+Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve25519Key.Fingerprint)}");
+Console.WriteLine($"User ID: {curve25519Key.PrimaryUser?.UserId}");
+
+const string curve448PublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xkMGaV8iGxwAAAA5d5HNxJx2UKs3nIZKE6RtagU6NsHKJTGUbiaiCSRXMtTD/OszPiVOypTde+Gj
+JosWoa+WYDKZ+IaAwsA7Bh8cCgAAAFoFAmlfIhsiIQbLLKu2MV4r+Tko8WJ0BNqlxb1IUVI3Lc4R
+uY6ToBNkvQkQyyyrtjFeK/kCGwMDCwkHBCICAwEFFQgMCg4FFgABAgMCHgsLJwkCCQMHAgcDBwEA
+AAAAD9Ygtr4WkZNBTNt9vrTdwh6iDYyvRqpaqcxiay800fGtsuVDRrZTr50FTjzqsvxPVoF+76GC
+CnYtEhAYK2PgrKR2Pt19Q6v8t2N8nh6fuhj2BO8gqNIMrrtNQ4A9LkFw+MnWvOumo0GNOi1ez6lb
+lzVK97GAtjlS1Y+rJ63x4OjarPv8Z6EDWyYyP1WjOCV735skOgDNKk5ndXllbiBWYW4gTmd1eWVu
+IDxuZ3V5ZW5udjE5ODFAZ21haWwuY29tPsLAFwYQHAoAAAA2BQJpXyIbIiEGyyyrtjFeK/k5KPFi
+dATapcW9SFFSNy3OEbmOk6ATZL0JEMssq7YxXiv5AhkBAAAAALy6IC5wwQMKw/fW5zRHozr4Pi/m
+dz63QwlAWF2tR12HG7KCHHLuaLpfkP8DKRO++KRBbVcpUQrZXb+cQCUdKrIlhskYLzej1kOuY+/7
+nxP0XjUQ8V+MaVajTAkAsKfXQf15O8FYNbzQb88e7sOJi27BbibNgVHNQ6A2CZh3Ub5RQU9gBMUJ
+7C99N8QHR5FuYlDLEwgAzSxOZ3V5ZW4gVmFuIE5ndXllbiA8bmd1eWVubnZAaXdheXZpZXRuYW0u
+Y29tPsLAFAYQHAoAAAAzBQJpXyIbIiEGyyyrtjFeK/k5KPFidATapcW9SFFSNy3OEbmOk6ATZL0J
+EMssq7YxXiv5AAAAAJ80IAq/zCP0TXhjHcznP+3BY4IDBOzRtyZUj/0N26+7V/OBs3eyQNqMjKiY
+jBvOSEvlBzFBmdwGW076bvrsvifgvskElbkShnM1WV2TIhlLWClZpl30TVdSmweAUtkju/ZCjsiU
+6DDHRmBD/wR1vDdkG2eykTddoT7mG4aqgAhFeH++dhCpkpLn9Yx6QFgswmVG3zIAzkIGaV8iGxoA
+AAA4s3p9l9H8DYhWs94lCiSrFX71eBRr0inuIFwq/4XnbcEZKQcHGmHOwRTGPORdS+5C6BJAJ3wl
+z8jCwBcGGBwKAAAANgUCaV8iGyIhBsssq7YxXiv5OSjxYnQE2qXFvUhRUjctzhG5jpOgE2S9CRDL
+LKu2MV4r+QIbDAAAAAC1WCBSIIymRT2vUvURXSHeXucvXujkVkeYktzNikP21RO9GuqxJDwdwawa
+rnOH2ZOpmIKfvSyISKBFfFP+Bth5bKxSUtcps7u3F8KVDr3JcTr3phN6Z+/78OvSgFJ9l8/+3XFs
+bvkM6xSSqVlqvj8UgrsgsooIaYkp2OFf6x0MzX2DThR15c8WM4tx0qArW1fUXp4UANUTVvLekCGQ
+SwvNQ5qgM5waglStbQ==
+-----END PGP PUBLIC KEY BLOCK-----";
+
+Console.WriteLine("Read Curve25519 public key");
+var curve448Key = OpenPGP.ReadPublicKey(curve448PublicKey);
+Console.WriteLine($"Key algorithm: {curve448Key.KeyAlgorithm}");
+Console.WriteLine($"Key version: {curve448Key.Version}");
+Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve448Key.Fingerprint)}");
+Console.WriteLine($"User ID: {curve448Key.PrimaryUser?.UserId}");
