@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyGeneration", "Examples\K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyReading", "Examples\KeyReading\KeyReading.csproj", "{1EEB8D8C-0ADF-49DE-B5E8-2B249054F599}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleartextSigning", "Examples\CleartextSigning\CleartextSigning.csproj", "{B325B643-EC29-4FC5-B602-F4B4747464E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +34,14 @@ Global
 		{1EEB8D8C-0ADF-49DE-B5E8-2B249054F599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EEB8D8C-0ADF-49DE-B5E8-2B249054F599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EEB8D8C-0ADF-49DE-B5E8-2B249054F599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B325B643-EC29-4FC5-B602-F4B4747464E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B325B643-EC29-4FC5-B602-F4B4747464E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B325B643-EC29-4FC5-B602-F4B4747464E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B325B643-EC29-4FC5-B602-F4B4747464E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{948BEA3D-C356-4BE1-8088-A0EA818C7A28} = {DAC287F6-02E8-4BDD-9C9E-D17102FD6221}
 		{1EEB8D8C-0ADF-49DE-B5E8-2B249054F599} = {DAC287F6-02E8-4BDD-9C9E-D17102FD6221}
+		{B325B643-EC29-4FC5-B602-F4B4747464E5} = {DAC287F6-02E8-4BDD-9C9E-D17102FD6221}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,211 @@
+﻿// See https://aka.ms/new-console-template for more information
+
+using DotNetPG;
+using Org.BouncyCastle.Utilities.Encoders;
+
+const string passphase = ";LNe[zMo40{=1=UwvnjxK9;~v||*X3eL";
+
+const string rsaKeyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+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
+u0jXrL9sA3L+STpk3CkBnkQoMwZw
+-----END PGP PRIVATE KEY BLOCK-----";
+
+const string eccKeyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xcBIBGlfJowTBSuBBAAjBCMEAfv5MW++UgQc9AW5WaJRoKUyqfA+3+pF9/VM7M3bVCNHonWG/hBt
+2NWl70Sor24brmSr8XJnLbpcsLlJdb76djxmAfoYp2BhBxFyTaMc7jRCSp+BnHl4Mx0HLrqle+vu
+O65W4IZsi82h74sIgxAAZl9vMiEGHvB/4xQP8K5IMwK4Q0h5/gkDCJN9YyQKU0Rt4HaWYlA8fYia
+1JJmipSuUYwl1zJTMwUbCZ6z4i+xiw/fskAOGxOcPG1XtYchmGptl9NQbaW8z9tWkZYK4OloKXp2
+wXbYja9ypcD6Rjft4iweBenu0YwDtUNdlenxsRXm1t6Uf7TCys1kzSpOZ3V5ZW4gVmFuIE5ndXll
+biA8bmd1eWVubnYxOTgxQGdtYWlsLmNvbT7CwFQEEBMKAIMFAmlfJowWIQR6pVsado67fMm5tvZF
+CD+gcfUXVwkQRQg/oHH1F1cCGwMDCwkHBCICAwEFFQgMCg4FFgABAgMCHgsCGQE9FAAAAAAAFAAg
+c2FsdEBwaHAtb3BlbnBncC5vcmcQeNUIg12n/66anvKBX8MO+ID/Amx4uEHyou3f4IjD6AAAlLsC
+B2D/fdw6HnbxS+5GSrRuH0848ji4k+Cs1uqmPtqX0RLtNvvYxZyx4soCE0JNmInReni7jwrO5HX8
+9L1VAsG7VQgNAgkBUPyfWYVKZPaicyfYTP1pbN8AspJidJvgGzQrSws9JdSznZg2YVK40le76Ze3
+H1ZA6NBCXwAHYKTEjA05akxGYvHNLE5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5udkBpd2F5dmll
+dG5hbS5jb20+wsBRBBATCgCABQJpXyaMFiEEeqVbGnaOu3zJubb2RQg/oHH1F1cJEEUIP6Bx9RdX
+AhsDAwsJBwQiAgMBBRUIDAoOBRYAAQIDAh4LPRQAAAAAABQAIHNhbHRAcGhwLW9wZW5wZ3Aub3Jn
+dU2DiqFu7x1FQxcUSmHmajNCDeW6Si8BbQsIRfHponwAANgNAgkBJdeimJhqJPJmLFpiFeBwUP0C
+lJYf9ao3MiNXd0SwzKCMzjDTzjOGw0eSP8fZrQajhb+OhVWr+7y2l9+oSCgPbUwCB1QbwMKD4bTA
+DawNjkhCxxpLjj/xpOd64dCm0GFR4qCOxwUPswsxaja8kjNhBd3aX11l08lPQcdctzERn0RWfriu
+x8BMBGlfJowSBSuBBAAjBCMEAe0bW0WKVpT6D4lwDj8ZZ0rdcwnLXUJ7y2wRzCQtNAOklscnIOOP
+MCNKHW/kZBsggH8s4xxCGHOTCVyfoGnaJLi8AI52yjBNy7jt0zVSobHZgfyyCM9w6XXCl0oxoTnO
+hJRxwp3i1lfcBO9nyzagtks7BE2XmZkXB0+Kt//EguGF1C6IAwAKCf4JAwj1SbbZe9SiK+BrB1fD
+EuJ9OtS5miWUcIBljqJZB+nVzjZUfrqo1ZTmY6FyoCfc01tdNfVHdvmcZnrj3AgvmhDe+DM3oior
+Z/GxaK3Fww8X2agODk9EsUHVzadU4a/81IyaIWdAdznGPXrnc94mMxWftMLAOQQYEwoAaAUCaV8m
+jBYhBHqlWxp2jrt8ybm29kUIP6Bx9RdXCRBFCD+gcfUXVwIbDD0UAAAAAAAUACBzYWx0QHBocC1v
+cGVucGdwLm9yZwSXpmUywNk+OHM+k6Bx2UWKBViWups+ZdmPxZCk36gxAADnxQIInbNi5BCl65n7
+pf00WFjpmnpSNPxrZ8Gghhe1nA8dNzQfiNWA8vskuj6r3miQPgDmaHjFf8l/RTp6RTnCOs42hIYC
+CQG5oA313n0JAhcniLsVg4WnkgQzQ9Oj5bctqBSxLhimlR7eHzOuPpQh6fEPrCXnWhp1m/IFluOI
+h3d161ZW0hwyrQ==
+-----END PGP PRIVATE KEY BLOCK-----";
+
+const string curve25519KeyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xX0GaV8mjBsAAAAgHv9ZubrOaLYxRFBuE+KwUSXai+AnnjyGQGG5td0K4/L+HQkLAwgkQ1WVDv6w
+oeDJWP1a41wkE0Bi3dfKQzulND1t9Nsk4hefq9pZA+bppAYKRrXHHUOG/434JJDcL673ySWCWAZk
+ZwdLcTdB1Vm6gO9VeMK5Bh8bCAAAAFoFAmlfJowiIQZmh/8nIRrrMKVroAmcpXImkkEyHrm6ejl6
+i4ej6a/3qAkQZof/JyEa6zACGwMDCwkHBCICAwEFFQgMCg4FFgABAgMCHgsLJwkCCQMHAgcDBwEA
+AAAAJpkQ4zor7Inur9mNEPAF5XChEvVljK/54GeA24pKtrqPKLVeaYpEhdeDlKEznyu+/vGFm0IE
+rLqnUmAlyGLXW4tHoGGL9ltCBYf5Ex8qkkYmZQjNKk5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5u
+djE5ODFAZ21haWwuY29tPsKVBhAbCAAAADYFAmlfJowiIQZmh/8nIRrrMKVroAmcpXImkkEyHrm6
+ejl6i4ej6a/3qAkQZof/JyEa6zACGQEAAAAAAdIQngr9f4Wl2sGhCek+Mt5FEBxzVAG8xP5TylYR
++SBZvGvo0hDWBIlOK0LthRjmFCtIcke4tIoDDOqbj2h0EUeeo1PBWSiOauPFsdoqPm7ltQfNLE5n
+dXllbiBWYW4gTmd1eWVuIDxuZ3V5ZW5udkBpd2F5dmlldG5hbS5jb20+wpIGEBsIAAAAMwUCaV8m
+jCIhBmaH/ychGuswpWugCZylciaSQTIeubp6OXqLh6Ppr/eoCRBmh/8nIRrrMAAAAADRHhBv2gUs
+eAMD8onhu2if+y1tO2GTa7ZvYtwCYD7Bdj6W8h1brBTXWette3GJVNUV2FJ3KN24QnuQoE19Dkj/
+bN+OdLDbDDCTPh89yyp6y2HWAsd9BmlfJowZAAAAIE/VAeW+x3sTLcKhV6E1dbXc711j7OQgG564
+HFD7jW0g/h0JCwMIDUC/l7woiazg+Mee0YGtFg1mlhPJ8TIcgVK007YdxcRl4bMJNycl0JEEyU7Y
+lOoG1BHkpXH7quM3mYROwafrfTdDjEHj3fNNpnFyC33ClQYYGwgAAAA2BQJpXyaMIiEGZof/JyEa
+6zCla6AJnKVyJpJBMh65uno5eouHo+mv96gJEGaH/ychGuswAhsMAAAAALjYEBnGhL3yHYMNAjab
+QnM6He75SBO7VoJXvMQ4oKihrQlnJ9tpHHSrUWUtTWHPg2VleahQQyV9pbxJpx87mxdSMH+u8vlq
+mrwqLzK6esIpvUkL1RNMFB/E4wkGKCtDfKhImKq+CaKD
+-----END PGP PRIVATE KEY BLOCK-----";
+
+const string curve448KeyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+xa8GaV8mjBwAAAA5nDRIy2QhqZfS3QQNFr4pod2HQuGT9oTaP4Pct7ORrEkU/WULM74BEWpDv3nB
+xriEEoJfp+fkH0WA/h0JCwMIbeEsGmZjNVHgpmfe5W/RPskR4Fs7pT4wl/lKg8awWGlVfhhGqnyc
+aCbudZ1Ajh13WLJ69DK84gkkgZqaoJ3841zoqs7imtytMccO+GXJ/1OrvJxZQRa2PaD+kk1W3yJw
+ec6LQw9LwsA7Bh8cCgAAAFoFAmlfJowiIQbGQHP28thDlVb84cXpRpN5wvrzx+V98e7iFy345tU2
+PQkQxkBz9vLYQ5UCGwMDCwkHBCICAwEFFQgMCg4FFgABAgMCHgsLJwkCCQMHAgcDBwEAAAAAlHUg
+BfvdrPUx05IKewPk8Ir2Kk7KxKfllEqxE/xOYjU0P7afqzYuO1GB7WeyfyHCTKEjq92Q+gxlwdZ2
+AUz+vv0QuC/4a9Xoo+arsFSDOO09wuQ8xnlZm47tfwBXz7uxQMT4DqqIKqNliPUSpwAndkR+p6pU
+ZkL4vDhG13IVcqLuLJYaD4cyDGJ7MwWXgqaZZv7gHgDNKk5ndXllbiBWYW4gTmd1eWVuIDxuZ3V5
+ZW5udjE5ODFAZ21haWwuY29tPsLAFwYQHAoAAAA2BQJpXyaMIiEGxkBz9vLYQ5VW/OHF6UaTecL6
+88flffHu4hct+ObVNj0JEMZAc/by2EOVAhkBAAAAAE5EICnQcbzUCLwn1T3G4z8AI+EFiDweh+0R
+z3OVKuXMQ5BGselHLcXGUZB8NKjaAWP4Ce0tk5W0qS3JO719YlfWxwxW5Tq3du+jj3ZDMTnyPatp
+kB4GLIKEDNcAfppAk7PBrmkq1Xl8Dz8zxsNiU8I9sF6JvQLDX1YpVQlsOaLxSuy1X7aEuXfJRNUa
+Lt82rmpAxTYAzSxOZ3V5ZW4gVmFuIE5ndXllbiA8bmd1eWVubnZAaXdheXZpZXRuYW0uY29tPsLA
+FAYQHAoAAAAzBQJpXyaMIiEGxkBz9vLYQ5VW/OHF6UaTecL688flffHu4hct+ObVNj0JEMZAc/by
+2EOVAAAAAIDnIHQdrS0hEHp1MMFhhYKafZyqX5hOuPZsz5oU5eNcQkjuJk8DLiAjyoCwQ0YWXg5A
+Ndmm6Gmj3fMY0w13P6Z3HOJPIUM/QVnP4TgihMBXBe2QP34uLlfWJOUA0zX4qIF9er3ppxjjbDaA
+7/WMNCr88quYlIMXkxx0ebxU7Rtx3/YoCgVqMscTr3yra6Y8yVYUVAcAx60GaV8mjBoAAAA4cmUI
+VTDUG461EyU+tfJv4+N1bVNcExDSh3siC3hdfJftNNqp/4B4c12lRKiaqQRHN14ZbX1+mHT+HQkL
+AwgCef13fBvvqOBppNkrA5JwBh/8c3175HQOFYVAk7E15C2pdjsTdojrAscUw8VGPtASf6SwuaVr
+Te7gqjnVO0yA57tzgqhgNETDkRFgphgXJbisKoSNXCgWy6n5RuzyxhLVjARgHcLAFwYYHAoAAAA2
+BQJpXyaMIiEGxkBz9vLYQ5VW/OHF6UaTecL688flffHu4hct+ObVNj0JEMZAc/by2EOVAhsMAAAA
+AJDKIDqy/pOdMnLQYZNTRvVklZvoCrf5L9372qkDeRI/u2NV3w04prUFzKKmVOKISMEFT0eiXUtS
+qY/v6k5JTB+qilTaywZPwQ14xDC5FELjW0dOpq6bHTXXs2CACnrzyKv/B6xHfIWyUakhdml2ZbCp
+XmbXDMa+VIvnZ6zDZHqG6s6L/pBCDfpk8sOu259RPvbOvjwA1RTQ7usi2T0nNQnd3szbhgFU55WG
+1w==
+-----END PGP PRIVATE KEY BLOCK-----";
+
+const string cleartext = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc felis neque, interdum id iaculis ut, faucibus a ex.
+Nam quam tortor, pharetra at dignissim ut, semper nec arcu. Vivamus mollis tortor vitae urna fringilla lacinia id
+vel nunc. Ut laoreet pellentesque mattis. Curabitur viverra enim venenatis, mattis velit sed, fringilla lacus. Donec
+nulla dui, vestibulum aliquam ultrices hendrerit, euismod iaculis magna. Praesent vitae ipsum id risus feugiat
+auctor ac eget tellus.
+
+What we need from the grocery store:
+-tofu
+-vegetables
+-noodles";
+
+var rsaPrivateKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphase);
+var eccPrivateKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphase);
+var curve25519PrivateKey = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphase);
+var curve448PrivateKey = OpenPGP.DecryptPrivateKey(curve448KeyData, passphase);
+
+Console.WriteLine("Sign cleartext message:");
+var signedMessage = OpenPGP.SignCleartext(cleartext, [
+        rsaPrivateKey,
+        eccPrivateKey,
+        curve25519PrivateKey,
+        curve448PrivateKey
+    ]);
+var armoredMessage = signedMessage.Armor();
+Console.WriteLine(armoredMessage);
+Console.WriteLine();
+
+Console.WriteLine("Verify signed message:");
+var verifications = OpenPGP.Verify(armoredMessage, [
+    rsaPrivateKey.PublicKey,
+    eccPrivateKey.PublicKey,
+    curve25519PrivateKey.PublicKey,
+    curve448PrivateKey.PublicKey
+]);
+foreach (var verification in verifications)
+{
+    Console.WriteLine($"Key ID: {Hex.ToHexString(verification.KeyId)}");
+    Console.WriteLine($"Signature is verified: {verification.IsVerified}");
+    Console.WriteLine();
+}
+
+Console.WriteLine("Sign detached cleartext message:");
+var signature = OpenPGP.SignDetachedCleartext(cleartext, [
+    rsaPrivateKey,
+    eccPrivateKey,
+    curve25519PrivateKey,
+    curve448PrivateKey
+]);
+var armoredSignature = signature.Armor();
+Console.WriteLine(armoredSignature);
+Console.WriteLine();
+verifications = OpenPGP.VerifyDetached(cleartext, armoredSignature, [
+    rsaPrivateKey.PublicKey,
+    eccPrivateKey.PublicKey,
+    curve25519PrivateKey.PublicKey,
+    curve448PrivateKey.PublicKey
+]);
+foreach (var verification in verifications)
+{
+    Console.WriteLine($"Key ID: {Hex.ToHexString(verification.KeyId)}");
+    Console.WriteLine($"Signature is verified: {verification.IsVerified}");
+    Console.WriteLine();
+}
