@@ -1,7 +1,7 @@
 ﻿using DotNetPG;
 using Org.BouncyCastle.Utilities.Encoders;
 
-const string passphase = ";LNe[zMo40{=1=UwvnjxK9;~v||*X3eL";
+const string passphrase = ";LNe[zMo40{=1=UwvnjxK9;~v||*X3eL";
 
 const string rsaKeyData = @"-----BEGIN PGP PRIVATE KEY BLOCK-----
 
@@ -155,10 +155,10 @@ What we need from the grocery store:
 -vegetables
 -noodles";
 
-var rsaPrivateKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphase);
-var eccPrivateKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphase);
-var curve25519PrivateKey = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphase);
-var curve448PrivateKey = OpenPGP.DecryptPrivateKey(curve448KeyData, passphase);
+var rsaPrivateKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphrase);
+var eccPrivateKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphrase);
+var curve25519PrivateKey = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphrase);
+var curve448PrivateKey = OpenPGP.DecryptPrivateKey(curve448KeyData, passphrase);
 
 Console.WriteLine("Sign cleartext message:");
 var signedMessage = OpenPGP.SignCleartext(cleartext, [
