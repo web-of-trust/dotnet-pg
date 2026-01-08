@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using DotNetPG;
+﻿using DotNetPG;
 using Org.BouncyCastle.Utilities.Encoders;
 
 const string rsaPublicKey = @"-----BEGIN PGP PUBLIC KEY BLOCK-----
