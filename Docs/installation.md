@@ -6,6 +6,17 @@ DotNet PG installation
 * [BouncyCastle.NET](https://www.bouncycastle.org/csharp) library provides cryptography algorithms.
 
 ## Installation
+Install via [NuGet:](https://www.nuget.org/packages/DotNetPG)
+```bash
+Install-Package DotNetPG
+```
+
+Or via the .NET Core command line interface:
+```bash
+dotnet add package DotNetPG
+```
+
+Either commands, from Package Manager Console or .NET Core CLI, will download and install DotNetPG.
 
 ## Configuration
 

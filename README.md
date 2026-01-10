@@ -33,6 +33,17 @@ digital signatures, compression, and key management.
   (backward compatibility): TripleDES, IDEA, CAST5, MD5, SHA-1, RIPEMD-160.
 
 ## Installation
+Install via [NuGet:](https://www.nuget.org/packages/DotNetPG)
+```bash
+Install-Package DotNetPG
+```
+
+Or via the .NET Core command line interface:
+```bash
+dotnet add package DotNetPG
+```
+
+Either commands, from Package Manager Console or .NET Core CLI, will download and install DotNetPG.
 
 ## Basic usage of DotNet PG
 Sign and verify cleartext message
