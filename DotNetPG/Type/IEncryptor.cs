@@ -9,7 +9,17 @@ namespace DotNetPG.Type;
 public interface IEncryptor
 {
     /// <summary>
-    /// Encrypt a message
+    /// Encrypt a literal message
     /// </summary>
     IEncryptedMessage Encrypt(ILiteralMessage message, DateTime? time = null);
+
+    /// <summary>
+    /// Encrypt literal data
+    /// </summary>
+    IEncryptedMessage Encrypt(byte[] literalData, DateTime? time = null);
+
+    /// <summary>
+    /// Encrypt clear text
+    /// </summary>
+    IEncryptedMessage Encrypt(string text, DateTime? time = null);
 }

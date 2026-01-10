@@ -69,4 +69,14 @@ public class Encryptor : IEncryptor
             _encryptionKeys, _passwords, _symmetric
         );
     }
+
+    public IEncryptedMessage Encrypt(byte[] literalData, DateTime? time = null)
+    {
+        return Encrypt(LiteralMessage.FromLiteralData(literalData, time: time), time);
+    }
+
+    public IEncryptedMessage Encrypt(string text, DateTime? time = null)
+    {
+        return Encrypt(LiteralMessage.FromText(text), time);
+    }
 }
