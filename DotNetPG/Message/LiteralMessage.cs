@@ -3,10 +3,8 @@
 
 namespace DotNetPG.Message;
 
-using Common;
 using Enum;
 using Packet;
-using Packet.Key;
 using Type;
 
 /// <summary>
