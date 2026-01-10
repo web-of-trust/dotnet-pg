@@ -429,7 +429,10 @@ public sealed class OpenPGP
         IList<string> passwords
     )
     {
-        return LiteralMessage.EncryptSessionKey(sessionKey, encryptionKeys, passwords);
+        return new Encryptor()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithPasswords(passwords)
+            .EncryptSessionKey(sessionKey);
     }
 
     /// <summary>
@@ -442,6 +445,9 @@ public sealed class OpenPGP
         IList<string> passwords
     )
     {
-        return EncryptedMessage.DecryptSessionKey(packetList, decryptionKeys, passwords);
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .DecryptSessionKey(packetList);
     }
 }

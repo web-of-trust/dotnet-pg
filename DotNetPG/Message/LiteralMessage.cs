@@ -57,35 +57,6 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         );
     }
 
-    /// <summary>
-    /// Encrypt a session key either with public keys, passwords, or both at once.
-    /// </summary>
-    public static IPacketList EncryptSessionKey(
-        ISessionKey sessionKey,
-        IList<IKey> encryptionKeys,
-        IList<string> passwords
-    )
-    {
-        if (encryptionKeys.Count == 0 && passwords.Count == 0)
-        {
-            throw new ArgumentException(
-                "No encryption keys or passwords provided."
-            );
-        }
-
-        var pkeskPackets = encryptionKeys.Select(key =>
-            PublicKeyEncryptedSessionKey.EncryptSessionKey(
-                sessionKey, key.GetEncryptionKeyPacket()
-            )
-        );
-        var skeskPackets = passwords.Select(
-            password => SymmetricKeyEncryptedSessionKey.EncryptSessionKey(
-                password, sessionKey.Symmetric, sessionKey, sessionKey.Aead
-            )
-        );
-        return new PacketList([..pkeskPackets, ..skeskPackets]);
-    }
-
     public ILiteralData LiteralData { get; }
 
     public ISignature Signature { get; }
@@ -176,7 +147,10 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
             PacketList;
 
         return new EncryptedMessage(new PacketList([
-            ..EncryptSessionKey(sessionKey, encryptionKeys, passwords).Packets,
+            ..new Encryptor()
+                .WithEncryptionKeys(encryptionKeys)
+                .WithPasswords(passwords)
+                .EncryptSessionKey(sessionKey).Packets,
             SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(
                 sessionKey, packetList, sessionKey.Aead
             )

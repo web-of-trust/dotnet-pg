@@ -5,6 +5,7 @@ namespace DotNetPG.Message;
 
 using Common;
 using Enum;
+using Packet;
 using Type;
 
 /// <summary>
@@ -78,5 +79,27 @@ public class Encryptor : IEncryptor
     public IEncryptedMessage Encrypt(string text, DateTime? time = null)
     {
         return Encrypt(LiteralMessage.FromText(text), time);
+    }
+
+    public IPacketList EncryptSessionKey(ISessionKey sessionKey)
+    {
+        if (_encryptionKeys.Count == 0 && _passwords.Count == 0)
+        {
+            throw new ArgumentException(
+                "No encryption keys or passwords provided."
+            );
+        }
+
+        var pkeskPackets = _encryptionKeys.Select(key =>
+            PublicKeyEncryptedSessionKey.EncryptSessionKey(
+                sessionKey, key.GetEncryptionKeyPacket()
+            )
+        );
+        var skeskPackets = _passwords.Select(
+            password => SymmetricKeyEncryptedSessionKey.EncryptSessionKey(
+                password, sessionKey.Symmetric, sessionKey, sessionKey.Aead
+            )
+        );
+        return new PacketList([..pkeskPackets, ..skeskPackets]);
     }
 }

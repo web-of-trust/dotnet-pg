@@ -16,7 +16,10 @@ public interface IDecryptor
     /// <summary>
     /// Decrypt a armored encrypted string
     /// </summary>
-    /// <param name="messageData"></param>
-    /// <returns></returns>
     ILiteralMessage Decrypt(string messageData);
+
+    /// <summary>
+    /// Decrypt encrypted session keys.
+    /// </summary>
+    ISessionKey DecryptSessionKey(IPacketList packetList);
 }

@@ -22,4 +22,9 @@ public interface IEncryptor
     /// Encrypt clear text
     /// </summary>
     IEncryptedMessage Encrypt(string text, DateTime? time = null);
+
+    /// <summary>
+    /// Encrypt a session key
+    /// </summary>
+    IPacketList EncryptSessionKey(ISessionKey sessionKey);
 }
