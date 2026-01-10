@@ -25,17 +25,17 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
        Signature = new Signature(packets.OfType<ISignaturePacket>().ToList());
     }
 
-    public static LiteralMessage FromArmored(string armored)
+    public static ILiteralMessage FromArmored(string armored)
     {
         return FromBytes(Common.Armor.Decode(armored).Data);
     }
     
-    public static LiteralMessage FromBytes(byte[] bytes)
+    public static ILiteralMessage FromBytes(byte[] bytes)
     {
         return new LiteralMessage(Packet.PacketList.Decode(bytes));
     }
 
-    public static LiteralMessage FromText(string text)
+    public static ILiteralMessage FromText(string text)
     {
         return new LiteralMessage(
             new PacketList(
@@ -44,7 +44,7 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         );
     }
 
-    public static LiteralMessage FromLiteralData(
+    public static ILiteralMessage FromLiteralData(
         byte[] data,
         string filename = "",
         DateTime? time = null
@@ -133,28 +133,10 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256
     )
     {
-        var sessionKey = new SessionKeyGenerator()
+        return new Encryptor()
             .WithEncryptionKeys(encryptionKeys)
-            .WithDefaultSymmetric(symmetric)
-            .Generate();
-        var addPadding = sessionKey.Aead != null;
-        if (encryptionKeys.Any(key => key.Version != 6))
-        {
-            addPadding = false;
-        }
-        var packetList = addPadding ?
-            new PacketList([..PacketList.Packets, Padding.CreatePadding()]) :
-            PacketList;
-
-        return new EncryptedMessage(new PacketList([
-            ..new Encryptor()
-                .WithEncryptionKeys(encryptionKeys)
-                .WithPasswords(passwords)
-                .EncryptSessionKey(sessionKey).Packets,
-            SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(
-                sessionKey, packetList, sessionKey.Aead
-            )
-        ]));
+            .WithPasswords(passwords)
+            .EncryptMessage(this);
     }
 
     public ILiteralMessage Compress(

@@ -60,15 +60,11 @@ public class Encryptor : IEncryptor
     {
         if (_signingKeys.Count == 0)
         {
-            return message.Compress(_compression).Encrypt(
-                _encryptionKeys, _passwords, _symmetric
-            );
+            return EncryptMessage(message.Compress(_compression));
         }
-        return message.Sign(
+        return EncryptMessage(message.Sign(
             _signingKeys, _encryptionKeys, _notationData, time
-        ).Compress(_compression).Encrypt(
-            _encryptionKeys, _passwords, _symmetric
-        );
+        ).Compress(_compression));
     }
 
     public IEncryptedMessage Encrypt(byte[] literalData, DateTime? time = null)
@@ -79,6 +75,43 @@ public class Encryptor : IEncryptor
     public IEncryptedMessage Encrypt(string text, DateTime? time = null)
     {
         return Encrypt(LiteralMessage.FromText(text), time);
+    }
+
+    public IList<IEncryptedMessage> BulkEncrypt(IList<ILiteralMessage> messages, DateTime? time = null)
+    {
+        var sessionKey = new SessionKeyGenerator()
+            .WithEncryptionKeys(_encryptionKeys)
+            .WithDefaultSymmetric(_symmetric)
+            .Generate();
+        var eskPacketList = new Encryptor()
+            .WithEncryptionKeys(_encryptionKeys)
+            .WithPasswords(_passwords)
+            .EncryptSessionKey(sessionKey).Packets;
+
+        var addPadding = sessionKey.Aead != null;
+        if (_encryptionKeys.Any(key => key.Version != 6))
+        {
+            addPadding = false;
+        }
+        var encryptedMessages = messages.Select(IEncryptedMessage (message) =>
+        {
+            var packetList = addPadding ?
+                new PacketList([..message.PacketList.Packets, Padding.CreatePadding()]) :
+                message.PacketList;
+            return new EncryptedMessage(new PacketList([
+                ..eskPacketList,
+                SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(
+                    sessionKey, packetList, sessionKey.Aead
+                )
+            ]));
+        });
+        return encryptedMessages.ToList();
+    }
+
+    public IList<IEncryptedMessage> BulkEncrypt(IList<string> texts, DateTime? time = null)
+    {
+        var messages = texts.Select(LiteralMessage.FromText);
+        return BulkEncrypt(messages.ToList(), time);
     }
 
     public IPacketList EncryptSessionKey(ISessionKey sessionKey)
@@ -102,4 +135,31 @@ public class Encryptor : IEncryptor
         );
         return new PacketList([..pkeskPackets, ..skeskPackets]);
     }
+
+    public IEncryptedMessage EncryptMessage(ILiteralMessage message)
+    {
+        var sessionKey = new SessionKeyGenerator()
+            .WithEncryptionKeys(_encryptionKeys)
+            .WithDefaultSymmetric(_symmetric)
+            .Generate();
+        var addPadding = sessionKey.Aead != null;
+        if (_encryptionKeys.Any(key => key.Version != 6))
+        {
+            addPadding = false;
+        }
+        var packetList = addPadding ?
+            new PacketList([..message.PacketList.Packets, Padding.CreatePadding()]) :
+            message.PacketList;
+
+        return new EncryptedMessage(new PacketList([
+            ..new Encryptor()
+                .WithEncryptionKeys(_encryptionKeys)
+                .WithPasswords(_passwords)
+                .EncryptSessionKey(sessionKey).Packets,
+            SymEncryptedIntegrityProtectedData.EncryptPacketsWithSessionKey(
+                sessionKey, packetList, sessionKey.Aead
+            )
+        ]));
+    }
+    
 }
