@@ -17,6 +17,8 @@
         <RepositoryUrl>https://github.com/web-of-trust/dotnet-pg</RepositoryUrl>
         <PackageTags>cryptography encryption signing openpgp rfc4880 privacy-guard rfc6637 rfc9580</PackageTags>
         <PackageReleaseNotes>First major release</PackageReleaseNotes>
+        <Company>Web of Trust</Company>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
