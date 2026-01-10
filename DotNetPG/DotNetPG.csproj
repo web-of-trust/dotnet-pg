@@ -11,7 +11,7 @@
         <Title>DotNet PG</Title>
         <Authors>Nguyen Van Nguyen - nguyennv1981@gmail.com</Authors>
         <Description>DotNet PG is an implementation of the OpenPGP standard in .NET. It implements RFC 9580 and provides encryption with public key or symmetric cryptographic algorithms, digital signatures, compression, and key management.</Description>
-        <Copyright>BSD 3-Clause "New" or "Revised" License</Copyright>
+        <Copyright>Copyright (c) Dot Net Privacy Guard Project. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/web-of-trust/dotnet-pg</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/web-of-trust/dotnet-pg/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/web-of-trust/dotnet-pg</RepositoryUrl>
