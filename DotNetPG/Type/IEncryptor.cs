@@ -4,12 +4,12 @@
 namespace DotNetPG.Type;
 
 /// <summary>
-/// OpenPGP key pair generator interface
+/// Encryptor interface
 /// </summary>
-public interface IKeyGenerator
+public interface IEncryptor
 {
     /// <summary>
-    /// Generate a new OpenPGP key pair.
+    /// Encrypt a message
     /// </summary>
-    IPrivateKey Generate(DateTime? time = null);
+    IEncryptedMessage Encrypt(ILiteralMessage message, DateTime? time = null);
 }

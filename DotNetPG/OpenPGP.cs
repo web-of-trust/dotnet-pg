@@ -16,14 +16,6 @@ using Type;
 public sealed class OpenPGP
 {
     /// <summary>
-    /// New key generator
-    /// </summary>
-    public static IKeyGenerator KeyGenerator()
-    {
-        return new KeyGenerator();
-    }
-
-    /// <summary>
     /// Generate a new OpenPGP key pair. Support RSA, ECC, Curve25519 and Curve448 key types.
     /// The generated primary key will have signing capabilities.
     /// One subkey with encryption capabilities is also generated if `signOnly` is false.
@@ -39,7 +31,7 @@ public sealed class OpenPGP
         DateTime? time = null
     )
     {
-        return KeyGenerator()
+        return new KeyGenerator()
             .WithUserIds(userIds)
             .WithPassphrase(passphrase)
             .WithKeyType(keyType)
@@ -371,20 +363,14 @@ public sealed class OpenPGP
         DateTime? time = null
     )
     {
-        if (signingKeys.Count == 0)
-        {
-            return message.Compress(compression ?? Config.PreferredCompression).Encrypt(
-                encryptionKeys, passwords, symmetric ?? Config.PreferredSymmetric
-            );
-        }
-        else
-        {
-            return message.Sign(
-                signingKeys, encryptionKeys, notationData, time
-            ).Compress(compression ?? Config.PreferredCompression).Encrypt(
-                encryptionKeys, passwords, symmetric ?? Config.PreferredSymmetric
-            );
-        }
+        return new Encryptor()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithPasswords(passwords)
+            .WithSigningKeys(signingKeys)
+            .WithSymmetric(symmetric ?? Config.PreferredSymmetric)
+            .WithCompression(compression ?? Config.PreferredCompression)
+            .WithNotationData(notationData)
+            .Encrypt(message, time);
     }
 
     /// <summary>

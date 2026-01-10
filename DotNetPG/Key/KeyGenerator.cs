@@ -21,43 +21,43 @@ public class KeyGenerator : IKeyGenerator
     private int _keyExpiry;
     private bool _signOnly;
 
-    public IKeyGenerator WithUserIds(IList<string> userIds)
+    public KeyGenerator WithUserIds(IList<string> userIds)
     {
         _userIds = userIds;
         return this;
     }
 
-    public IKeyGenerator WithPassphrase(string passphrase)
+    public KeyGenerator WithPassphrase(string passphrase)
     {
         _passphrase = passphrase;
         return this;
     }
 
-    public IKeyGenerator WithKeyType(KeyType keyType)
+    public KeyGenerator WithKeyType(KeyType keyType)
     {
         _keyType = keyType;
         return this;
     }
 
-    public IKeyGenerator WithRsaKeySize(RsaKeySize keySize)
+    public KeyGenerator WithRsaKeySize(RsaKeySize keySize)
     {
         _keySize = keySize;
         return this;
     }
 
-    public IKeyGenerator WithEcCurve(EcCurve curve)
+    public KeyGenerator WithEcCurve(EcCurve curve)
     {
         _curve = curve;
         return this;
     }
 
-    public IKeyGenerator WithKeyExpiry(int keyExpiry)
+    public KeyGenerator WithKeyExpiry(int keyExpiry)
     {
         _keyExpiry = keyExpiry;
         return this;
     }
 
-    public IKeyGenerator WithSignOnly(bool signOnly)
+    public KeyGenerator WithSignOnly(bool signOnly)
     {
         _signOnly = signOnly;
         return this;
