@@ -383,7 +383,10 @@ public sealed class OpenPGP
         IList<string> passwords
     )
     {
-        return message.Decrypt(decryptionKeys, passwords);
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .Decrypt(message);
     }
 
     /// <summary>
@@ -397,7 +400,10 @@ public sealed class OpenPGP
         IList<string> passwords
     )
     {
-        return ReadEncryptedMessage(messageData).Decrypt(decryptionKeys, passwords);
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .Decrypt(messageData);
     }
 
     /// <summary>
