@@ -34,20 +34,12 @@ public class EncryptedMessage : BaseMessage, IEncryptedMessage
 
     public ILiteralMessage Decrypt(IList<IPrivateKey> decryptionKeys, IList<string> passwords)
     {
-        if (decryptionKeys.Count == 0 && passwords.Count == 0)
-        {
-            throw new ArgumentException(
-                "No decryption keys or passwords provided."
-            );
-        }
-        _sessionKey = new Decryptor()
+        var decryptor = new Decryptor()
             .WithDecryptionKeys(decryptionKeys)
-            .WithPasswords(passwords)
-            .DecryptSessionKey(PacketList);
-        var packetList = EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
-        return packetList != null ?
-            new LiteralMessage(packetList) :
-            throw new Exception("Decrypt with session key failed.");
+            .WithPasswords(passwords);
+        var literalMessage = decryptor.Decrypt(this);
+        _sessionKey = decryptor.SessionKey;
+        return literalMessage;
     }
 
     private static IEncryptedDataPacket AssertEncryptedPacket(IPacketList packetList)

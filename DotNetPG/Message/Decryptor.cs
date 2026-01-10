@@ -1,6 +1,8 @@
 // Copyright (c) Dot Net Privacy Guard Project. All rights reserved.
 // Licensed under the BSD 3-Clause License. See LICENSE in the project root for license information.
 
+using DotNetPG.Packet;
+
 namespace DotNetPG.Message;
 
 using Type;
@@ -13,6 +15,9 @@ public class Decryptor : IDecryptor
 {
     private IList<IPrivateKey> _decryptionKeys = [];
     private IList<string> _passwords = [];
+    private ISessionKey? _sessionKey;
+
+    public ISessionKey? SessionKey => _sessionKey;
 
     public Decryptor WithDecryptionKeys(IList<IPrivateKey> decryptionKeys)
     {
@@ -28,7 +33,11 @@ public class Decryptor : IDecryptor
 
     public ILiteralMessage Decrypt(IEncryptedMessage message)
     {
-        return message.Decrypt(_decryptionKeys, _passwords);
+        _sessionKey = DecryptSessionKey(message.PacketList);
+        var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
+        return packetList != null ?
+            new LiteralMessage(packetList) :
+            throw new Exception("Decrypt with session key failed.");
     }
 
     public ILiteralMessage Decrypt(string messageData)
@@ -36,8 +45,27 @@ public class Decryptor : IDecryptor
         return Decrypt(EncryptedMessage.FromArmored(messageData));
     }
 
+    public IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages)
+    {
+        if (_sessionKey == null)
+        {
+           return messages.Select(ILiteralMessage (message) =>
+           {
+               var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey!).PacketList;
+               return new LiteralMessage(packetList ?? new PacketList([]));
+           }).ToList();
+        }
+        return [];
+    }
+
     public ISessionKey DecryptSessionKey(IPacketList packetList)
     {
+        if (_decryptionKeys.Count == 0 && _passwords.Count == 0)
+        {
+            throw new ArgumentException(
+                "No decryption keys or passwords provided."
+            );
+        }
         var eskPackets = packetList.Packets.OfType<IEncryptedSessionKey>().ToList();
         if (eskPackets.Count == 0)
         {
@@ -59,12 +87,17 @@ public class Decryptor : IDecryptor
                         if (sessionKey != null)
                         {
                             sessionKeys.Add(sessionKey);
+                            break;
                         }
                     }
                     catch (Exception e)
                     {
                         errors.Add(e.Message);
                     }
+                }
+                if (sessionKeys.Count != 0)
+                {
+                    break;
                 }
             }
         }
@@ -85,6 +118,7 @@ public class Decryptor : IDecryptor
                             if (sesionKey != null)
                             {
                                 sessionKeys.Add(sesionKey);
+                                break;
                             }
                         }
                         catch (Exception e)
@@ -92,6 +126,10 @@ public class Decryptor : IDecryptor
                             errors.Add(e.Message);
                         }
                     }
+                }
+                if (sessionKeys.Count != 0)
+                {
+                    break;
                 }
             }
         }
@@ -102,6 +140,6 @@ public class Decryptor : IDecryptor
                 string.Join("\n", ["Session key decryption failed.", ..errors])
             );
         }
-        return sessionKeys[0];
+        return _sessionKey = sessionKeys[0];
     }
 }

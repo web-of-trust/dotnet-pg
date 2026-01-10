@@ -19,6 +19,11 @@ public interface IDecryptor
     ILiteralMessage Decrypt(string messageData);
 
     /// <summary>
+    /// Bulk decrypt encrypted messages
+    /// </summary>
+    IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages);
+
+    /// <summary>
     /// Decrypt encrypted session keys.
     /// </summary>
     ISessionKey DecryptSessionKey(IPacketList packetList);
