@@ -270,14 +270,15 @@ KPX5LEVOtl6+AKtZhsaObnxV0mkCBwEGn/kOOzIZZPOkKRPI3MZhkyUBUifvt+rq
 pJ8EwuZ0F11KPSJu1q/LnKmsEiwUcOEcY9TAqyQcapOK1Iv5mlqZuQu6gyXeYQR1
 QCWKt5Wala0FHdqW6xVDHf719eIlXKeCYVRuM5o=
 -----END PGP MESSAGE-----";
-        
+
         var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("3881bafe985412459b86c36f98cb9a5e")));
-            Assert.That(encryptedMessage.SessionKey?.Aead, Is.EqualTo(AeadAlgorithm.Eax));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("3881bafe985412459b86c36f98cb9a5e")));
+            Assert.That(sessionKey.Aead, Is.EqualTo(AeadAlgorithm.Eax));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
     }
@@ -294,12 +295,13 @@ K82nyM6dZeIS8wHLzZj9yt5pSod61CRzI/boVw==
 -----END PGP MESSAGE-----";
         
         var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("28e79ab82397d3c63de24ac217d7b791")));
-            Assert.That(encryptedMessage.SessionKey?.Aead, Is.EqualTo(AeadAlgorithm.Ocb));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("28e79ab82397d3c63de24ac217d7b791")));
+            Assert.That(sessionKey.Aead, Is.EqualTo(AeadAlgorithm.Ocb));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
     }
@@ -316,12 +318,13 @@ Ae0Pn/xvxtZbv9JNzQeQlm5tHoWjAFN4TLHYtqBpnvEhVaeyrWJYUxtXZR/Xd3kS
 -----END PGP MESSAGE-----";
 
         var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("1936fc8568980274bb900d8319360c77")));
-            Assert.That(encryptedMessage.SessionKey?.Aead, Is.EqualTo(AeadAlgorithm.Gcm));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("1936fc8568980274bb900d8319360c77")));
+            Assert.That(sessionKey.Aead, Is.EqualTo(AeadAlgorithm.Gcm));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
     }
@@ -339,11 +342,12 @@ XfA3pqV4mTzF
 -----END PGP MESSAGE-----";
         
         var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("01fe16bbacfd1e7b78ef3b865187374f")));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("01fe16bbacfd1e7b78ef3b865187374f")));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
         
@@ -358,11 +362,12 @@ LVg77Mwwfgl2n/d572WciAM=
 -----END PGP MESSAGE-----";
         
         encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("27006dae68e509022ce45a14e569e91001c2955af8dfe194")));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("27006dae68e509022ce45a14e569e91001c2955af8dfe194")));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
         
@@ -377,11 +382,12 @@ wzcECQS4eJUgIG/3mcaILEJFpmJ8AQQVnZ9l7KtagdClm9UaQ/Z6M/5roklSGpGu
 -----END PGP MESSAGE-----";
         
         encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        sessionKey = OpenPgp.DecryptSessionKey(encryptedMessage.PacketList, [], [Passphrase]);
         decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
-            Assert.That(encryptedMessage.SessionKey?.EncryptionKey, Is.EqualTo(Hex.Decode("bbeda55b9aae63dac45d4f49d89dacf4af37fefc13bab2f1f8e18fb74580d8b0")));
+            Assert.That(sessionKey.EncryptionKey, Is.EqualTo(Hex.Decode("bbeda55b9aae63dac45d4f49d89dacf4af37fefc13bab2f1f8e18fb74580d8b0")));
             Assert.That(literalText, Is.EqualTo(LiteralText));
         });
     }
