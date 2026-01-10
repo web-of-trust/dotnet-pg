@@ -414,7 +414,10 @@ public sealed class OpenPGP
         IList<IKey> encryptionKeys, SymmetricAlgorithm? symmetric = null
     )
     {
-        return LiteralMessage.GenerateSessionKey(encryptionKeys, symmetric ?? Config.PreferredSymmetric);
+        return new SessionKeyGenerator()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithDefaultSymmetric(symmetric ?? Config.PreferredSymmetric)
+            .Generate();
     }
 
     /// <summary>

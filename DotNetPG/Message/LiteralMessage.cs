@@ -58,58 +58,6 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
             )
         );
     }
-    
-    /// <summary>
-    /// Generate a new session key object.
-    /// Taking the algorithm preferences of the passed encryption keys, if any.
-    /// </summary>
-    public static ISessionKey GenerateSessionKey(
-        IList<IKey> encryptionKeys,
-        SymmetricAlgorithm defaultSymmetric = SymmetricAlgorithm.Aes256
-    )
-    {
-        IList<SymmetricAlgorithm> preferredSymmetrics = [];
-        foreach (var key in encryptionKeys)
-        {
-            if (preferredSymmetrics.Count == 0)
-            {
-                preferredSymmetrics = key.PreferredSymmetrics;
-            }
-            else
-            {
-                preferredSymmetrics = preferredSymmetrics.TakeWhile(
-                    prefer => key.PreferredSymmetrics.Contains(prefer)
-                ).ToList();
-            }
-        }
-        var symmetric = preferredSymmetrics.Count > 0 ?
-            preferredSymmetrics[0] : defaultSymmetric;
-
-        IList<AeadAlgorithm> preferredAeads = [
-            AeadAlgorithm.Ocb,
-            AeadAlgorithm.Gcm,
-            AeadAlgorithm.Eax
-        ];
-        var aeadProtect = Config.AeadProtect;
-        foreach (var key in encryptionKeys)
-        {
-            if (key.AeadSupported)
-            {
-                preferredAeads = preferredAeads.TakeWhile(
-                    prefer => key.PreferredAeads(symmetric).Contains(prefer)
-                ).ToList();
-                aeadProtect = true;
-            }
-            else
-            {
-                aeadProtect = false;
-                break;
-            }
-        }
-        var aead = preferredAeads.Count > 0 ? preferredAeads[0] : Config.PreferredAead;
-
-        return SessionKey.ProduceKey(symmetric, aeadProtect ? aead : null);
-    }
 
     /// <summary>
     /// Encrypt a session key either with public keys, passwords, or both at once.
@@ -216,7 +164,10 @@ public class LiteralMessage : BaseMessage, ILiteralMessage
         SymmetricAlgorithm symmetric = SymmetricAlgorithm.Aes256
     )
     {
-        var sessionKey = GenerateSessionKey(encryptionKeys, symmetric);
+        var sessionKey = new SessionKeyGenerator()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithDefaultSymmetric(symmetric)
+            .Generate();
         var addPadding = sessionKey.Aead != null;
         if (encryptionKeys.Any(key => key.Version != 6))
         {
