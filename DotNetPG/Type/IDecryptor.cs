@@ -27,4 +27,9 @@ public interface IDecryptor
     /// Decrypt encrypted session keys.
     /// </summary>
     ISessionKey DecryptSessionKey(IPacketList packetList);
+
+    /// <summary>
+    /// Decrypt encrypted session keys.
+    /// </summary>
+    ISessionKey DecryptSessionKey(IList<IEncryptedSessionKey> eskPackets);
 }

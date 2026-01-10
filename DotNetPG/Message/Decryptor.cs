@@ -48,16 +48,23 @@ public class Decryptor : IDecryptor
     {
         if (_sessionKey == null)
         {
-           return messages.Select(ILiteralMessage (message) =>
-           {
-               var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey!).PacketList;
-               return new LiteralMessage(packetList ?? new PacketList([]));
-           }).ToList();
+            throw new ArgumentException(
+                "No session key for message decryption."
+            );
         }
-        return [];
+        return messages.Select(ILiteralMessage (message) =>
+        {
+            var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
+            return new LiteralMessage(packetList ?? new PacketList([]));
+        }).ToList();
     }
 
     public ISessionKey DecryptSessionKey(IPacketList packetList)
+    {
+        return DecryptSessionKey(packetList.Packets.OfType<IEncryptedSessionKey>().ToList());
+    }
+
+    public ISessionKey DecryptSessionKey(IList<IEncryptedSessionKey> eskPackets)
     {
         if (_decryptionKeys.Count == 0 && _passwords.Count == 0)
         {
@@ -65,12 +72,11 @@ public class Decryptor : IDecryptor
                 "No decryption keys or passwords provided."
             );
         }
-        var eskPackets = packetList.Packets.OfType<IEncryptedSessionKey>().ToList();
         if (eskPackets.Count == 0)
         {
             throw new Exception("No encrypted session key in packet list.");
         }
-        
+
         IList<string> errors = [];
         IList<ISessionKey> sessionKeys = [];
         if (_passwords.Count > 0)
