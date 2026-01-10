@@ -6,7 +6,7 @@ namespace DotNetPG.Type;
 /// <summary>
 ///     Encrypted message interface.
 /// </summary>
-public interface IEncryptedMessage : IArmorable
+public interface IEncryptedMessage : IArmorable, IPacketContainer
 {
     /// <summary>
     ///     Get encrypted packet.

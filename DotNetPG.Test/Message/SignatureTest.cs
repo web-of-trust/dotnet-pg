@@ -136,8 +136,8 @@ uGMs0KEpewihUAiQ76jDpRidnyIxJG9f9LrxFJJwfci98Uk3R+hTEaoAcAk3tR/4Of+8MwErhS3B
 ceZmwueLZSfVMiyulDAJ9F+PtKGZ9JyWYy9Dmg==
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(RsaPublicKey);
-        var signature = OpenPGP.ReadSignature(signatureData);
+        var publicKey = OpenPgp.ReadPublicKey(RsaPublicKey);
+        var signature = OpenPgp.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>
         {
@@ -157,8 +157,8 @@ GHNhbHRAcGhwLW9wZW5wZ3Aub3JnORfIrS9iMPLRtT4WrRzXWGV7AChPN1IgAAAssgF/axeC3awm
 Ijnmxt5Tm2u66ClYJAg/BN/1fxHBFH5Mrgz1nDXiaAek3mA=
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(EccNistP384PublicKey);
-        var signature = OpenPGP.ReadSignature(signatureData);
+        var publicKey = OpenPgp.ReadPublicKey(EccNistP384PublicKey);
+        var signature = OpenPgp.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>
         {
@@ -177,8 +177,8 @@ c2FsdEBwaHAtb3BlbnBncC5vcmchMciNTZ9MRiJGrhWXtgxyAAAxzQEAnapEBxPEdIm2njGWrYcj
 jw0qzg0sLkaqABojPt0H5RIA/i446+p3MeVuFC2gO3qwEI5mi/s89axBQSK3kU+dGvHU
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(EccBrainpoolPublicKey);
-        var signature = OpenPGP.ReadSignature(signatureData);
+        var publicKey = OpenPgp.ReadPublicKey(EccBrainpoolPublicKey);
+        var signature = OpenPgp.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>
         {
@@ -198,8 +198,8 @@ AOyJSAZeeTULHdJT67hEB4DHOIsvZ9qTJbVhJMDaWlpzAQCrCQnljZoLT9mjAYR57kgddCy1f4bx
 UKldVdcODYW/Ag==
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
-        var signature = OpenPGP.ReadSignature(signatureData);
+        var publicKey = OpenPgp.ReadPublicKey(EccCurve25519PublicKey);
+        var signature = OpenPgp.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>
         {
@@ -218,8 +218,8 @@ BgmmlwAAAADJnBADyITx/dYugDtBC7L8LZkL+3fAyN0wlD8X80zQ1V+0wmrKV8kgV0BWse20Pv75
 kKPiHzp2Z3MnN3pahvnnU6/WF+jDHiONy+3JF7nlsePdDQ==
 -----END PGP SIGNATURE-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(Ed25519PublicKey);
-        var signature = OpenPGP.ReadSignature(signatureData);
+        var publicKey = OpenPgp.ReadPublicKey(Ed25519PublicKey);
+        var signature = OpenPgp.ReadSignature(signatureData);
         var verification = signature.Verify([publicKey], LiteralData.FromText(LiteralText))[0];
         Assert.Multiple(() =>
         {

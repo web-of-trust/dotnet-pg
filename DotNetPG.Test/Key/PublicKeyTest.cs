@@ -110,7 +110,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
     [Test]
     public void TestReadRsaPublicKey()
     {
-        var publicKey = OpenPGP.ReadPublicKey(RsaPublicKey);
+        var publicKey = OpenPgp.ReadPublicKey(RsaPublicKey);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("d108af739d75c215b33d69ceadab00e6c157cc0d")));
@@ -143,7 +143,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
     [Test]
     public void TestReadEccNistP384PublicKey()
     {
-        var publicKey = OpenPGP.ReadPublicKey(EccNistP384PublicKey);
+        var publicKey = OpenPgp.ReadPublicKey(EccNistP384PublicKey);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("301f0bfe368ef77061ab6e67f7a5af3768f29a6a")));
@@ -176,7 +176,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
     [Test]
     public void TestReadEccBrainpoolPublicKey()
     {
-        var publicKey = OpenPGP.ReadPublicKey(EccBrainpoolPublicKey);
+        var publicKey = OpenPgp.ReadPublicKey(EccBrainpoolPublicKey);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("23fbfc82863c58b77fc17fd06ea630cef4c57be8")));
@@ -209,7 +209,7 @@ d4p17edTY0TmQamWB/YA/2tTz6s6SG+uPS0O3wFOkGlnvr0HQYte/Q97qTjT3xMC
     [Test]
     public void TestReadEccCurve25519PublicKey()
     {
-        var publicKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
+        var publicKey = OpenPgp.ReadPublicKey(EccCurve25519PublicKey);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
@@ -248,7 +248,7 @@ xjMEU/NfCxYJKwYBBAHaRw8BAQdAPwmJlL3ZFu1AUxl5NOSofIBzOhKA1i+AEJku
 Q+47JAY=
 -----END PGP PUBLIC KEY BLOCK-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(keyData);
+        var publicKey = OpenPgp.ReadPublicKey(keyData);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("c959bdbafa32a2f89a153b678cfde12197965a9a")));
@@ -273,7 +273,7 @@ j+VjFM21J0hqWlEg+bdiojWnKfA5AQpWUWtnNwDEM0g12vYxoWM8Y81W+bHBw805
 I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUrk0mXubZvyl4GBg==
 -----END PGP PUBLIC KEY BLOCK-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(keyData);
+        var publicKey = OpenPgp.ReadPublicKey(keyData);
         Assert.Multiple(() =>
         {
             Assert.That(publicKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
@@ -307,20 +307,20 @@ I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUrk0mXubZvyl4GBg==
     [Test]
     public void TestKeyIsCertified()
     {
-        var verifyKey = OpenPGP.ReadPublicKey(RsaPublicKey);
-        var certifiedKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
+        var verifyKey = OpenPgp.ReadPublicKey(RsaPublicKey);
+        var certifiedKey = OpenPgp.ReadPublicKey(EccCurve25519PublicKey);
         Assert.That(certifiedKey.IsCertified(verifyKey), Is.True);
     }
 
     [Test]
     public void TestArmorPublicKeys()
     {
-        var rsaPublicKey = OpenPGP.ReadPublicKey(RsaPublicKey);
-        var cccNistPublicKey = OpenPGP.ReadPublicKey(EccNistP384PublicKey);
-        var eccBrainpoolPublicKey = OpenPGP.ReadPublicKey(EccBrainpoolPublicKey);
-        var eccCurve25519PublicKey = OpenPGP.ReadPublicKey(EccCurve25519PublicKey);
-        var armoredPublicKeys = OpenPGP.ArmorPublicKeys([rsaPublicKey, cccNistPublicKey, eccBrainpoolPublicKey, eccCurve25519PublicKey]);
-        var publicKeys = OpenPGP.ReadPublicKeys(armoredPublicKeys);
+        var rsaPublicKey = OpenPgp.ReadPublicKey(RsaPublicKey);
+        var cccNistPublicKey = OpenPgp.ReadPublicKey(EccNistP384PublicKey);
+        var eccBrainpoolPublicKey = OpenPgp.ReadPublicKey(EccBrainpoolPublicKey);
+        var eccCurve25519PublicKey = OpenPgp.ReadPublicKey(EccCurve25519PublicKey);
+        var armoredPublicKeys = OpenPgp.ArmorPublicKeys([rsaPublicKey, cccNistPublicKey, eccBrainpoolPublicKey, eccCurve25519PublicKey]);
+        var publicKeys = OpenPgp.ReadPublicKeys(armoredPublicKeys);
         Assert.Multiple(() =>
         {
             Assert.That(publicKeys[0].Fingerprint, Is.EqualTo(rsaPublicKey.Fingerprint));

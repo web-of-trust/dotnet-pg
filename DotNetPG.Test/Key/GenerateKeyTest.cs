@@ -13,7 +13,7 @@ public class GenerateKeyTest
     [Test]
     public void TestGenerateRsaKey()
     {
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
@@ -45,7 +45,7 @@ public class GenerateKeyTest
     [Test]
     public void TestGenerateEccNistKey()
     {
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.Secp384R1);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.Secp384R1);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
@@ -77,7 +77,7 @@ public class GenerateKeyTest
     [Test]
     public void TestGenerateEccBrainpoolKey()
     {
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.BrainpoolP256R1);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.BrainpoolP256R1);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
@@ -109,7 +109,7 @@ public class GenerateKeyTest
     [Test]
     public void TestGenerateEccEd25519Key()
     {
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.Ed25519);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Ecc, curve: EcCurve.Ed25519);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EdDsaLegacy));
@@ -144,7 +144,7 @@ public class GenerateKeyTest
         Config.PresetRfc = PresetRfc.Rfc9580;
         Config.AeadProtect = true;
 
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.RsaGeneral));
@@ -183,7 +183,7 @@ public class GenerateKeyTest
         Config.PresetRfc = PresetRfc.Rfc9580;
         Config.AeadProtect = true;
 
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Ecc);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Ecc);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.EcDsa));
@@ -221,7 +221,7 @@ public class GenerateKeyTest
     {
         Config.AeadProtect = true;
 
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Curve25519);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Curve25519);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed25519));
@@ -258,7 +258,7 @@ public class GenerateKeyTest
     {
         Config.AeadProtect = true;
 
-        var privateKey = OpenPGP.GenerateKey([UserId], Passphrase, KeyType.Curve448);
+        var privateKey = OpenPgp.GenerateKey([UserId], Passphrase, KeyType.Curve448);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.KeyAlgorithm, Is.EqualTo(KeyAlgorithm.Ed448));

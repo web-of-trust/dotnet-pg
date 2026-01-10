@@ -186,28 +186,28 @@ NPxPvr6Mw3Iu3oAvXcIxO4yNrXXvtpCcdCIVML10p3Ss0j4BhsNX+JZ8v2Q4ER/Jt1osYdYQ0sOI
 J9qDlRWGWRQNy+77PTvFXtYe8ju6vWTbkN5b/vvK5y1HBVVsSYbsJQ==
 -----END PGP MESSAGE-----";
         
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
 
-        var privateKey = OpenPGP.DecryptPrivateKey(RsaPrivateKey, Passphrase);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [privateKey], []);
+        var privateKey = OpenPgp.DecryptPrivateKey(RsaPrivateKey, Passphrase);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [privateKey], []);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
 
-        privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [privateKey], []);
+        privateKey = OpenPgp.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [privateKey], []);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
 
-        privateKey = OpenPGP.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [privateKey], []);
+        privateKey = OpenPgp.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [privateKey], []);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
         
-        privateKey = OpenPGP.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [privateKey], []);
+        privateKey = OpenPgp.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [privateKey], []);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
     }
@@ -221,8 +221,8 @@ wy4ECQMI+VCqcbk6aELg9rKgJfYF5UVX2qBP7p16eZZlYuN/FGw1PexDoGCou/ND0j4B6d8cyKYl
 xSlnTbJ7A/Op4bwSdSTh1y1SizOJorLX3vvrY6wuxftVALrUZklicsFrIOpm9YAbLGGEJCMPjQ==
 -----END PGP MESSAGE-----";
         
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
     }
@@ -253,9 +253,9 @@ yZnuSj3hcFj0DfqLTGgr4/u717J+sPWbtQBfgMfG9AOIwwrUBqsFE9zW+f1zdlYo
 bhF30A+IitsxxA==
 -----END PGP MESSAGE-----";
 
-        var privateKey = OpenPGP.ReadPrivateKey(privatekeyData);
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [privateKey], []);
+        var privateKey = OpenPgp.ReadPrivateKey(privatekeyData);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [privateKey], []);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.That(literalText, Is.EqualTo(LiteralText));
     }
@@ -271,8 +271,8 @@ pJ8EwuZ0F11KPSJu1q/LnKmsEiwUcOEcY9TAqyQcapOK1Iv5mlqZuQu6gyXeYQR1
 QCWKt5Wala0FHdqW6xVDHf719eIlXKeCYVRuM5o=
 -----END PGP MESSAGE-----";
         
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
@@ -293,8 +293,8 @@ WRDQns3WQf+f04VidYA1vEl1TOG/P/+n2tCjuBBPUTPPQqQQCoPu9MobSAGohGv0
 K82nyM6dZeIS8wHLzZj9yt5pSod61CRzI/boVw==
 -----END PGP MESSAGE-----";
         
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
@@ -315,8 +315,8 @@ Ae0Pn/xvxtZbv9JNzQeQlm5tHoWjAFN4TLHYtqBpnvEhVaeyrWJYUxtXZR/Xd3kS
 +pXjXZtAIW9ppMJI2yj/QzHxYykHOZ5v+Q==
 -----END PGP MESSAGE-----";
 
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
@@ -338,8 +338,8 @@ YJz4u6F+DDlDBOr5NRQXt/KJIf4m4mOlKyC/uqLbpnLJZMnTq3o79GxBTdIdOzhH
 XfA3pqV4mTzF
 -----END PGP MESSAGE-----";
         
-        var encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        var decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        var encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        var decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         var literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
@@ -357,8 +357,8 @@ F9I+AdJ1Sw56PRYiKZjCvHg+2bnq02s33AJJoyBexBI4QKATFRkyez2gldJldRys
 LVg77Mwwfgl2n/d572WciAM=
 -----END PGP MESSAGE-----";
         
-        encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {
@@ -376,8 +376,8 @@ wzcECQS4eJUgIG/3mcaILEJFpmJ8AQQVnZ9l7KtagdClm9UaQ/Z6M/5roklSGpGu
 95D1usliXOEm8ayQJQmZrjf6K6v9PWwqMQ==
 -----END PGP MESSAGE-----";
         
-        encryptedMessage = OpenPGP.ReadEncryptedMessage(messageData);
-        decryptedMessage = OpenPGP.Decrypt(encryptedMessage, [], [Passphrase]);
+        encryptedMessage = OpenPgp.ReadEncryptedMessage(messageData);
+        decryptedMessage = OpenPgp.Decrypt(encryptedMessage, [], [Passphrase]);
         literalText = Encoding.UTF8.GetString(decryptedMessage.LiteralData.Data);
         Assert.Multiple(() =>
         {

@@ -37,7 +37,7 @@ Vn0BRgzYhF8jxUsFQ259R0kr7XXtT97591vVoHrw+nJ2R5/X4NW978GPBn9CGnuIQGBAIQ==
 -----END PGP PUBLIC KEY BLOCK-----";
 
 Console.WriteLine("Read RSA public key");
-var rsaKey = OpenPGP.ReadPublicKey(rsaPublicKey);
+var rsaKey = OpenPgp.ReadPublicKey(rsaPublicKey);
 Console.WriteLine($"Key algorithm: {rsaKey.KeyAlgorithm}");
 Console.WriteLine($"Key version: {rsaKey.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(rsaKey.Fingerprint)}");
@@ -70,7 +70,7 @@ Ug==
 -----END PGP PUBLIC KEY BLOCK-----";
 
 Console.WriteLine("Read Ecc public key");
-var eccKey = OpenPGP.ReadPublicKey(eccPublicKey);
+var eccKey = OpenPgp.ReadPublicKey(eccPublicKey);
 Console.WriteLine($"Key algorithm: {eccKey.KeyAlgorithm}");
 Console.WriteLine($"Key version: {eccKey.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(eccKey.Fingerprint)}");
@@ -96,7 +96,7 @@ bWxd4P96TwSa1v1CQcfb9gxocPAq/rlrlmXO5GYhu7S5K00GicpPXUeIU6J7Q4M20EJwHv00Zbwe
 -----END PGP PUBLIC KEY BLOCK-----";
 
 Console.WriteLine("Read Curve25519 public key");
-var curve25519Key = OpenPGP.ReadPublicKey(curve25519PublicKey);
+var curve25519Key = OpenPgp.ReadPublicKey(curve25519PublicKey);
 Console.WriteLine($"Key algorithm: {curve25519Key.KeyAlgorithm}");
 Console.WriteLine($"Key version: {curve25519Key.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve25519Key.Fingerprint)}");
@@ -128,7 +128,7 @@ SwvNQ5qgM5waglStbQ==
 -----END PGP PUBLIC KEY BLOCK-----";
 
 Console.WriteLine("Read Curve25519 public key");
-var curve448Key = OpenPGP.ReadPublicKey(curve448PublicKey);
+var curve448Key = OpenPgp.ReadPublicKey(curve448PublicKey);
 Console.WriteLine($"Key algorithm: {curve448Key.KeyAlgorithm}");
 Console.WriteLine($"Key version: {curve448Key.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve448Key.Fingerprint)}");

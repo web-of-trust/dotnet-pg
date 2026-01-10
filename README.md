@@ -1,6 +1,6 @@
-DotNet PG - The OpenPGP library in .NET
+DotNet PG - The OpenPgp library in .NET
 =================================================
-DotNet PG is an implementation of the OpenPGP standard in .NET.
+DotNet PG is an implementation of the OpenPgp standard in .NET.
 It implements [RFC 9580](https://www.rfc-editor.org/rfc/rfc9580) and
 provides encryption with public key or symmetric cryptographic algorithms,
 digital signatures, compression, and key management.
@@ -43,9 +43,9 @@ var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----"
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 var passphrase = "Your passphrase";
 
-var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
-var cleartextMessage = OpenPGP.CreateCleartextMessage("Hello, DotNet PG!");
+var publicKey = OpenPgp.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
+var cleartextMessage = OpenPgp.CreateCleartextMessage("Hello, DotNet PG!");
 var signedMessage = cleartextMessage.Sign([privateKey]);
 var verifications = signedMessage.Verify([publicKey]);
 ~~~

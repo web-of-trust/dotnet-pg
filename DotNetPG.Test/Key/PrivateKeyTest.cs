@@ -168,7 +168,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestReadRsaPrivateKey()
     {
-        var privateKey = OpenPGP.ReadPrivateKey(RsaPrivateKey);
+        var privateKey = OpenPgp.ReadPrivateKey(RsaPrivateKey);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("d108af739d75c215b33d69ceadab00e6c157cc0d")));
@@ -206,8 +206,8 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.That(publicKey.Fingerprint, Is.EqualTo(privateKey.Fingerprint));
 
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("d108af739d75c215b33d69ceadab00e6c157cc0d")));
 
         privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.RsaSign);
@@ -230,7 +230,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestReadEccNistP384PrivateKey()
     {
-        var privateKey = OpenPGP.ReadPrivateKey(EccNistP384PrivateKey);
+        var privateKey = OpenPgp.ReadPrivateKey(EccNistP384PrivateKey);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("301f0bfe368ef77061ab6e67f7a5af3768f29a6a")));
@@ -268,8 +268,8 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.That(publicKey.Fingerprint, Is.EqualTo(privateKey.Fingerprint));
 
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("301f0bfe368ef77061ab6e67f7a5af3768f29a6a")));
 
         privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EcDsa, ecCurve: EcCurve.Secp384R1);
@@ -292,7 +292,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestReadEccBrainpoolPrivateKey()
     {
-        var privateKey = OpenPGP.ReadPrivateKey(EccBrainpoolPrivateKey);
+        var privateKey = OpenPgp.ReadPrivateKey(EccBrainpoolPrivateKey);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("23fbfc82863c58b77fc17fd06ea630cef4c57be8")));
@@ -330,8 +330,8 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.That(publicKey.Fingerprint, Is.EqualTo(privateKey.Fingerprint));
 
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("23fbfc82863c58b77fc17fd06ea630cef4c57be8")));
 
         privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EcDsa, ecCurve: EcCurve.BrainpoolP256R1);
@@ -354,7 +354,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestReadEccCurve25519PrivateKey()
     {
-        var privateKey = OpenPGP.ReadPrivateKey(EccCurve25519PrivateKey);
+        var privateKey = OpenPgp.ReadPrivateKey(EccCurve25519PrivateKey);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
@@ -392,8 +392,8 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         Assert.That(publicKey.Fingerprint, Is.EqualTo(privateKey.Fingerprint));
 
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("3a7589f05994a7503a28adf56252f564a53b495e")));
 
         privateKey = privateKey.AddUsers([Email]).AddSubkey(passphrase, KeyAlgorithm.EdDsaLegacy, ecCurve: EcCurve.Ed25519);
@@ -431,7 +431,7 @@ M0g12vYxoWM8Y81W+bHBw805I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUr
 k0mXubZvyl4GBg==
 -----END PGP PRIVATE KEY BLOCK-----";
 
-        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        var privateKey = OpenPgp.ReadPrivateKey(keyData);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
@@ -464,8 +464,8 @@ k0mXubZvyl4GBg==
         });
         
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
     }
 
@@ -489,7 +489,7 @@ Nacp8DkBClZRa2c3AMQzSDXa9jGhYzxjzVb5scHDzTkjyRZWRdTq8U6L4da+/+Kt
 ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
 -----END PGP PRIVATE KEY BLOCK-----";
 
-        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        var privateKey = OpenPgp.ReadPrivateKey(keyData);
         Assert.Multiple(() =>
         {
             Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
@@ -527,8 +527,8 @@ ruh8m7Xo2ehSSFyWRSuTSZe5tm/KXgYG
         Assert.That(privateKey.IsDecrypted, Is.True);
 
         var passphrase = Helper.GeneratePassword();
-        var armoredPrivateKey = OpenPGP.EncryptPrivateKey(privateKey, passphrase).Armor();
-        privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+        var armoredPrivateKey = OpenPgp.EncryptPrivateKey(privateKey, passphrase).Armor();
+        privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
         Assert.That(privateKey.Fingerprint, Is.EqualTo(Hex.Decode("cb186c4f0609a697e4d52dfa6c722b0c1f1e27c18a56708f6525ec27bad9acc9")));
         
         privateKey = privateKey.AddUsers([UserId]).AddSubkey(passphrase, KeyAlgorithm.Ed25519);
@@ -567,9 +567,9 @@ WMyKKzptzgIJ
 =2/C1
 -----END PGP PUBLIC KEY BLOCK-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(keyData);
-        var privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
-        var certifiedKey = OpenPGP.CertifyKey(privateKey, publicKey);
+        var publicKey = OpenPgp.ReadPublicKey(keyData);
+        var privateKey = OpenPgp.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        var certifiedKey = OpenPgp.CertifyKey(privateKey, publicKey);
         Assert.Multiple(() =>
         {
             Assert.That(certifiedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));
@@ -597,9 +597,9 @@ WMyKKzptzgIJ
 =2/C1
 -----END PGP PUBLIC KEY BLOCK-----";
 
-        var publicKey = OpenPGP.ReadPublicKey(keyData);
-        var privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
-        var revokedKey = OpenPGP.RevokeKey(privateKey, publicKey);
+        var publicKey = OpenPgp.ReadPublicKey(keyData);
+        var privateKey = OpenPgp.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        var revokedKey = OpenPgp.RevokeKey(privateKey, publicKey);
         Assert.Multiple(() =>
         {
             Assert.That(revokedKey.Fingerprint, Is.EqualTo(publicKey.Fingerprint));

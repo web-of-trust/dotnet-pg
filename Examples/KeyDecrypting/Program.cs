@@ -144,7 +144,7 @@ dLSBHtf6SpEbi5Ft42CbssIaiV0Dnq/wU0K5c/hsogO10yYA1RJC3eavq3pg+cOtESa5q2acW5g=
 -----END PGP PRIVATE KEY BLOCK-----";
 
 Console.WriteLine("Decrypt RSA private key");
-var rsaKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphrase);
+var rsaKey = OpenPgp.DecryptPrivateKey(rsaKeyData, passphrase);
 Console.WriteLine($"Key algorithm: {rsaKey.KeyAlgorithm}");
 Console.WriteLine($"Key version: {rsaKey.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(rsaKey.Fingerprint)}");
@@ -152,7 +152,7 @@ Console.WriteLine($"Key is decrypted: {rsaKey.IsDecrypted}");
 Console.WriteLine($"User ID: {rsaKey.PrimaryUser?.UserId}");
 
 Console.WriteLine("Decrypt Ecc private key");
-var eccKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphrase);
+var eccKey = OpenPgp.DecryptPrivateKey(eccKeyData, passphrase);
 Console.WriteLine($"Key algorithm: {eccKey.KeyAlgorithm}");
 Console.WriteLine($"Key version: {eccKey.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(eccKey.Fingerprint)}");
@@ -160,7 +160,7 @@ Console.WriteLine($"Key is decrypted: {eccKey.IsDecrypted}");
 Console.WriteLine($"User ID: {eccKey.PrimaryUser?.UserId}");
 
 Console.WriteLine("Decrypt Curve25519 private key");
-var curve25519Key = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphrase);
+var curve25519Key = OpenPgp.DecryptPrivateKey(curve25519KeyData, passphrase);
 Console.WriteLine($"Key algorithm: {curve25519Key.KeyAlgorithm}");
 Console.WriteLine($"Key version: {curve25519Key.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve25519Key.Fingerprint)}");
@@ -168,7 +168,7 @@ Console.WriteLine($"Key is decrypted: {curve25519Key.IsDecrypted}");
 Console.WriteLine($"User ID: {curve25519Key.PrimaryUser?.UserId}");
 
 Console.WriteLine("Decrypt Curve448 private key");
-var curve448Key = OpenPGP.DecryptPrivateKey(curve448KeyData, passphrase);
+var curve448Key = OpenPgp.DecryptPrivateKey(curve448KeyData, passphrase);
 Console.WriteLine($"Key algorithm: {curve448Key.KeyAlgorithm}");
 Console.WriteLine($"Key version: {curve448Key.Version}");
 Console.WriteLine($"Key fingerprint: {Hex.ToHexString(curve448Key.Fingerprint)}");

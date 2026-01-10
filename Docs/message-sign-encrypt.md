@@ -9,12 +9,12 @@ using DotNetPG;
 var text = "Hello DotNet PG!";
 var password = "secret stuff";
 
-var encryptedMessage = OpenPGP.Encrypt(
-    OpenPGP.CreateLiteralMessage(text), passwords: [password]
+var encryptedMessage = OpenPgp.Encrypt(
+    OpenPgp.CreateLiteralMessage(text), passwords: [password]
 );
 Console.WriteLine(encryptedMessage.Armor()); // "-----BEGIN PGP MESSAGE ... "
 
-var decryptedMessage = OpenPGP.Decrypt(
+var decryptedMessage = OpenPgp.Decrypt(
     encryptedMessage, passwords: [password]
 );
 Console.WriteLine(decryptedMessage.LiteralData.Data);
@@ -32,15 +32,15 @@ var passphrase = "secret stuff";
 var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 
-var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
+var publicKey = OpenPgp.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
 
-var encryptedMessage = OpenPGP.Dncrypt(
-    OpenPGP.createLiteralMessage(text), [publicKey]
+var encryptedMessage = OpenPgp.Dncrypt(
+    OpenPgp.createLiteralMessage(text), [publicKey]
 );
 Console.WriteLine(encryptedMessage.Armor()); // "-----BEGIN PGP MESSAGE ... "
 
-var decryptedMessage = OpenPGP.decrypt(
+var decryptedMessage = OpenPgp.decrypt(
     encryptedMessage, [privateKey]
 );
 Console.WriteLine(decryptedMessage.LiteralData.Data);
@@ -57,16 +57,16 @@ var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 var armoredPublicKeys = ["-----BEGIN PGP PUBLIC KEY BLOCK-----"];
 
-var publicKey = OpenPGP.ReadPublicKeys(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, passphrase);
-var publicKeys = armoredPublicKeys.Map((armored) => OpenPGP.ReadPublicKeys(armored));
+var publicKey = OpenPgp.ReadPublicKeys(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, passphrase);
+var publicKeys = armoredPublicKeys.Map((armored) => OpenPgp.ReadPublicKeys(armored));
 
-var encryptedMessage = OpenPGP.encrypt(
-    OpenPGP.createLiteralMessage(text), publicKeys, signingKeys: [privateKey]
+var encryptedMessage = OpenPgp.encrypt(
+    OpenPgp.createLiteralMessage(text), publicKeys, signingKeys: [privateKey]
 );
 Console.WriteLine(encryptedMessage.Armor()); // "-----BEGIN PGP MESSAGE ... "
 
-var decryptedMessage = OpenPGP.Decrypt(
+var decryptedMessage = OpenPgp.Decrypt(
     encryptedMessage, [privateKey]
 );
 var verifications = decryptedMessage.Verify([publicKey]);

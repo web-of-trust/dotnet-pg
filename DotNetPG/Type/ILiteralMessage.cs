@@ -8,7 +8,7 @@ using Enum;
 /// <summary>
 ///     Literal message interface
 /// </summary>
-public interface ILiteralMessage
+public interface ILiteralMessage : IArmorable, IPacketContainer
 {
     /// <summary>
     ///     Get literal data

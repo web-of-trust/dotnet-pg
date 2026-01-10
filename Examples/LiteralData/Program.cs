@@ -147,15 +147,15 @@ e4V07IIPCwxoJJLRgOOY8VXm89IRlC9sE1TsaCcuqr6qzRsA1RiWqIKsuWu1j0r0ARc555CAxUAV
 MF3mZ2k=
 -----END PGP PRIVATE KEY BLOCK-----";
 
-var rsaPrivateKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphrase);
-var eccPrivateKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphrase);
-var curve25519PrivateKey = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphrase);
-var curve448PrivateKey = OpenPGP.DecryptPrivateKey(curve448KeyData, passphrase);
+var rsaPrivateKey = OpenPgp.DecryptPrivateKey(rsaKeyData, passphrase);
+var eccPrivateKey = OpenPgp.DecryptPrivateKey(eccKeyData, passphrase);
+var curve25519PrivateKey = OpenPgp.DecryptPrivateKey(curve25519KeyData, passphrase);
+var curve448PrivateKey = OpenPgp.DecryptPrivateKey(curve448KeyData, passphrase);
 
 Console.WriteLine("Sign & encrypt literal data message with AES128 cipher:");
 Config.PreferredSymmetric = SymmetricAlgorithm.Aes128;
-var literalMessage = OpenPGP.CreateLiteralMessage(SecureRandom.GetNextBytes(new SecureRandom(), 10000));
-var encryptedMessage = OpenPGP.Encrypt(
+var literalMessage = OpenPgp.CreateLiteralMessage(SecureRandom.GetNextBytes(new SecureRandom(), 10000));
+var encryptedMessage = OpenPgp.Encrypt(
     literalMessage,
     [rsaPrivateKey.PublicKey, eccPrivateKey.PublicKey],
     [passphrase],
@@ -166,7 +166,7 @@ Console.WriteLine(armored);
 Console.WriteLine();
 
 Console.WriteLine("Decrypt with passphrase & verify signatures:");
-literalMessage = OpenPGP.Decrypt(encryptedMessage, [], [passphrase]);
+literalMessage = OpenPgp.Decrypt(encryptedMessage, [], [passphrase]);
 var verifications = literalMessage.Verify([
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
@@ -181,7 +181,7 @@ foreach (var verification in verifications)
 }
 
 Console.WriteLine("Decrypt with rsa key & verify signatures:");
-literalMessage = OpenPGP.Decrypt(encryptedMessage, [rsaPrivateKey], []);
+literalMessage = OpenPgp.Decrypt(encryptedMessage, [rsaPrivateKey], []);
 verifications = literalMessage.Verify([
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
@@ -196,7 +196,7 @@ foreach (var verification in verifications)
 }
 
 Console.WriteLine("Decrypt with ecc key & verify signatures:");
-literalMessage = OpenPGP.Decrypt(encryptedMessage, [eccPrivateKey], []);
+literalMessage = OpenPgp.Decrypt(encryptedMessage, [eccPrivateKey], []);
 verifications = literalMessage.Verify([
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
@@ -212,8 +212,8 @@ foreach (var verification in verifications)
 
 Console.WriteLine("Sign & encrypt literal data message with AEAD AES256 cipher:");
 Config.PreferredSymmetric = SymmetricAlgorithm.Aes256;
-literalMessage = OpenPGP.CreateLiteralMessage(SecureRandom.GetNextBytes(new SecureRandom(), 10000));
-encryptedMessage = OpenPGP.Encrypt(
+literalMessage = OpenPgp.CreateLiteralMessage(SecureRandom.GetNextBytes(new SecureRandom(), 10000));
+encryptedMessage = OpenPgp.Encrypt(
     literalMessage, [curve25519PrivateKey.PublicKey, curve448PrivateKey.PublicKey], [passphrase],
     [rsaPrivateKey, eccPrivateKey, curve25519PrivateKey, curve448PrivateKey]
 );
@@ -222,7 +222,7 @@ Console.WriteLine(armored);
 Console.WriteLine();
 
 Console.WriteLine("Decrypt with curve25519 key & verify signatures:");
-literalMessage = OpenPGP.Decrypt(encryptedMessage, [curve25519PrivateKey], []);
+literalMessage = OpenPgp.Decrypt(encryptedMessage, [curve25519PrivateKey], []);
 verifications = literalMessage.Verify([
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
@@ -237,7 +237,7 @@ foreach (var verification in verifications)
 }
 
 Console.WriteLine("Decrypt with curve448 key & verify signatures:");
-literalMessage = OpenPGP.Decrypt(encryptedMessage, [curve448PrivateKey], []);
+literalMessage = OpenPgp.Decrypt(encryptedMessage, [curve448PrivateKey], []);
 verifications = literalMessage.Verify([
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,

@@ -13,7 +13,7 @@ using Type;
 ///     OpenPGP class
 ///     Export high level API for developers.
 /// </summary>
-public sealed class OpenPGP
+public sealed class OpenPgp
 {
     /// <summary>
     /// Generate a new OpenPGP key pair. Support RSA, ECC, Curve25519 and Curve448 key types.

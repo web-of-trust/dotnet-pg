@@ -9,7 +9,7 @@ using DotNetPG;
 
 const string Passphrase = "Your passphase";
 const string UserId = "Your name <name@example.com>";
-var privateKey = OpenPGP.GenerateKey(
+var privateKey = OpenPgp.GenerateKey(
     [UserId],
     Passphrase,
     type: KeyType.Rsa,
@@ -26,7 +26,7 @@ using DotNetPG;
 
 const string Passphrase = "Your passphase";
 const string UserId = "Your name <name@example.com>";
-var privateKey = OpenPGP.GenerateKey(
+var privateKey = OpenPgp.GenerateKey(
     [UserId],
     Passphrase,
     type: KeyType.Ecc,
@@ -43,7 +43,7 @@ using DotNetPG;
 
 const string Passphrase = "Your passphase";
 const string UserId = "Your name <name@example.com>";
-var privateKey = OpenPGP.GenerateKey(
+var privateKey = OpenPgp.GenerateKey(
     [UserId],
     Passphrase,
     type: KeyType.Curve25519,
@@ -59,7 +59,7 @@ using DotNetPG;
 
 const string Passphrase = "Your passphase";
 const string UserId = "Your name <name@example.com>";
-var privateKey = OpenPGP.GenerateKey(
+var privateKey = OpenPgp.GenerateKey(
     [UserId],
     Passphrase,
     type: KeyType.Curve448,
@@ -79,8 +79,8 @@ const string Passphrase = "Your passphase";
 var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 
-var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, Passphrase);
+var publicKey = OpenPgp.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, Passphrase);
 ```
 
 ### Certify a key
@@ -93,8 +93,8 @@ const string Passphrase = "Your passphase";
 vararmoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 
-var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, Passphrase);
+var publicKey = OpenPgp.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, Passphrase);
 
 var certifiedKey = privateKey.CertifyKey(publicKey);
 certifiedKey.IsCertified(privateKey.Public);
@@ -111,8 +111,8 @@ const string Passphrase = "Your passphase";
 var armoredPublicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
 var armoredPrivateKey = "-----BEGIN PGP PRIVATE KEY BLOCK-----";
 
-var publicKey = OpenPGP.ReadPublicKey(armoredPublicKey);
-var privateKey = OpenPGP.DecryptPrivateKey(armoredPrivateKey, Passphrase);
+var publicKey = OpenPgp.ReadPublicKey(armoredPublicKey);
+var privateKey = OpenPgp.DecryptPrivateKey(armoredPrivateKey, Passphrase);
 
 var revokedKey = privateKey.RevokeKey(publicKey);
 revokedKey.isRevoked(privateKey.Public);

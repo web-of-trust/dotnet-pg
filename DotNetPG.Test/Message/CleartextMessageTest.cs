@@ -169,9 +169,9 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestSignRsaCleartextMessage()
     {
-        var privateKey = OpenPGP.DecryptPrivateKey(RsaPrivateKey, Passphrase);
+        var privateKey = OpenPgp.DecryptPrivateKey(RsaPrivateKey, Passphrase);
         var publicKey = privateKey.PublicKey;
-        var message = OpenPGP.CreateCleartextMessage(Cleartext);
+        var message = OpenPgp.CreateCleartextMessage(Cleartext);
         var signedMessage = message.Sign([privateKey]);
         var verification = signedMessage.Verify([publicKey])[0];
         Assert.Multiple(() =>
@@ -181,7 +181,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
         });
 
         var armored = signedMessage.Armor();
-        signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
+        signedMessage = OpenPgp.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 
         var signature = signedMessage.Signature;
@@ -196,9 +196,9 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestSignNistEccP384CleartextMessage()
     {
-        var privateKey = OpenPGP.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
+        var privateKey = OpenPgp.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase);
         var publicKey = privateKey.PublicKey;
-        var message = OpenPGP.CreateCleartextMessage(Cleartext);
+        var message = OpenPgp.CreateCleartextMessage(Cleartext);
         var signedMessage = message.Sign([privateKey]);
         var verification = signedMessage.Verify([publicKey])[0];
         Assert.Multiple(() =>
@@ -207,7 +207,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(verification.IsVerified, Is.True);
         });
 
-        signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
+        signedMessage = OpenPgp.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 
         var signature = signedMessage.Signature;
@@ -222,9 +222,9 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestSignEccBrainpoolCleartextMessage()
     {
-        var privateKey = OpenPGP.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase);
+        var privateKey = OpenPgp.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase);
         var publicKey = privateKey.PublicKey;
-        var message = OpenPGP.CreateCleartextMessage(Cleartext);
+        var message = OpenPgp.CreateCleartextMessage(Cleartext);
         var signedMessage = message.Sign([privateKey]);
         var verification = signedMessage.Verify([publicKey])[0];
         Assert.Multiple(() =>
@@ -233,7 +233,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(verification.IsVerified, Is.True);
         });
 
-        signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
+        signedMessage = OpenPgp.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 
         var signature = signedMessage.Signature;
@@ -248,9 +248,9 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
     [Test]
     public void TestSignEccCurve25519CleartextMessage()
     {
-        var privateKey = OpenPGP.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase);
+        var privateKey = OpenPgp.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase);
         var publicKey = privateKey.PublicKey;
-        var message = OpenPGP.CreateCleartextMessage(Cleartext);
+        var message = OpenPgp.CreateCleartextMessage(Cleartext);
         var signedMessage = message.Sign([privateKey]);
         var verification = signedMessage.Verify([publicKey])[0];
         Assert.Multiple(() =>
@@ -259,7 +259,7 @@ Dt8BTpBpZ769B0GLXv0Pe6k4098TAg==
             Assert.That(verification.IsVerified, Is.True);
         });
 
-        signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
+        signedMessage = OpenPgp.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 
         var signature = signedMessage.Signature;
@@ -289,9 +289,9 @@ M0g12vYxoWM8Y81W+bHBw805I8kWVkXU6vFOi+HWvv/ira7ofJu16NnoUkhclkUr
 k0mXubZvyl4GBg==
 -----END PGP PRIVATE KEY BLOCK-----";
 
-        var privateKey = OpenPGP.ReadPrivateKey(keyData);
+        var privateKey = OpenPgp.ReadPrivateKey(keyData);
         var publicKey = privateKey.PublicKey;
-        var message = OpenPGP.CreateCleartextMessage(Cleartext);
+        var message = OpenPgp.CreateCleartextMessage(Cleartext);
         var signedMessage = message.Sign([privateKey]);
         var verification = signedMessage.Verify([publicKey])[0];
         Assert.Multiple(() =>
@@ -300,7 +300,7 @@ k0mXubZvyl4GBg==
             Assert.That(verification.IsVerified, Is.True);
         });
 
-        signedMessage = OpenPGP.ReadSignedMessage(signedMessage.Armor());
+        signedMessage = OpenPgp.ReadSignedMessage(signedMessage.Armor());
         Assert.That(signedMessage.NormalizeText, Is.EqualTo(Cleartext));
 
         var signature = signedMessage.Signature;

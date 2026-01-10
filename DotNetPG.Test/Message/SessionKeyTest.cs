@@ -69,23 +69,23 @@ Pnn+We1aTBhaGa86AQ==
     [Test]
     public void TestGenerateSessionKey()
     {
-        var sessionKey = OpenPGP.GenerateSessionKey([OpenPGP.ReadPublicKey(Rfc9580PublicKey)]);
+        var sessionKey = OpenPgp.GenerateSessionKey([OpenPgp.ReadPublicKey(Rfc9580PublicKey)]);
         Assert.Multiple(() =>
         {
             Assert.That(sessionKey.Symmetric, Is.EqualTo(SymmetricAlgorithm.Aes256));
             Assert.That(sessionKey.Aead, Is.EqualTo(AeadAlgorithm.Ocb));
         });
 
-        sessionKey = OpenPGP.GenerateSessionKey([OpenPGP.ReadPublicKey(AlicePublicKey)]);
+        sessionKey = OpenPgp.GenerateSessionKey([OpenPgp.ReadPublicKey(AlicePublicKey)]);
         Assert.Multiple(() =>
         {
             Assert.That(sessionKey.Symmetric, Is.EqualTo(SymmetricAlgorithm.Aes256));
             Assert.That(sessionKey.Aead, Is.Null);
         });
         
-        sessionKey = OpenPGP.GenerateSessionKey([
-            OpenPGP.ReadPublicKey(Rfc9580PublicKey),
-            OpenPGP.ReadPublicKey(AlicePublicKey)
+        sessionKey = OpenPgp.GenerateSessionKey([
+            OpenPgp.ReadPublicKey(Rfc9580PublicKey),
+            OpenPgp.ReadPublicKey(AlicePublicKey)
         ]);
         Assert.Multiple(() =>
         {
@@ -97,34 +97,34 @@ Pnn+We1aTBhaGa86AQ==
     [Test]
     public void TestSessionKeyEncryption()
     {
-        var sessionKey = OpenPGP.GenerateSessionKey([
-            OpenPGP.ReadPublicKey(Rfc9580PublicKey),
-            OpenPGP.ReadPublicKey(AlicePublicKey)
+        var sessionKey = OpenPgp.GenerateSessionKey([
+            OpenPgp.ReadPublicKey(Rfc9580PublicKey),
+            OpenPgp.ReadPublicKey(AlicePublicKey)
         ]);
-        var eskPackets = OpenPGP.EncryptSessionKey(
+        var eskPackets = OpenPgp.EncryptSessionKey(
             sessionKey,
             [
-                OpenPGP.ReadPublicKey(Rfc9580PublicKey),
-                OpenPGP.ReadPublicKey(AlicePublicKey)
+                OpenPgp.ReadPublicKey(Rfc9580PublicKey),
+                OpenPgp.ReadPublicKey(AlicePublicKey)
             ],
             [Passphrase]
         );
 
-        var decryptSessionKey = OpenPGP.DecryptSessionKey(eskPackets, [OpenPGP.ReadPrivateKey(Rfc9580PrivateKey)], []);
+        var decryptSessionKey = OpenPgp.DecryptSessionKey(eskPackets, [OpenPgp.ReadPrivateKey(Rfc9580PrivateKey)], []);
         Assert.Multiple(() =>
         {
             Assert.That(decryptSessionKey.EncryptionKey, Is.EqualTo(sessionKey.EncryptionKey));
             Assert.That(decryptSessionKey.Symmetric, Is.EqualTo(sessionKey.Symmetric));
         });
 
-        decryptSessionKey = OpenPGP.DecryptSessionKey(eskPackets, [OpenPGP.ReadPrivateKey(AlicePrivateKey)], []);
+        decryptSessionKey = OpenPgp.DecryptSessionKey(eskPackets, [OpenPgp.ReadPrivateKey(AlicePrivateKey)], []);
         Assert.Multiple(() =>
         {
             Assert.That(decryptSessionKey.EncryptionKey, Is.EqualTo(sessionKey.EncryptionKey));
             Assert.That(decryptSessionKey.Symmetric, Is.EqualTo(sessionKey.Symmetric));
         });
 
-        decryptSessionKey = OpenPGP.DecryptSessionKey(eskPackets, [], [Passphrase]);
+        decryptSessionKey = OpenPgp.DecryptSessionKey(eskPackets, [], [Passphrase]);
         Assert.Multiple(() =>
         {
             Assert.That(decryptSessionKey.EncryptionKey, Is.EqualTo(sessionKey.EncryptionKey));

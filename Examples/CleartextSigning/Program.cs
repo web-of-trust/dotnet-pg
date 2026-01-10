@@ -155,13 +155,13 @@ What we need from the grocery store:
 -vegetables
 -noodles";
 
-var rsaPrivateKey = OpenPGP.DecryptPrivateKey(rsaKeyData, passphrase);
-var eccPrivateKey = OpenPGP.DecryptPrivateKey(eccKeyData, passphrase);
-var curve25519PrivateKey = OpenPGP.DecryptPrivateKey(curve25519KeyData, passphrase);
-var curve448PrivateKey = OpenPGP.DecryptPrivateKey(curve448KeyData, passphrase);
+var rsaPrivateKey = OpenPgp.DecryptPrivateKey(rsaKeyData, passphrase);
+var eccPrivateKey = OpenPgp.DecryptPrivateKey(eccKeyData, passphrase);
+var curve25519PrivateKey = OpenPgp.DecryptPrivateKey(curve25519KeyData, passphrase);
+var curve448PrivateKey = OpenPgp.DecryptPrivateKey(curve448KeyData, passphrase);
 
 Console.WriteLine("Sign cleartext message:");
-var signedMessage = OpenPGP.SignCleartext(cleartext, [
+var signedMessage = OpenPgp.SignCleartext(cleartext, [
         rsaPrivateKey,
         eccPrivateKey,
         curve25519PrivateKey,
@@ -172,7 +172,7 @@ Console.WriteLine(armoredMessage);
 Console.WriteLine();
 
 Console.WriteLine("Verify signed message:");
-var verifications = OpenPGP.Verify(armoredMessage, [
+var verifications = OpenPgp.Verify(armoredMessage, [
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
     curve25519PrivateKey.PublicKey,
@@ -186,7 +186,7 @@ foreach (var verification in verifications)
 }
 
 Console.WriteLine("Sign detached cleartext message:");
-var signature = OpenPGP.SignDetachedCleartext(cleartext, [
+var signature = OpenPgp.SignDetachedCleartext(cleartext, [
     rsaPrivateKey,
     eccPrivateKey,
     curve25519PrivateKey,
@@ -195,7 +195,7 @@ var signature = OpenPGP.SignDetachedCleartext(cleartext, [
 var armoredSignature = signature.Armor();
 Console.WriteLine(armoredSignature);
 Console.WriteLine();
-verifications = OpenPGP.VerifyDetached(cleartext, armoredSignature, [
+verifications = OpenPgp.VerifyDetached(cleartext, armoredSignature, [
     rsaPrivateKey.PublicKey,
     eccPrivateKey.PublicKey,
     curve25519PrivateKey.PublicKey,
