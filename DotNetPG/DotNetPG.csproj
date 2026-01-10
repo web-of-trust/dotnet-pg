@@ -13,18 +13,20 @@
         <Description>DotNet PG is an implementation of the OpenPGP standard in .NET. It implements RFC 9580 and provides encryption with public key or symmetric cryptographic algorithms, digital signatures, compression, and key management.</Description>
         <Copyright>Copyright (c) Dot Net Privacy Guard Project. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/web-of-trust/dotnet-pg</PackageProjectUrl>
-        <PackageLicense>https://github.com/web-of-trust/dotnet-pg/blob/main/LICENSE</PackageLicense>
+        <PackageLicense>LICENSE</PackageLicense>
         <RepositoryUrl>https://github.com/web-of-trust/dotnet-pg</RepositoryUrl>
         <PackageTags>cryptography encryption signing openpgp rfc4880 privacy-guard rfc6637 rfc9580</PackageTags>
         <PackageReleaseNotes>First major release</PackageReleaseNotes>
-        <PackageReadmeFile>Readme.md</PackageReadmeFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
         <Company>Web of Trust</Company>
         <AssemblyVersion>1.0.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
-      <None Include="..\Readme.md" Pack="true" PackagePath="\"/>
+      <None Include="..\README.md" Pack="true" PackagePath="\"/>
+      <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
