@@ -95,6 +95,13 @@ public class Encryptor : IEncryptor
         }
         var encryptedMessages = messages.Select(IEncryptedMessage (message) =>
         {
+            if (_signingKeys.Count != 0)
+            {
+                message = message.Sign(
+                    _signingKeys, _encryptionKeys, _notationData, time
+                );
+            }
+            message = message.Compress(_compression);
             var packetList = addPadding ?
                 new PacketList([..message.PacketList.Packets, Padding.CreatePadding()]) :
                 message.PacketList;
