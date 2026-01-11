@@ -2,7 +2,7 @@ DotNet PG installation
 ======================
 
 ## Requirement
-* .NET 9.x or later.
+* .NET 8.x or later.
 * [BouncyCastle.NET](https://www.bouncycastle.org/csharp) library provides cryptography algorithms.
 
 ## Installation
