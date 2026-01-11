@@ -1,4 +1,6 @@
 
+using DotNetPG.Type;
+
 namespace DotNetPG.Test.Message;
 
 using System.Text;
@@ -651,5 +653,60 @@ k0mXubZvyl4GBg==
 
         var decryptedMessage = encryptedMessage.Decrypt([privateKey], []);
         Assert.That(decryptedMessage.LiteralData.Data, Is.EqualTo(literalData));
+    }
+
+    [Test]
+    public void TestBulkEncryption()
+    {
+        const int numberMessage = 10;
+        IList<ILiteralMessage> literalMessages = [];
+        for (var i = 0; i < numberMessage; i++)
+        {
+            literalMessages.Add(OpenPgp.CreateLiteralMessage(
+                SecureRandom.GetNextBytes(new SecureRandom(), 10000))
+            );
+        }
+        var encryptedMessages = OpenPgp.BulkEncrypt(
+            literalMessages,
+            [
+                OpenPgp.ReadPublicKey(RsaPublicKey),
+                OpenPgp.ReadPublicKey(EccNistP384PublicKey),
+                OpenPgp.ReadPublicKey(EccBrainpoolPublicKey),
+                OpenPgp.ReadPublicKey(EccCurve25519PublicKey),
+            ],
+            [Passphrase],
+            [],
+            compression: CompressionAlgorithm.BZip2
+        );
+
+        var decryptedMessages = OpenPgp.BulkDecrypt(encryptedMessages, [], [Passphrase]);
+        for (var i = 0; i < numberMessage; i++)
+        {
+            Assert.That(decryptedMessages[i].LiteralData.Data, Is.EqualTo(literalMessages[i].LiteralData.Data));
+        }
+
+        decryptedMessages = OpenPgp.BulkDecrypt(encryptedMessages, [OpenPgp.DecryptPrivateKey(RsaPrivateKey, Passphrase)], []);
+        for (var i = 0; i < numberMessage; i++)
+        {
+            Assert.That(decryptedMessages[i].LiteralData.Data, Is.EqualTo(literalMessages[i].LiteralData.Data));
+        }
+
+        decryptedMessages = OpenPgp.BulkDecrypt(encryptedMessages, [OpenPgp.DecryptPrivateKey(EccNistP384PrivateKey, Passphrase)], []);
+        for (var i = 0; i < numberMessage; i++)
+        {
+            Assert.That(decryptedMessages[i].LiteralData.Data, Is.EqualTo(literalMessages[i].LiteralData.Data));
+        }
+
+        decryptedMessages = OpenPgp.BulkDecrypt(encryptedMessages, [OpenPgp.DecryptPrivateKey(EccBrainpoolPrivateKey, Passphrase)], []);
+        for (var i = 0; i < numberMessage; i++)
+        {
+            Assert.That(decryptedMessages[i].LiteralData.Data, Is.EqualTo(literalMessages[i].LiteralData.Data));
+        }
+
+        decryptedMessages = OpenPgp.BulkDecrypt(encryptedMessages, [OpenPgp.DecryptPrivateKey(EccCurve25519PrivateKey, Passphrase)], []);
+        for (var i = 0; i < numberMessage; i++)
+        {
+            Assert.That(decryptedMessages[i].LiteralData.Data, Is.EqualTo(literalMessages[i].LiteralData.Data));
+        }
     }
 }

@@ -8,38 +8,28 @@ using Type;
 /// <summary>
 /// OpenPGP encrypted message class
 /// </summary>
-public class EncryptedMessage : BaseMessage, IEncryptedMessage
+public class EncryptedMessage(IPacketList packetList) : BaseMessage(packetList), IEncryptedMessage
 {
-    private ISessionKey? _sessionKey;
- 
-    public EncryptedMessage(IPacketList packetList): base(packetList)
-    {
-        EncryptedPacket = AssertEncryptedPacket(packetList);
-        _sessionKey = null;
-    }
-
-    public static EncryptedMessage FromArmored(string armored)
+    public static IEncryptedMessage FromArmored(string armored)
     {
         return FromBytes(Common.Armor.Decode(armored).Data);
     }
 
-    public static EncryptedMessage FromBytes(byte[] bytes)
+    public static IEncryptedMessage FromBytes(byte[] bytes)
     {
         return new EncryptedMessage(Packet.PacketList.Decode(bytes));
     }
 
-    public IEncryptedDataPacket EncryptedPacket { get; }
+    public IEncryptedDataPacket EncryptedPacket { get; } = AssertEncryptedPacket(packetList);
 
-    public ISessionKey? SessionKey => _sessionKey;
+    public IList<IEncryptedSessionKey> EskPackets { get; } = packetList.Packets.OfType<IEncryptedSessionKey>().ToList();
 
     public ILiteralMessage Decrypt(IList<IPrivateKey> decryptionKeys, IList<string> passwords)
     {
-        var decryptor = new Decryptor()
+        return new Decryptor()
             .WithDecryptionKeys(decryptionKeys)
-            .WithPasswords(passwords);
-        var literalMessage = decryptor.Decrypt(this);
-        _sessionKey = decryptor.SessionKey;
-        return literalMessage;
+            .WithPasswords(passwords)
+            .Decrypt(this);
     }
 
     private static IEncryptedDataPacket AssertEncryptedPacket(IPacketList packetList)

@@ -14,9 +14,9 @@ public interface IEncryptedMessage : IArmorable, IPacketContainer
     IEncryptedDataPacket EncryptedPacket { get; }
 
     /// <summary>
-    ///     Get session key.
+    ///     Get encrypted session key packets.
     /// </summary>
-    ISessionKey? SessionKey { get; }
+    IList<IEncryptedSessionKey> EskPackets { get; }
 
     /// <summary>
     ///     Decrypt the message.

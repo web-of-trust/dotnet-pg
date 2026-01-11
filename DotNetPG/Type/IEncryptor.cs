@@ -26,12 +26,20 @@ public interface IEncryptor
     /// <summary>
     /// Bulk encrypt literal messages
     /// </summary>
-    IList<IEncryptedMessage> BulkEncrypt(IList<ILiteralMessage> messages, DateTime? time = null);
+    IList<IEncryptedMessage> BulkEncrypt(
+        IList<ILiteralMessage> messages,
+        ISessionKey? sessionKey = null,
+        DateTime? time = null
+    );
 
     /// <summary>
     /// Bulk encrypt literal texts
     /// </summary>
-    IList<IEncryptedMessage> BulkEncrypt(IList<string> texts, DateTime? time = null);
+    IList<IEncryptedMessage> BulkEncrypt(
+        IList<string> texts,
+        ISessionKey? sessionKey = null,
+        DateTime? time = null
+    );
     
     /// <summary>
     /// Encrypt a session key

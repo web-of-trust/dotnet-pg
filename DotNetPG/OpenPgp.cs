@@ -374,22 +374,6 @@ public static class OpenPgp
     }
 
     /// <summary>
-    /// Decrypt a message with the user's private keys, or passwords.
-    /// One of `decryptionKeys` or `passwords` must be specified.
-    /// </summary>
-    public static ILiteralMessage Decrypt(
-        IEncryptedMessage message,
-        IList<IPrivateKey> decryptionKeys,
-        IList<string> passwords
-    )
-    {
-        return new Decryptor()
-            .WithDecryptionKeys(decryptionKeys)
-            .WithPasswords(passwords)
-            .Decrypt(message);
-    }
-
-    /// <summary>
     /// Bulk encrypt messages using public keys, passwords or both at once.
     /// At least one of `encryptionKeys`, `passwords`must be specified.
     /// If signing keys are specified, those will be used to sign the message.
@@ -412,7 +396,7 @@ public static class OpenPgp
             .WithSymmetric(symmetric ?? Config.PreferredSymmetric)
             .WithCompression(compression ?? Config.PreferredCompression)
             .WithNotationData(notationData)
-            .BulkEncrypt(messages, time);
+            .BulkEncrypt(messages, time: time);
     }
 
     /// <summary>
@@ -438,7 +422,23 @@ public static class OpenPgp
             .WithSymmetric(symmetric ?? Config.PreferredSymmetric)
             .WithCompression(compression ?? Config.PreferredCompression)
             .WithNotationData(notationData)
-            .BulkEncrypt(texts, time);
+            .BulkEncrypt(texts, time: time);
+    }
+
+    /// <summary>
+    /// Decrypt a message with the user's private keys, or passwords.
+    /// One of `decryptionKeys` or `passwords` must be specified.
+    /// </summary>
+    public static ILiteralMessage Decrypt(
+        IEncryptedMessage message,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .Decrypt(message);
     }
 
     /// <summary>
@@ -456,6 +456,38 @@ public static class OpenPgp
             .WithDecryptionKeys(decryptionKeys)
             .WithPasswords(passwords)
             .Decrypt(messageData);
+    }
+
+    /// <summary>
+    /// Bulk decrypt messages with the user's private keys, or passwords.
+    /// One of `decryptionKeys` or `passwords` must be specified.
+    /// </summary>
+    public static IList<ILiteralMessage> BulkDecrypt(
+        IList<IEncryptedMessage> messages,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .BulkDecrypt(messages);
+    }
+
+    /// <summary>
+    /// Bulk decrypt armored messages with the user's private keys, or passwords.
+    /// One of `decryptionKeys` or `passwords` must be specified.
+    /// </summary>
+    public static IList<ILiteralMessage> BulkDecrypt(
+        IList<string> armoredMessages,
+        IList<IPrivateKey> decryptionKeys,
+        IList<string> passwords
+    )
+    {
+        return new Decryptor()
+            .WithDecryptionKeys(decryptionKeys)
+            .WithPasswords(passwords)
+            .BulkDecrypt(armoredMessages);
     }
 
     /// <summary>

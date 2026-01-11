@@ -21,7 +21,12 @@ public interface IDecryptor
     /// <summary>
     /// Bulk decrypt encrypted messages
     /// </summary>
-    IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages);
+    IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages, ISessionKey? sessionKey = null);
+
+    /// <summary>
+    /// Bulk decrypt armored encrypted messages
+    /// </summary>
+    IList<ILiteralMessage> BulkDecrypt(IList<string> armoredMessages, ISessionKey? sessionKey = null);
 
     /// <summary>
     /// Decrypt encrypted session keys.

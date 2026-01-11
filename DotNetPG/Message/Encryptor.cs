@@ -77,9 +77,13 @@ public class Encryptor : IEncryptor
         return Encrypt(LiteralMessage.FromText(text), time);
     }
 
-    public IList<IEncryptedMessage> BulkEncrypt(IList<ILiteralMessage> messages, DateTime? time = null)
+    public IList<IEncryptedMessage> BulkEncrypt(
+        IList<ILiteralMessage> messages,
+        ISessionKey? sessionKey = null,
+        DateTime? time = null
+    )
     {
-        var sessionKey = new SessionKeyGenerator()
+        sessionKey ??= new SessionKeyGenerator()
             .WithEncryptionKeys(_encryptionKeys)
             .WithDefaultSymmetric(_symmetric)
             .Generate();
@@ -115,10 +119,14 @@ public class Encryptor : IEncryptor
         return encryptedMessages.ToList();
     }
 
-    public IList<IEncryptedMessage> BulkEncrypt(IList<string> texts, DateTime? time = null)
+    public IList<IEncryptedMessage> BulkEncrypt(
+        IList<string> texts,
+        ISessionKey? sessionKey = null,
+        DateTime? time = null
+    )
     {
         var messages = texts.Select(LiteralMessage.FromText);
-        return BulkEncrypt(messages.ToList(), time);
+        return BulkEncrypt(messages.ToList(), sessionKey, time);
     }
 
     public IPacketList EncryptSessionKey(ISessionKey sessionKey)

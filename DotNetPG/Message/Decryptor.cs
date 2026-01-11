@@ -14,10 +14,7 @@ public class Decryptor : IDecryptor
 {
     private IList<IPrivateKey> _decryptionKeys = [];
     private IList<string> _passwords = [];
-    private ISessionKey? _sessionKey;
-
-    public ISessionKey? SessionKey => _sessionKey;
-
+    
     public Decryptor WithDecryptionKeys(IList<IPrivateKey> decryptionKeys)
     {
         _decryptionKeys = decryptionKeys;
@@ -32,8 +29,8 @@ public class Decryptor : IDecryptor
 
     public ILiteralMessage Decrypt(IEncryptedMessage message)
     {
-        _sessionKey = DecryptSessionKey(message.PacketList);
-        var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
+        var sessionKey = DecryptSessionKey(message.EskPackets);
+        var packetList = message.EncryptedPacket.DecryptWithSessionKey(sessionKey).PacketList;
         return packetList != null ?
             new LiteralMessage(packetList) :
             throw new Exception("Decrypt with session key failed.");
@@ -44,19 +41,20 @@ public class Decryptor : IDecryptor
         return Decrypt(EncryptedMessage.FromArmored(messageData));
     }
 
-    public IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages)
+    public IList<ILiteralMessage> BulkDecrypt(IList<IEncryptedMessage> messages, ISessionKey? sessionKey = null)
     {
-        if (_sessionKey == null)
-        {
-            throw new ArgumentException(
-                "No session key for message decryption."
-            );
-        }
+        sessionKey ??= DecryptSessionKey(messages[0].EskPackets);
         return messages.Select(ILiteralMessage (message) =>
         {
-            var packetList = message.EncryptedPacket.DecryptWithSessionKey(_sessionKey).PacketList;
+            var packetList = message.EncryptedPacket.DecryptWithSessionKey(sessionKey).PacketList;
             return new LiteralMessage(packetList ?? new PacketList([]));
         }).ToList();
+    }
+
+    public IList<ILiteralMessage> BulkDecrypt(IList<string> armoredMessages, ISessionKey? sessionKey = null)
+    {
+        var messages = armoredMessages.Select(EncryptedMessage.FromArmored).ToList();
+        return BulkDecrypt(messages, sessionKey);
     }
 
     public ISessionKey DecryptSessionKey(IPacketList packetList)
@@ -145,6 +143,6 @@ public class Decryptor : IDecryptor
                 string.Join("\n", ["Session key decryption failed.", ..errors])
             );
         }
-        return _sessionKey = sessionKeys[0];
+        return sessionKeys[0];
     }
 }
