@@ -390,6 +390,58 @@ public static class OpenPgp
     }
 
     /// <summary>
+    /// Bulk encrypt messages using public keys, passwords or both at once.
+    /// At least one of `encryptionKeys`, `passwords`must be specified.
+    /// If signing keys are specified, those will be used to sign the message.
+    /// </summary>
+    public static IList<IEncryptedMessage> BulkEncrypt(
+        IList<ILiteralMessage> messages,
+        IList<IKey> encryptionKeys,
+        IList<string> passwords,
+        IList<IPrivateKey> signingKeys,
+        SymmetricAlgorithm? symmetric = null,
+        CompressionAlgorithm? compression = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return new Encryptor()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithPasswords(passwords)
+            .WithSigningKeys(signingKeys)
+            .WithSymmetric(symmetric ?? Config.PreferredSymmetric)
+            .WithCompression(compression ?? Config.PreferredCompression)
+            .WithNotationData(notationData)
+            .BulkEncrypt(messages, time);
+    }
+
+    /// <summary>
+    /// Bulk encrypt clear texts using public keys, passwords or both at once.
+    /// At least one of `encryptionKeys`, `passwords`must be specified.
+    /// If signing keys are specified, those will be used to sign the message.
+    /// </summary>
+    public static IList<IEncryptedMessage> BulkEncrypt(
+        IList<string> texts,
+        IList<IKey> encryptionKeys,
+        IList<string> passwords,
+        IList<IPrivateKey> signingKeys,
+        SymmetricAlgorithm? symmetric = null,
+        CompressionAlgorithm? compression = null,
+        INotationData? notationData = null,
+        DateTime? time = null
+    )
+    {
+        return new Encryptor()
+            .WithEncryptionKeys(encryptionKeys)
+            .WithPasswords(passwords)
+            .WithSigningKeys(signingKeys)
+            .WithSymmetric(symmetric ?? Config.PreferredSymmetric)
+            .WithCompression(compression ?? Config.PreferredCompression)
+            .WithNotationData(notationData)
+            .BulkEncrypt(texts, time);
+    }
+
+    /// <summary>
     /// Decrypt a armored encrypted string with
     /// the user's private keys, or passwords.
     /// One of `decryptionKeys` or `passwords` must be specified.
