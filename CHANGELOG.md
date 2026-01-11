@@ -6,3 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.0.0 - released 2026-01-10
 - First major release
+
+## 1.0.1 - released 2026-01-11
+- Refactor bulk encryption

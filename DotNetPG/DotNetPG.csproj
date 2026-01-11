@@ -16,11 +16,12 @@
         <PackageLicense>LICENSE</PackageLicense>
         <RepositoryUrl>https://github.com/web-of-trust/dotnet-pg</RepositoryUrl>
         <PackageTags>cryptography encryption signing openpgp rfc4880 privacy-guard rfc6637 rfc9580</PackageTags>
-        <PackageReleaseNotes>First major release</PackageReleaseNotes>
+        <PackageReleaseNotes>Refactor bulk encryption</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
         <Company>Web of Trust</Company>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
+        <Version>1.0.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
