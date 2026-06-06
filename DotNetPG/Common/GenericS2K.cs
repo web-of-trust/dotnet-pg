@@ -91,10 +91,10 @@ public class GenericS2K : IString2Key
     private byte[] Iterate(byte[] data)
     {
         if (data.Length == _count) return data;
-
-        var count = (int)Math.Ceiling((double)_count / data.Length);
-        var iterated = Enumerable.Repeat(data, count).SelectMany(x => x).ToArray();
-        return iterated.Take(_count).ToArray();
+        return [
+            ..Enumerable.Repeat(data, (int)Math.Floor((double)_count / data.Length)).SelectMany(x => x).ToArray(),
+            ..data.Take(_count % data.Length).ToArray()
+        ];
     }
 
     private byte[] CalculateDigest(byte[] data, int length)
