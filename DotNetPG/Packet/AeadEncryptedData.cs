@@ -200,10 +200,12 @@ public class AeadEncryptedData(
         ];
         Array.Copy(aData, 0, adataBuffer, 0, aData.Length);
 
-        var processed = dataLength - tagLength * (int)Math.Ceiling((double)dataLength / chunkSize);
-        var crypted = new byte[processed + (forEncryption ? AeadTagLength : 0)];
+        var chunksCount = (int)Math.Ceiling((double)dataLength / chunkSize);
+        var processed = dataLength - tagLength * chunksCount;
+        var crypted = new byte[processed + (forEncryption ? AeadTagLength * chunksCount : 0)];
         var cipher = new AeadCipher(key, aead, symmetric);
         var chunkData = Arrays.Clone(data);
+        var destinationOffset = 0;
         for (var index = 0; index == 0 || chunkData.Length > 0;)
         {
             // We take a chunk of data, en/decrypt it,
@@ -215,8 +217,9 @@ public class AeadEncryptedData(
                 ? cipher.Encrypt(chunkData.Take(size).ToArray(), nonce, adataBuffer)
                 : cipher.Decrypt(chunkData.Take(size).ToArray(), nonce, adataBuffer);
             Array.Copy(
-                cryptedData, 0, crypted, index * size, cryptedData.Length
+                cryptedData, 0, crypted, destinationOffset, cryptedData.Length
             );
+            destinationOffset += cryptedData.Length;
             chunkData = chunkData.Skip(size).ToArray();
             Array.Copy(
                 Helper.Pack32(++index), 0, adataBuffer, 9, 4
